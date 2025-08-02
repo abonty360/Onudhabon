@@ -1,10 +1,12 @@
 import React from "react";
 import NavbarComponent from '../../Components/NavbarComp/Navbarcomp';
+import Footer from '../../Components/Footer';
 function AboutPage() {
   return (
-    <div className="about-page">
-      <NavbarComponent />
-    </div>
+    <>
+    <NavbarComponent />
+    <Footer/>
+    </>
   );
 
 }
