@@ -8,7 +8,7 @@ function LoginPage() {
     <div className="login-page-container">
       <div className="login-card">
         <div className="logo-section">
-          <div className="logo-icon" />
+          <img src="/images/lightmode_logo.png" alt="Logo" className="logo-icon" />
           <h2 className="app-title">Onudhabon</h2>
           <p className="subtitle">Exploring Education</p>
           <p className="mission-text">Join our mission to explore education</p>
