@@ -1,0 +1,20 @@
+.custom-login-btn {
+    width: 120px;
+    height: 36px;
+    padding: 4px 10px;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap; 
+}
+
+.custom-navbar {
+    padding-top: 0.00rem  !important;
+    padding-bottom: 0.00rem !important;  
+}
+
+.custom-navbar .container-fluid {
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+}

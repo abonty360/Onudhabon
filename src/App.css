@@ -1,9 +1,18 @@
 body, html {
   margin: 0;
-  padding: 0;
+  padding-top: 15px;
   font-family: 'Segoe UI', sans-serif;
   background-color: #f9fafb;
   height: 100%;
+}
+
+.navbar-nav {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.navbar-nav .nav-link {
+  white-space: nowrap;
 }
 
 .app-container {

@@ -1,9 +1,24 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './LoginForm.css';
 import { FaEnvelope, FaLock } from 'react-icons/fa';
 
 function LoginForm() {
+
+   const navigate = useNavigate();
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    
+    // Replace with actual auth logic
+    const isAuthenticated = true;
+
+    if (isAuthenticated) {
+      navigate('/home');
+    }
+  };
   return (
+     <form className="login-form" onSubmit={handleLogin}>
     <div className="login-form">
       <h3>Welcome Back</h3>
       <p className="form-subtext">Sign in to continue your volunteer journey</p>
@@ -21,6 +36,7 @@ function LoginForm() {
       <button className="login-btn">Sign In</button>
       <a href="#" className="forgot-link">Forgot your password?</a>
     </div>
+    </form>
   );
 }
 
