@@ -1,11 +1,13 @@
 import React from "react";
 import NavbarComponent from '../../Components/NavbarComp/Navbarcomp';
+import Footer from "../../Components/Footer";
 function LecturePage()
 {
     return(
-      <div className="lecture-page">
-        <NavbarComponent />
-        </div>  
+     <>
+    <NavbarComponent />
+    <Footer/>
+    </> 
     );
 
 }
