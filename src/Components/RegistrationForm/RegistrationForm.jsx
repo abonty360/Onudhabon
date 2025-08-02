@@ -7,7 +7,6 @@ const rolesList = [
   { label: 'Lecturer', desc: 'Create and deliver educational content' },
   { label: 'Material Provider', desc: 'Contribute educational resources and materials' },
   { label: 'Evaluator', desc: 'Assess and evaluate student progress' },
-  { label: 'Donor', desc: 'Support with funding and resources' },
 ];
 
 const RegisterForm = () => {
