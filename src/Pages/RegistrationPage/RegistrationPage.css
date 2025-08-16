@@ -1,0 +1,167 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.registration-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  padding: 20px;
+  animation: fadeIn 1.2s ease-out forwards;
+}
+
+.registration-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 500px; 
+  padding: 20px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.logo-section {
+  background-color: transparent;
+  color: #333; 
+  padding: 30px 20px;
+  border-bottom: 1px solid #eee; 
+}
+
+.logo-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 15px;
+}
+
+.app-title {
+  font-size: 2em;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  font-size: 1.1em;
+  opacity: 0.9;
+}
+
+.mission-text {
+  font-size: 0.9em;
+  opacity: 0.8;
+  margin-top: 15px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  border-bottom: 1px solid #eee;
+}
+
+.tab {
+  flex-grow: 1;
+  padding: 15px 0;
+  text-decoration: none;
+  color: #555;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.tab:hover {
+  color: #007bff;
+}
+
+.tab.active {
+  color: #007bff;
+  border-bottom-color: #007bff;
+}
+
+.guest-link {
+  display: block;
+  padding: 15px;
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+  border-top: 1px solid #eee;
+  transition: color 0.3s ease;
+}
+
+.guest-link:hover {
+    color: #0056b3;
+}
+
+.fixed-bottom-copyright {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f0f2f5; 
+  color: #666; 
+  padding: 10px 0;
+  text-align: center;
+  z-index: 1000; 
+  font-size: 0.8em; 
+}
+
+@media (max-width: 768px) {
+  .registration-card {
+    max-width: 90%; 
+  }
+}
+
+@media (max-width: 480px) {
+  .registration-page-container {
+    padding: 10px; 
+  }
+
+  .registration-card {
+    max-width: 100%; 
+    border-radius: 0; 
+    box-shadow: none; 
+    padding: 10px; 
+  }
+
+  .logo-section {
+    padding: 20px 10px; 
+  }
+
+  .app-title {
+    font-size: 1.8em; 
+  }
+
+  .subtitle,
+  .mission-text {
+    font-size: 0.8em; 
+  }
+
+  .tabs {
+    flex-direction: column; 
+  }
+
+  .tab {
+    padding: 10px 0; 
+    font-size: 0.9em; 
+  }
+
+  .guest-link {
+    padding: 10px; 
+    font-size: 0.9em; 
+  }
+
+  .fixed-bottom-copyright {
+    font-size: 0.7em; 
+    padding: 5px 0; 
+  }
+}

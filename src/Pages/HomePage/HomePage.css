@@ -1,0 +1,27 @@
+.home-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  color: #333;
+  text-align: center;
+  padding: 20px;
+}
+
+.home-page h1 {
+  font-size: 2.5em;
+  color: #007bff;
+  margin-bottom: 15px;
+}
+
+.home-page p {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+
+.mission-statement {
+  color: #007bff; /* Bootstrap primary blue */
+  font-size: 1.3em; /* Slightly larger than default lead paragraph */
+}

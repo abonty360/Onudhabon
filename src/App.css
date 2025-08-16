@@ -1,9 +1,18 @@
 body, html {
   margin: 0;
-  padding: 0;
+  padding-top: 15px;
   font-family: 'Segoe UI', sans-serif;
   background-color: #f9fafb;
   height: 100%;
+}
+
+.navbar-nav {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.navbar-nav .nav-link {
+  white-space: nowrap;
 }
 
 .app-container {
@@ -28,9 +37,9 @@ body, html {
 }
 
 .logo-icon {
-  width: 28px;
+  width: 60px;
   height: 40px;
-  background: linear-gradient(to bottom, #3b82f6, #1e3a8a);
+  background: linear-gradient(to bottom, #ffffff, #ffffff);
   border-radius: 4px;
   margin: 0 auto 10px;
 }
