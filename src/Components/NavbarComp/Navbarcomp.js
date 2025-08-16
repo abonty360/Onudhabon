@@ -11,7 +11,7 @@ export default class NavbarComponent extends Component {
             <Navbar bg="white" expand="lg" fixed="top" className="shadow-sm custom-navbar">
                 <Container fluid>
                     <Navbar.Brand as={Link} to="/" className="d-flex align-items-center gap-2">
-                        <Image src={logo} alt="Onudhabon Logo" height="30" />
+                        <Image src={logo} alt="Onudhabon Logo" height="60" />
 
 
                     </Navbar.Brand>

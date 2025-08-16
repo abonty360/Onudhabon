@@ -10,7 +10,6 @@ function LoginForm() {
   const handleLogin = (e) => {
     e.preventDefault();
     
-    // Replace with actual auth logic
     const isAuthenticated = true;
 
     if (isAuthenticated) {
