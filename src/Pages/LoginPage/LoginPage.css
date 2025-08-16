@@ -1,4 +1,15 @@
 /* LoginPage.css */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .login-page-container {
   display: flex;
   justify-content: center;
@@ -18,13 +29,14 @@
   max-width: 400px;
   overflow: hidden;
   text-align: center;
+  animation: fadeIn 1.2s ease-out forwards;
 }
 
 .logo-section {
-  background-color: #ffffff;
+  background-color: transparent;
   color: white;
   padding: 30px 20px;
-  border-bottom: 5px solid #0056b3;
+  border-bottom: 1px solid #eee; /* Changed to light grey border */
 }
 
 .logo-icon {

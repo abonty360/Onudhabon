@@ -33,12 +33,10 @@ const RegisterForm = () => {
   };
 
   const handleRoleChange = (label) => {
-    setFormData(prev => {
-      const roles = prev.roles.includes(label)
-        ? prev.roles.filter(r => r !== label)
-        : [...prev.roles, label];
-      return { ...prev, roles };
-    });
+    setFormData(prev => ({
+      ...prev,
+      roles: [label],
+    }));
   };
 
   const handleBlur = (field) => {
@@ -92,50 +90,58 @@ const RegisterForm = () => {
 
       <div className={getInputClass('name')}>
         <FaUser className="icon" />
-        <input
-          type="text"
-          name="name"
-          placeholder="Enter your full name"
-          value={formData.name}
-          onChange={handleChange}
-          onBlur={() => handleBlur('name')}
-        />
+        <div className="input-inner-box">
+          <input
+            type="text"
+            name="name"
+            placeholder="Enter your full name"
+            value={formData.name}
+            onChange={handleChange}
+            onBlur={() => handleBlur('name')}
+          />
+        </div>
       </div>
 
       <div className={getInputClass('email')}>
         <FaEnvelope className="icon" />
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter your email"
-          value={formData.email}
-          onChange={handleChange}
-          onBlur={() => handleBlur('email')}
-        />
+        <div className="input-inner-box">
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+            value={formData.email}
+            onChange={handleChange}
+            onBlur={() => handleBlur('email')}
+          />
+        </div>
       </div>
 
       <div className={getInputClass('phone')}>
         <FaPhone className="icon" />
-        <input
-          type="tel"
-          name="phone"
-          placeholder="Enter your phone number"
-          value={formData.phone}
-          onChange={handleChange}
-          onBlur={() => handleBlur('phone')}
-        />
+        <div className="input-inner-box">
+          <input
+            type="tel"
+            name="phone"
+            placeholder="Enter your phone number"
+            value={formData.phone}
+            onChange={handleChange}
+            onBlur={() => handleBlur('phone')}
+          />
+        </div>
       </div>
 
       <div className={getInputClass('location')}>
         <FaMapMarkerAlt className="icon" />
-        <input
-          type="text"
-          name="location"
-          placeholder="City, Country"
-          value={formData.location}
-          onChange={handleChange}
-          onBlur={() => handleBlur('location')}
-        />
+        <div className="input-inner-box">
+          <input
+            type="text"
+            name="location"
+            placeholder="City, Country"
+            value={formData.location}
+            onChange={handleChange}
+            onBlur={() => handleBlur('location')}
+          />
+        </div>
       </div>
 
       <p>Volunteer Roles (Select all that apply)</p>
@@ -143,7 +149,8 @@ const RegisterForm = () => {
         {rolesList.map((role, i) => (
           <label className="role-card" key={i}>
             <input
-              type="checkbox"
+              type="radio"
+              name="volunteerRole"
               checked={formData.roles.includes(role.label)}
               onChange={() => handleRoleChange(role.label)}
             />
@@ -157,26 +164,30 @@ const RegisterForm = () => {
 
       <div className={getInputClass('password')}>
         <FaLock className="icon" />
-        <input
-          type="password"
-          name="password"
-          placeholder="Create password"
-          value={formData.password}
-          onChange={handleChange}
-          onBlur={() => handleBlur('password')}
-        />
+        <div className="input-inner-box">
+          <input
+            type="password"
+            name="password"
+            placeholder="Create password"
+            value={formData.password}
+            onChange={handleChange}
+            onBlur={() => handleBlur('password')}
+          />
+        </div>
       </div>
 
       <div className={getInputClass('confirmPassword')}>
         <FaLock className="icon" />
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          onBlur={() => handleBlur('confirmPassword')}
-        />
+        <div className="input-inner-box">
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            onBlur={() => handleBlur('confirmPassword')}
+          />
+        </div>
       </div>
 
       <label className={`checkbox-agreement ${submitted && !formData.terms ? 'error' : ''}`}>

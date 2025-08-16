@@ -20,3 +20,8 @@
   font-size: 1.2em;
   margin-bottom: 10px;
 }
+
+.mission-statement {
+  color: #007bff; /* Bootstrap primary blue */
+  font-size: 1.3em; /* Slightly larger than default lead paragraph */
+}
