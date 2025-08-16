@@ -23,6 +23,7 @@ function RegistrationPage() {
 
         <Link to="/" className="guest-link">Continue as Guest</Link>
       </div>
+      <div className="fixed-bottom-copyright">© 2025 Onudhabon. All rights reserved.</div>
     </div>
   );
 }

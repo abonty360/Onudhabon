@@ -88,5 +88,69 @@
 }
 
 .guest-link:hover {
-  color: #0056b3;
+    color: #0056b3;
+}
+
+.fixed-bottom-copyright {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f0f2f5; /* Match page background or choose a suitable color */
+  color: #666; /* Adjust text color */
+  padding: 10px 0;
+  text-align: center;
+  z-index: 1000; /* Ensure it stays on top of other content */
+  font-size: 0.8em; /* Make it slightly smaller */
+}
+
+@media (max-width: 768px) {
+  .registration-card {
+    max-width: 90%; /* Make the card take up more width on smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .registration-page-container {
+    padding: 10px; /* Reduce overall padding */
+  }
+
+  .registration-card {
+    max-width: 100%; /* Full width on very small screens */
+    border-radius: 0; /* Remove border-radius for a full-bleed look */
+    box-shadow: none; /* Remove shadow */
+    padding: 10px; /* Adjust padding */
+  }
+
+  .logo-section {
+    padding: 20px 10px; /* Adjust padding */
+  }
+
+  .app-title {
+    font-size: 1.8em; /* Slightly smaller font */
+  }
+
+  .subtitle,
+  .mission-text {
+    font-size: 0.8em; /* Smaller text */
+  }
+
+  .tabs {
+    flex-direction: column; /* Stack tabs vertically */
+  }
+
+  .tab {
+    padding: 10px 0; /* Smaller tab padding */
+    font-size: 0.9em; /* Smaller tab font */
+  }
+
+  .guest-link {
+    padding: 10px; /* Smaller guest link padding */
+    font-size: 0.9em; /* Smaller guest link font */
+  }
+
+  .fixed-bottom-copyright {
+    font-size: 0.7em; /* Even smaller copyright text */
+    padding: 5px 0; /* Smaller copyright padding */
+  }
 }
