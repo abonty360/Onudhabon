@@ -151,7 +151,7 @@
 }
 
 .create-account-btn {
-  background-color: #007bff; /* Blue */
+  background-color: #4f46e5; /* Blue */
   color: white;
   padding: 10px 15px;
   border: none;
@@ -164,7 +164,7 @@
 }
 
 .create-account-btn:hover {
-  background-color: #0056b3; /* Dark blue for hover */
+  background-color: #4338ca;
 }
 
 .create-account-btn.disabled {
@@ -187,5 +187,3 @@
   margin-left: 15px; /* Increased space from the icon */
 }
 
-.registration-form {
-}
