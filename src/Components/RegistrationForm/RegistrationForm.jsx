@@ -87,7 +87,7 @@ const RegisterForm = () => {
     <form className="registration-form" onSubmit={handleSubmit}>
       <div className="form-header">
         <h3>Join Onudhabon</h3>
-        <p>Create your volunteer account to start making a difference</p>
+        <p className="form-mission-text">Create your volunteer account to start making a difference</p>
       </div>
 
       <div className={getInputClass('name')}>

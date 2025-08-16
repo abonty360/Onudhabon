@@ -107,56 +107,56 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: #f0f2f5; /* Match page background or choose a suitable color */
-  color: #666; /* Adjust text color */
+  background-color: #f0f2f5; 
+  color: #666; 
   padding: 10px 0;
   text-align: center;
-  z-index: 1000; /* Ensure it stays on top of other content */
-  font-size: 0.8em; /* Make it slightly smaller */
+  z-index: 1000; 
+  font-size: 0.8em; 
 }
 
 @media (max-width: 768px) {
   .login-card {
-    max-width: 90%; /* Make the card take up more width on smaller screens */
+    max-width: 90%; 
   }
 }
 
 @media (max-width: 480px) {
   .login-page-container {
-    padding: 10px; /* Reduce overall padding */
+    padding: 10px;
   }
 
   .login-card {
-    max-width: 100%; /* Full width on very small screens */
-    border-radius: 0; /* Remove border-radius for a full-bleed look */
-    box-shadow: none; /* Remove shadow */
+    max-width: 100%; 
+    border-radius: 0; 
+    box-shadow: none; 
   }
 
   .logo-section {
-    padding: 20px 10px; /* Adjust padding */
+    padding: 20px 10px; 
   }
 
   .app-title {
-    font-size: 1.8em; /* Slightly smaller font */
+    font-size: 1.8em; 
   }
 
   .subtitle,
   .mission-text {
-    font-size: 0.8em; /* Smaller text */
+    font-size: 0.8em; 
   }
 
   .tab {
-    padding: 10px 0; /* Smaller tab padding */
-    font-size: 0.9em; /* Smaller tab font */
+    padding: 10px 0; 
+    font-size: 0.9em; 
   }
 
   .guest-link {
-    padding: 10px; /* Smaller guest link padding */
-    font-size: 0.9em; /* Smaller guest link font */
+    padding: 10px; 
+    font-size: 0.9em; 
   }
 
   .fixed-bottom-copyright {
-    font-size: 0.7em; /* Even smaller copyright text */
-    padding: 5px 0; /* Smaller copyright padding */
+    font-size: 0.7em; 
+    padding: 5px 0; 
   }
 }
