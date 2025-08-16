@@ -194,3 +194,7 @@
   margin-bottom: 10px;
   padding-left: 10px; /* Align with input field */
 }
+
+.form-mission-text {
+  color: #7e8085;
+}

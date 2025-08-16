@@ -12,7 +12,7 @@ export default class NavbarComponent extends Component {
                 <Container fluid>
                     <Navbar.Brand as={Link} to="/" className="d-flex align-items-center gap-2">
                         <Image src={logo} alt="Onudhabon Logo" height="30" />
-                        Onudhabon
+
 
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="main-navbar" />
