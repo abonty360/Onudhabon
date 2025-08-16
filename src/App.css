@@ -37,9 +37,9 @@ body, html {
 }
 
 .logo-icon {
-  width: 28px;
+  width: 60px;
   height: 40px;
-  background: linear-gradient(to bottom, #3b82f6, #1e3a8a);
+  background: linear-gradient(to bottom, #ffffff, #ffffff);
   border-radius: 4px;
   margin: 0 auto 10px;
 }

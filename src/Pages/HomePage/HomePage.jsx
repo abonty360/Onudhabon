@@ -47,7 +47,7 @@ const Homepage = () => {
       <section className="py-5 mt-5 bg-primary text-white text-center">
         <Container>
           <h1 className="display-5 fw-bold">Exploring Education Through Community</h1>
-          <p className="lead">Connecting volunteers, educators, and communities all across Bangladesh to provide quality education for underprivileged children.</p>
+          <p className="lead mission-statement">Connecting volunteers, educators, and communities all across Bangladesh to provide quality education for underprivileged children.</p>
           <div className="d-flex justify-content-center gap-3 mt-3">
             <Button variant="light" as={Link} to="/login">Become a Volunteer</Button>
             <Button variant="outline-light">Donate Now</Button>
@@ -67,7 +67,7 @@ const Homepage = () => {
           </Col>
           <Col md={3} className="mb-3">
             <div className="border rounded p-4">
-              <i className="bi bi-book display-6 text-primary"></i>
+              <img src="/images/navbar_logo.png" alt="Learning Materials" style={{ width: '48px', height: '48px' }} />
               <h5 className="mt-2">2,500+</h5>
               <p className="mb-0">Learning Materials</p>
             </div>

@@ -3,18 +3,6 @@
   flex-direction: column;
   gap: 10px;
   padding: 10px;
-  animation: fadeIn 0.8s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 h3 {
@@ -32,8 +20,8 @@ h3 {
 .input-with-icon {
   display: flex;
   align-items: center;
-  background-color: #f3f4f6;
-  border: 1px solid #d1d5db;
+  background-color: #f3f4f6; /* Light gray background for the container */
+  border: 1px solid #d1d5db; /* Light gray border for the container */
   border-radius: 12px;
   padding: 10px 14px;
   transition: border-color 0.3s ease;
@@ -41,9 +29,6 @@ h3 {
 
 .input-with-icon:focus-within {
   border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
-  transform: translateY(-2px);
-  transition: all 0.2s ease-in-out;
 }
 
 .input-with-icon .icon {
@@ -53,14 +38,15 @@ h3 {
   font-size: 1rem;
 }
 
-.input-with-icon {
-  display: flex;
-  align-items: center;
-  background-color: #f3f4f6;
-  border: 1px solid #e5e7eb;  /* lighter outer border */
-  border-radius: 12px;
-  padding: 10px 14px;
-  transition: border-color 0.3s ease;
+/* Style for the actual input element inside the container */
+.input-with-icon input {
+  background-color: transparent; /* Make input background transparent */
+  border: none; /* Remove default input border */
+  outline: none; /* Remove outline on focus */
+  flex: 1; /* Allow input to take available space */
+  padding: 0; /* Remove padding as it's now on .input-inner-box */
+  font-size: 1em;
+  color: #333;
 }
 
 .login-btn {
@@ -91,4 +77,15 @@ h3 {
 
 .forgot-link:hover {
   text-decoration: underline;
+}
+
+.input-inner-box {
+  flex: 3; /* Take up more space */
+  display: flex;
+  align-items: center;
+  background-color: #fcfcfc; /* Lighter gray for inner box */
+  border: 1px solid #e9e9e9; /* Subtle border for inner box */
+  border-radius: 8px; /* Slightly smaller border-radius than outer */
+  padding: 5px 10px; /* Padding for the inner box */
+  margin-left: 4px; /* Increased space from the icon */
 }
