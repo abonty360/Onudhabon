@@ -194,6 +194,9 @@ const RegisterForm = () => {
           />
         </div>
       </div>
+      {(submitted || touched.confirmPassword) && formData.password !== formData.confirmPassword && (
+        <p className="error-message">Passwords do not match.</p>
+      )}
 
       <label className={`checkbox-agreement ${submitted && !formData.terms ? 'error' : ''}`}>
         <input
