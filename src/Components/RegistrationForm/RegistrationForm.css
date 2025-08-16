@@ -187,3 +187,10 @@
   margin-left: 15px; /* Increased space from the icon */
 }
 
+.error-message {
+  color: #dc3545; /* Red color for error messages */
+  font-size: 0.85em;
+  margin-top: -10px; /* Adjust as needed to position correctly */
+  margin-bottom: 10px;
+  padding-left: 10px; /* Align with input field */
+}

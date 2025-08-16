@@ -50,7 +50,7 @@ const RegisterForm = () => {
       email &&
       phone &&
       location &&
-      password &&
+      password && password.length >= 6 &&
       confirmPassword &&
       password === confirmPassword &&
       terms &&
@@ -76,7 +76,9 @@ const RegisterForm = () => {
   const getInputClass = (field) => {
     const error =
       submitted || touched[field]
-        ? !formData[field] || (field === 'confirmPassword' && formData.password !== formData.confirmPassword)
+        ? !formData[field] || 
+          (field === 'confirmPassword' && formData.password !== formData.confirmPassword) ||
+          (field === 'password' && formData.password.length > 0 && formData.password.length < 6)
         : false;
     return `input-with-icon ${error ? 'error' : ''}`;
   };
@@ -175,6 +177,9 @@ const RegisterForm = () => {
           />
         </div>
       </div>
+      {(submitted || touched.password) && formData.password.length > 0 && formData.password.length < 6 && (
+        <p className="error-message">Password must be at least 6 characters long.</p>
+      )}
 
       <div className={getInputClass('confirmPassword')}>
         <FaLock className="icon" />
