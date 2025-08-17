@@ -43,7 +43,6 @@ const Homepage = () => {
     <>
       <NavbarComponent/>
 
-      {/* Hero Section */}
       <section className="py-5 mt-5 bg-primary text-white text-center">
         <Container>
           <h1 className="display-5 fw-bold">Exploring Education Through Community</h1>
@@ -55,7 +54,6 @@ const Homepage = () => {
         </Container>
       </section>
 
-      {/* Stats Section */}
       <Container className="py-4">
         <Row className="text-center">
           <Col md={3} className="mb-3">
