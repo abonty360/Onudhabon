@@ -13,9 +13,9 @@ const app = express();
 
 app.use(cors());
 
-app.use(express.json);
+app.use(express.json());
 
-app.use('api/localguardian', localGuardianRoutes);
+app.use('/api/localguardian', localGuardianRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, ()=> console.log(`server running on port ${PORT}`));
