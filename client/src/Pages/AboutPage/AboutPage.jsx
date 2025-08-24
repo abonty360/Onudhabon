@@ -9,7 +9,6 @@ const About = () => {
     <>
       <NavbarComponent />
 
-      {/* About Header Section */}
       <div className="about-page text-center">
         <h1>About Onudhabon</h1>
         <p>
@@ -18,7 +17,6 @@ const About = () => {
         </p>
       </div>
 
-      {/* Mission and Vision Section */}
       <Container className="py-4">
         <Row className="g-4">
           <Col md={6}>

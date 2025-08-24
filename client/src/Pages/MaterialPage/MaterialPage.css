@@ -1,0 +1,80 @@
+.material-container {
+  width: 85%;
+  margin: auto;
+  padding: 100px 20px 50px;
+}
+
+.material-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.material-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.08);
+  transition: transform 0.2s;
+}
+
+.material-card:hover {
+  transform: scale(1.01);
+}
+
+.material-info h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.material-info p {
+  color: #555;
+  margin: 5px 0;
+}
+
+.tags span {
+  background: #f0f0f5;
+  padding: 3px 8px;
+  font-size: 12px;
+  border-radius: 5px;
+  margin-right: 5px;
+}
+
+.meta {
+  margin-top: 8px;
+  font-size: 13px;
+  color: gray;
+  display: flex;
+  gap: 15px;
+}
+
+.material-actions {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.preview-btn,
+.download-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.preview-btn {
+  background: #eee;
+  color: #333;
+}
+
+.download-btn {
+  background: #007bff;
+  color: white;
+}

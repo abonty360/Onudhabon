@@ -1,0 +1,94 @@
+.lecture-container {
+  width: 85%;
+  margin: auto;
+  overflow-y: auto;
+  padding: 100px 20px 50px;
+}
+
+.filter-box {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+  padding: 15px;
+  background: #f9f9fb;
+  border-radius: 8px;
+}
+
+.filter-box input,
+.filter-box select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  flex: 1;
+}
+
+.lecture-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.lecture-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.08);
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.lecture-card:hover {
+  transform: scale(1.02);
+}
+
+.lecture-video {
+  position: relative;
+}
+
+.lecture-video video {
+  width: 100%;
+  height: 200px;
+  border-bottom: 1px solid #eee;
+  object-fit: cover;
+}
+
+.duration {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: #000000a0;
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 6px;
+}
+
+.lecture-content {
+  padding: 15px;
+}
+
+.tags {
+  margin-bottom: 8px;
+}
+
+.grade {
+  background: #f0f0ff;
+  padding: 3px 8px;
+  font-size: 12px;
+  border-radius: 5px;
+  margin-right: 5px;
+}
+
+.subject {
+  background: #e0f7ff;
+  padding: 3px 8px;
+  font-size: 12px;
+  border-radius: 5px;
+}
+
+.meta {
+  margin-top: 8px;
+  font-size: 13px;
+  color: gray;
+  display: flex;
+  justify-content: space-between;
+}
