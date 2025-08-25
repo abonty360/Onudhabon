@@ -1,0 +1,80 @@
+.about-page {
+  padding: 2rem;
+  background-color: #f9f9f9;
+  padding-top: 80px;
+}
+
+.about-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+@media (max-width: 768px) {
+  .about-icon {
+    font-size: 2rem;
+  }
+}
+@media (max-width: 576px) {
+  .about-page {
+    padding: 1rem;
+  }
+  .about-card {
+    margin-bottom: 1rem;
+  }
+}
+.about-card {
+  padding: 1.5rem;
+  border-radius: 12px;
+
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+
+  justify-content: space-between;
+  height: 100%;
+}
+
+.about-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  font-weight: bold;
+}
+
+.team-card {
+  border: none;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.team-card:hover {
+  transform: translateY(-5px);
+}
+
+.team-card img {
+  height: 300px;
+  width: 100%;
+  object-fit: cover;
+}
+@media (max-width: 768px) {
+  .team-card img {
+    height: 220px;
+  }
+}
+.team-card .social-links {
+  margin-top: 0.75rem;
+}
+
+.team-card .social-links a {
+  margin: 0 8px;
+  font-size: 1.3rem;
+  color: #555;
+  transition: color 0.3s;
+}
+
+.team-card .social-links a:hover {
+  color: #0d6efd;
+}
