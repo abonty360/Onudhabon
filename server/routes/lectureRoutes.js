@@ -1,5 +1,4 @@
 import express from "express";
-import multer from "multer";
 import upload from "../middleware/upload.js";
 import Lecture from "../models/Lecture.js";
 import cloudinary from "../config/cloudinary.js";
