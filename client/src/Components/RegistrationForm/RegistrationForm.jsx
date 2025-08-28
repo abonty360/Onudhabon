@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import './RegistrationForm.css';
 import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaLock } from 'react-icons/fa';
 
@@ -10,6 +12,7 @@ const rolesList = [
 ];
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -35,7 +38,7 @@ const RegisterForm = () => {
   const handleRoleChange = (label) => {
     setFormData(prev => ({
       ...prev,
-      roles: [label],
+      roles: label,
     }));
   };
 
@@ -58,7 +61,7 @@ const RegisterForm = () => {
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitted(true);
 
@@ -69,8 +72,18 @@ const RegisterForm = () => {
       return;
     }
 
-    alert('Form submitted successfully!');
-    // Submit logic here
+    try {
+      const response = await axios.post('/api/localguardian/register', formData);
+      alert('Registration successful!');
+      navigate('/login');
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        alert(error.response.data.message);
+      } else {
+        alert('Registration failed. Please try again.');
+      }
+      console.error('Registration error:', error);
+    }
   };
 
   const getInputClass = (field) => {
