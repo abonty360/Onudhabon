@@ -10,7 +10,7 @@ console.log("ENV check:", {
 });
 
 import connectDb from './db/connect.js';
-import localGuardianRoutes from './routes/routes.js';
+import localGuardianRoutes from './routes/localGuardianRoutes.js';
 import lectureRoutes from './routes/lectureRoutes.js';   
 import materialRoutes from './routes/materialRoutes.js';
 
