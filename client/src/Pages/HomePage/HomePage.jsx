@@ -11,7 +11,7 @@ const demoArticles = [
     category: 'Milestone',
     date: '1/15/2025',
     title: 'Onudhabon Reaches 10,000 Students Milestone',
-    excerpt: 'We\'re proud to announce that our platform has now reached over 10,000 underprivileged children across rural South Asian communities,...',
+    excerpt: 'We\'re proud to announce that our platform has now reached over 10,000 underprivileged children across rural South Asian communities,ுகளை',
     content: 'We\'re proud to announce that our platform has now reached over 10,000 underprivileged children across rural South Asian communities. This milestone highlights the impact of collaborative education programs and grassroots volunteerism.',
     image: '/images/article1.jpg'
   },
@@ -36,19 +36,23 @@ const demoArticles = [
 ];
 
 
-const Homepage = () => {
+const Homepage = ({ isLoggedIn, handleLogout }) => {
   const [selectedArticle, setSelectedArticle] = useState(null);
 
   return (
     <>
-      <NavbarComponent/>
+      <NavbarComponent isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
 
       <section className="py-5 mt-5 bg-primary text-white text-center">
         <Container>
           <h1 className="display-5 fw-bold">Exploring Education Through Community</h1>
           <p className="lead mission-statement">Connecting volunteers, educators, and communities all across Bangladesh to provide quality education for underprivileged children.</p>
           <div className="d-flex justify-content-center gap-3 mt-3">
-            <Button variant="light" as={Link} to="/login">Become a Volunteer</Button>
+            {isLoggedIn ? (
+              <Button variant="light" onClick={handleLogout}>Logout</Button>
+            ) : (
+              <Button variant="light" as={Link} to="/login">Become a Volunteer</Button>
+            )}
             <Button variant="outline-light">Donate Now</Button>
           </div>
         </Container>
@@ -125,3 +129,4 @@ const Homepage = () => {
   );
 };
 export default Homepage;
+

@@ -4,7 +4,7 @@ import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import "./LecturePage.css";
 
-function LecturePage() {
+function LecturePage({ isLoggedIn, handleLogout }) {
   const [lectures, setLectures] = useState([]);
   const [filteredLectures, setFilteredLectures] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -77,7 +77,7 @@ function LecturePage() {
 
   return (
     <>
-      <NavbarComponent />
+      <NavbarComponent isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
       <div className="lecture-container">
         <h1>Video Lectures</h1>
         <p>
