@@ -36,7 +36,7 @@ function App() {
       <Route path="/material" element={<MaterialPage isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} />
       <Route path="/material/upload" element={<UploadMaterial />} />
       <Route path="/profile" element={<ProfilePage isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} />
-      <Route path="/about" element={<AboutPage />} />
+      <Route path="/about" element={<AboutPage isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} />
     </Routes>
   );
 }
