@@ -13,6 +13,12 @@ export const register = async (req, res) => {
     try {
         const { name, email, phone, location, password, roles } = req.body;
 
+        // Validate roles
+        const allowedRoles = ["Local Guardian", "Educator"];
+        if (!roles || !allowedRoles.includes(roles)) {
+            return res.status(400).json({ message: "Invalid role specified" });
+        }
+
         // a new local guardian
         const localguardian = new Localguardian({ 
             name, 
