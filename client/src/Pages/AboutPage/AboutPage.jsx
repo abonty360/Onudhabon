@@ -11,10 +11,10 @@ import { FaBook } from "react-icons/fa6";
 import { FaHandHoldingHeart } from "react-icons/fa";
 import { FaFacebook, FaGithub } from "react-icons/fa";
 
-const About = () => {
+const About = ({ isLoggedIn, handleLogout }) => {
   return (
     <>
-      <NavbarComponent />
+      <NavbarComponent isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
 
       {}
       <div className="about-page text-center">
