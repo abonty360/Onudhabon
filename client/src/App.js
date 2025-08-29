@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './Pages/LoginPage/LoginPage';
 import RegistrationPage from './Pages/RegistrationPage/RegistrationPage';
@@ -14,19 +15,28 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
   
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/home" />} />
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/login" element={<LoginPage handleLogin={handleLogin} />} />
       <Route path="/register" element={<RegistrationPage />} />
-      <Route path="/home" element={<HomePage />} />
-      <Route path="/lecture" element={<LecturePage />} />
+      <Route path="/home" element={<HomePage isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} />
+      <Route path="/lecture" element={<LecturePage isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} />
       <Route path="/lecture/upload" element={<UploadLecture />} />
-      <Route path="/material" element={<MaterialPage />} />
+      <Route path="/material" element={<MaterialPage isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} />
       <Route path="/material/upload" element={<UploadMaterial />} />
-      <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/about" element={<AboutPage />} />
+      <Route path="/profile" element={<ProfilePage isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} />
+      <Route path="/about" element={<AboutPage isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} />
     </Routes>
   );
 }

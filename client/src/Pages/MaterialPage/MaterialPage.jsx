@@ -4,7 +4,7 @@ import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import "./MaterialPage.css";
 
-function MaterialPage() {
+function MaterialPage({ isLoggedIn, handleLogout }) {
   const [materials, setMaterials] = useState([]);
   const [filteredMaterials, setFilteredMaterials] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -76,7 +76,7 @@ function MaterialPage() {
   }, [selectedSubject]);
   return (
     <>
-      <NavbarComponent />
+      <NavbarComponent isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
       <div className="material-container">
         <h1>Study Materials</h1>
         <p>
