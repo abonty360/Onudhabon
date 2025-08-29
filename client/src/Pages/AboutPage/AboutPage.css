@@ -1,7 +1,30 @@
 .about-page {
-  padding: 2rem;
-  background-color: #f9f9f9;
-  padding-top: 80px;
+  padding: 100px 1rem 10px;
+  background-color: #f7fafd;
+  text-align: center;
+}
+
+.about-page .container {
+  max-width: 1140px;       
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.about-page h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.about-page p {
+  max-width: 800px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+  color: #555;
+   margin-bottom: 0;
+}
+
+.about-page + .container {
+  padding-top: 2rem !important; /* instead of Bootstrap py-5 (3rem) */
 }
 
 .about-icon {
