@@ -11,7 +11,7 @@
 }
 
 .logo-container {
-  background-color: #e0f2f7; /* Light blue background */
+  background-color: #e0f2f7; 
   padding: 20px;
   border-radius: 10px;
   margin-bottom: 20px;
@@ -29,13 +29,16 @@
 
 .volunteer-roles {
   display: grid; /* Use grid for better layout control */
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive columns */
+  grid-template-columns: repeat(2, 1fr); /* Two columns */
+  justify-items: center; /* Center items in their cells */
   gap: 25px; /* Space between cards */
   margin-top: 15px;
   padding: 10px;
   border: 1px solid #eee; /* Light border for the container */
   border-radius: 8px;
   background-color: #fdfdfd; /* Very light background for the container */
+  max-width: 600px; /* Constrain width */
+  margin: 0 auto; /* Center the container */
 }
 
 .role-card {
