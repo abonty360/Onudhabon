@@ -1,15 +1,16 @@
 import mongoose from "mongoose";
 
 const lectureSchema = new mongoose.Schema({
-  title: { type: String, required: true, trim: true },
-  description: { type: String, required: true, trim: true },
-  instructor: { type: String, required: true, trim: true },
-  version: { type: String, required: true, enum: ["Bangla", "English"] },
-  classLevel: { type: Number, required: true }, 
-  subject: { type: String, required: true },
-  topic: { type: String, required: true },
-  thumbnail: { type: String },
-  videoUrl: { type: String, required: true },
+  title: String,
+  description: String,
+  subject: String,
+  topic: String,
+  classLevel: String,
+  instructor: String,
+  thumbnail: String,
+  videoUrl: String,
+  duration: Number,
+  views: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now }
 });
 
