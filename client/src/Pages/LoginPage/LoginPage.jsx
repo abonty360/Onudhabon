@@ -3,7 +3,7 @@ import LoginForm from '../../Components/LoginForm/LoginForm';
 import { Link } from 'react-router-dom';
 import './LoginPage.css';
 
-function LoginPage() {
+function LoginPage({ handleLogin }) {
   return (
     <div className="login-page-container">
       <div className="login-card">
@@ -19,7 +19,7 @@ function LoginPage() {
           <Link to="/register" className="tab">Register</Link>
         </div>
 
-        <LoginForm />
+        <LoginForm handleLogin={handleLogin} />
 
         <Link to="/" className="guest-link">Continue as Guest</Link>
       </div>
