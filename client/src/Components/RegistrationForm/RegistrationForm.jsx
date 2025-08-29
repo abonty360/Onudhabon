@@ -6,9 +6,7 @@ import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaLock } from 'react-icons
 
 const rolesList = [
   { label: 'Local Guardian', desc: 'Register and track students in your community' },
-  { label: 'Lecturer', desc: 'Create and deliver educational content' },
-  { label: 'Material Provider', desc: 'Contribute educational resources and materials' },
-  { label: 'Evaluator', desc: 'Assess and evaluate student progress' },
+  { label: 'Educator', desc: 'Create and deliver educational content' },
 ];
 
 const RegisterForm = () => {
