@@ -11,10 +11,10 @@ import { FaBook } from "react-icons/fa6";
 import { FaHandHoldingHeart } from "react-icons/fa";
 import { FaFacebook, FaGithub } from "react-icons/fa";
 
-const About = () => {
+const About = ({ isLoggedIn, handleLogout }) => {
   return (
     <>
-      <NavbarComponent />
+      <NavbarComponent isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
 
       {}
       <div className="about-page text-center">
@@ -77,31 +77,19 @@ const About = () => {
               </p>
             </Card>
           </Col>
-          <Col md={3} sm={6}>
+          <Col md={4} sm={6}>
             <Card className="about-card">
               <div className="about-icon">
                 <GiTeacher size={40} color="#007bff" />
               </div>
-              <h5>Educators & Lecturers</h5>
+              <h5>Educators</h5>
               <p>
                 Create and deliver educational content through online lectures
                 and materials.
               </p>
             </Card>
           </Col>
-          <Col md={3} sm={6}>
-            <Card className="about-card">
-              <div className="about-icon">
-                <FaBook size={40} color="#007bff" />
-              </div>
-              <h5>Material Providers</h5>
-              <p>
-                Contribute educational resources, worksheets, and study
-                materials.
-              </p>
-            </Card>
-          </Col>
-          <Col md={3} sm={6}>
+          <Col md={4} sm={6}>
             <Card className="about-card">
               <div className="about-icon">
                 <FaHandHoldingHeart size={40} color="#007bff" />
