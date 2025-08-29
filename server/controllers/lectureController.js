@@ -2,45 +2,20 @@ import Lecture from "../models/Lecture.js";
 
 export const newLecture = async (req, res) => {
   try {
-    const { title, description, instructor, version, classLevel, subject, topic} = req.body;
+    const { title, description, subject, classLevel, instructor } = req.body;
 
     const lecture = new Lecture({
       title,
       description,
-      instructor,
-      version,
-      classLevel,
       subject,
-      topic,
+      classLevel,
+      instructor,
       videoUrl: req.file.path,  
       thumbnail: req.file?.thumbnail_url || null,
     });
 
     await lecture.save();
     res.status(201).json(lecture);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-export const getLectures = async (req, res) => {
-  try {
-    const lectures = await Lecture.find();
-    res.json(lectures);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-export const getTopicsBySubject = async (req, res) => {
-  try {
-    const { subject } = req.params;
-    if (!subject) {
-      return res.status(400).json({ error: "Subject is required" });
-    }
-
-    const topics = await Lecture.distinct("topic", { subject });
-    res.json(topics);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
