@@ -4,19 +4,20 @@ import axios from 'axios';
 import './LoginForm.css';
 import { FaEnvelope, FaLock } from 'react-icons/fa';
 
-function LoginForm() {
+function LoginForm({ handleLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError(''); // Clear previous errors
 
     try {
       const response = await axios.post('/api/localguardian/login', { email, password });
       if (response.status === 200) {
+        handleLogin();
         navigate('/home');
       } else {
         setError('Login failed. Please check your credentials.');
@@ -28,7 +29,7 @@ function LoginForm() {
   };
 
   return (
-    <form className="login-form" onSubmit={handleLogin}>
+    <form className="login-form" onSubmit={handleSubmit}>
       <h3>Welcome Back</h3>
       <p className="form-subtext">Sign in to continue your volunteer journey</p>
 
