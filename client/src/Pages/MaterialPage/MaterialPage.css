@@ -48,7 +48,8 @@
   font-size: 13px;
   color: gray;
   display: flex;
-  gap: 15px;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .material-actions {
