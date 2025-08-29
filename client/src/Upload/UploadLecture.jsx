@@ -6,8 +6,10 @@ function UploadLecture() {
     title: "",
     description: "",
     subject: "",
+    topic: "",
     classLevel: "",
     instructor: "",
+    version: "",
   });
   const [video, setVideo] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -50,8 +52,10 @@ function UploadLecture() {
         <input name="title" placeholder="Title" onChange={handleChange} required />
         <input name="description" placeholder="Description" onChange={handleChange} required />
         <input name="subject" placeholder="Subject" onChange={handleChange} />
+        <input name="topic" placeholder="Topic" onChange={handleChange} />
         <input name="classLevel" placeholder="Class Level" onChange={handleChange} />
         <input name="instructor" placeholder="Instructor" onChange={handleChange} />
+        <input name="version" placeholder="Version" onChange={handleChange} />
         <br /><br />
         <input type="file" accept="video/*" onChange={handleFileChange} required />
         <br /><br />
