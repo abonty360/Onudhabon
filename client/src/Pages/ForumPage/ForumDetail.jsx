@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { Container, Card, ListGroup } from "react-bootstrap";
-import ReplyBox from "../../Components/ReplyBox";
+import ReplyBox from "../../Components/ForumCopm/ReplyBox";
 
 const ForumDetail = () => {
   const { id } = useParams();
