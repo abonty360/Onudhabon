@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import ForumCard from "../../Components/ForumCopm/ForumCard";
+import ForumCard from "../../Components/ForumComp/ForumCard";
 import { Button, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
