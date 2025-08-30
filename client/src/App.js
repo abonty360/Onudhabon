@@ -9,6 +9,12 @@ import MaterialPage from './Pages/MaterialPage/MaterialPage';
 import ProfilePage from './Pages/ProfilePage/ProfilePage';
 import UploadLecture from './Upload/UploadLecture';
 import UploadMaterial from './Upload/UploadMaterial';
+
+import ForumList from './Pages/ForumList.jsx';
+import ForumDetail from './Pages/ForumDetail.jsx';
+import NewPostForm from './Pages/NewPostForm.jsx';
+
+
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -24,7 +30,7 @@ function App() {
   const handleLogout = () => {
     setIsLoggedIn(false);
   };
-  
+
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/home" />} />
@@ -37,6 +43,14 @@ function App() {
       <Route path="/material/upload" element={<UploadMaterial />} />
       <Route path="/profile" element={<ProfilePage isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} />
       <Route path="/about" element={<AboutPage isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} />
+
+
+      <Route path="/forum" element={<ForumList />} />
+      <Route path="/forum/new" element={<NewPostForm />} />
+      <Route path="/forum/:id" element={<ForumDetail />} />
+
+
+
     </Routes>
   );
 }
