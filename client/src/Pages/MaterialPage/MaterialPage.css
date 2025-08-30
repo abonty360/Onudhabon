@@ -4,6 +4,48 @@
   padding: 100px 20px 50px;
 }
 
+.filter-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin: 1rem 0;
+  padding: 15px;
+  background: #f9f9fb;
+  border-radius: 8px;
+}
+
+.filter-item {
+  flex: 1 1 200px;
+  max-width: 250px;
+  display: flex;
+  flex-direction: column;
+  min-width: 150px;
+}
+
+.filter-item label {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.filter-box input,
+.filter-box select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.filter-box select {
+  padding-right: 40px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: #fff url("data:image/svg+xml;utf8,<svg fill='navy' height='32' viewBox='0 0 24 24' width='32' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 10px center;
+  background-size: 20px;
+}
+
 .material-list {
   display: flex;
   flex-direction: column;
@@ -17,7 +59,7 @@
   background: #fff;
   border-radius: 10px;
   padding: 20px;
-  box-shadow: 0px 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s;
 }
 

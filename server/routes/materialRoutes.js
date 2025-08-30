@@ -1,4 +1,6 @@
 import express from "express";
+import { auth } from "../middleware/auth.js";
+import checkRole from "../middleware/checkRole.js";
 import upload from "../middleware/upload.js";
 import Material from "../models/Material.js";
 
@@ -28,7 +30,7 @@ router.get("/topics/:subject", async (req, res) => {
   }
 });
 
-router.post("/", upload.single("file"), async (req, res) => {
+router.post("/", auth, checkRole("Educator"), upload.single("file"), async (req, res) => {
   try {
     const {title, description, instructor, version, classLevel, subject, topic } = req.body;
 
@@ -39,7 +41,7 @@ router.post("/", upload.single("file"), async (req, res) => {
     const newMaterial = new Material({
       title,
       description,
-      instructor,
+      instructor: req.user.name,
       version,
       classLevel,
       subject,

@@ -8,7 +8,7 @@ import cloudinary from "../config/cloudinary.js";
 const router = express.Router();
 
 
-router.post("/", auth, checkRole("educator"), upload.single("video"), async (req, res) => {
+router.post("/", auth, checkRole("Educator"), upload.single("video"), async (req, res) => {
   try {
     const { title, description, instructor, version, classLevel, subject, topic } = req.body;
 
