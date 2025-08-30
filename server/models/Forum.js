@@ -14,6 +14,26 @@ const forumSchema = new mongoose.Schema({
             type: String,
         },
     ],
+    author: { // Add an author field
+        type: String,
+        default: "Anonymous"
+    },
+    replies: [ // Add a replies array
+        {
+            author: {
+                type: String,
+                default: "User"
+            },
+            text: {
+                type: String,
+                required: true
+            },
+            createdAt: {
+                type: Date,
+                default: Date.now
+            }
+        }
+    ],
     createdAt: {
         type: Date,
         default: Date.now,

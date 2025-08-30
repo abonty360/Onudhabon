@@ -9,7 +9,7 @@ const ReplyBox = ({ postId, onReplyAdded }) => {
     e.preventDefault();
     if (!text.trim()) return;
 
-    await axios.post(`http://localhost:5000/api/forum/${postId}/reply`, {
+    await axios.post(`http://localhost:5000/api/forum/${postId}/replies`, {
       text,
     });
     setText("");
