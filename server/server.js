@@ -9,7 +9,7 @@ console.log("ENV check:", {
 });
 
 import connectDb from './db/connect.js';
-import localGuardianRoutes from './routes/localGuardianRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import lectureRoutes from './routes/lectureRoutes.js';   
 import materialRoutes from './routes/materialRoutes.js';
 import forumRoutes from "./routes/forumRoutes.js";
@@ -20,9 +20,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/localguardian', localGuardianRoutes);
+app.use('/api/user', userRoutes);
 app.use('/api/lectures', lectureRoutes);    
-app.use('/api/materials', materialRoutes);
+app.use('/api/materials', materialRoutes); 
 app.use("/api/forum", forumRoutes); 
 
 const PORT = process.env.PORT || 5000;

@@ -7,7 +7,7 @@ import './Navbarcomp.css';
 
 export default class NavbarComponent extends Component {
     render() {
-        const { isLoggedIn, handleLogout } = this.props;
+        const { isLoggedIn, handleLogout} = this.props;
         return (
             <Navbar bg="white" expand="lg" fixed="top" className="shadow-sm custom-navbar">
                 <Container fluid>
@@ -33,13 +33,16 @@ export default class NavbarComponent extends Component {
                                 aria-label="Search"
                             />
                             {isLoggedIn ? (
-                                <Button
-                                    variant="primary"
-                                    onClick={handleLogout}
-                                    className="custom-login-btn"
-                                >
-                                    <i className="bi bi-box-arrow-in-right me-1"></i> Logout
-                                </Button>
+                                <>
+                                    <span>Welcome, User</span>
+                                    <Button
+                                        variant="primary"
+                                        onClick={handleLogout}
+                                        className="custom-login-btn"
+                                    >
+                                        <i className="bi bi-box-arrow-in-right me-1"></i> Logout
+                                    </Button>
+                                </>
                             ) : (
                                 <Button
                                     variant="primary"

@@ -44,15 +44,15 @@ const Homepage = ({ isLoggedIn, handleLogout }) => {
       <NavbarComponent isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
       <div className="home-page">
         {!isLoggedIn && (
-          <section className="py-5 mt-5 bg-primary text-white text-center">
-            <Container>
+          <section className="hero-section py-5 bg-primary text-white text-center">
+            <div className="p-0">
               <h1 className="display-5 fw-bold">Exploring Education Through Community</h1>
               <p className="lead mission-statement">Connecting volunteers, educators, and communities all across Bangladesh to provide quality education for underprivileged children.</p>
               <div className="d-flex justify-content-center gap-3 mt-3">
                 <Button variant="light" as={Link} to="/login">Become a Volunteer</Button>
                 <Button variant="outline-light">Donate Now</Button>
               </div>
-            </Container>
+            </div>
           </section>
         )}
 

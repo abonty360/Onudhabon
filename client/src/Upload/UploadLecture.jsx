@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; 
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import "./UploadLecture.css"
 
 function UploadLecture() {
   const [formData, setFormData] = useState({
@@ -8,12 +11,20 @@ function UploadLecture() {
     subject: "",
     topic: "",
     classLevel: "",
-    instructor: "",
     version: "",
   });
   const [video, setVideo] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decoded = jwtDecode(token);
+      setUser({ name: decoded.name });
+    }
+  }, []);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -27,42 +38,123 @@ function UploadLecture() {
     if (!video) return alert("Please select a video!");
 
     const data = new FormData();
-    Object.keys(formData).forEach((key) => data.append(key, formData[key]));
+    Object.keys(formData).forEach((key) => {
+      if (formData[key]) {
+        data.append(key, formData[key]);
+      }
+    });
     data.append("video", video);
 
     try {
       setUploading(true);
       const res = await axios.post("http://localhost:5000/api/lectures", data, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
       });
       alert("Lecture uploaded successfully!");
-      console.log(res.data);
+      navigate("/lecture"); 
+      console.log("Upload response:", res.data);
+      setFormData({
+        title: "",
+        description: "",
+        subject: "",
+        topic: "",
+        classLevel: "",
+        version: "",
+      });
+      setVideo(null);
     } catch (err) {
-      console.error(err);
-      alert("Error uploading lecture");
+      console.error("Upload error:", err.response?.data || err.message);
+      alert(err.response?.data?.error || "Error uploading lecture");
     } finally {
       setUploading(false);
     }
   };
 
   return (
-    <div style={{ maxWidth: 600, margin: "auto", padding: 20 }}>
-      <h2>Upload Lecture (Video)</h2>
-      <form onSubmit={handleSubmit}>
-        <input name="title" placeholder="Title" onChange={handleChange} required />
-        <input name="description" placeholder="Description" onChange={handleChange} required />
-        <input name="subject" placeholder="Subject" onChange={handleChange} />
-        <input name="topic" placeholder="Topic" onChange={handleChange} />
-        <input name="classLevel" placeholder="Class Level" onChange={handleChange} />
-        <input name="instructor" placeholder="Instructor" onChange={handleChange} />
-        <input name="version" placeholder="Version" onChange={handleChange} />
-        <br /><br />
-        <input type="file" accept="video/*" onChange={handleFileChange} required />
-        <br /><br />
-        <button type="submit" disabled={uploading}>
-          {uploading ? "Uploading..." : "Upload Lecture"}
-        </button>
-      </form>
+    <div className="upload-page">
+      <div className="upload-container">
+        <h2>Upload Lecture (Video)</h2>
+        <form onSubmit={handleSubmit} className="upload-form">
+          <div className="input-card">
+            <label>Title</label>
+            <input name="title" placeholder="Enter title" onChange={handleChange} required />
+          </div>
+          <div className="input-card">
+            <label>Description</label>
+            <input name="description" placeholder="Enter description" onChange={handleChange} required />
+          </div>
+          <div className="input-card">
+            <label>Subject</label>
+            <select
+              name="subject"
+              value={formData.subject}
+              onChange={handleChange}
+            >
+              <option value="">Select Subject</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Physics">Physics</option>
+              <option value="Chemistry">Chemistry</option>
+              <option value="Biology">Biology</option>
+              <option value="History">History</option>
+              <option value="Statistics">Statistics</option>
+              <option value="English">English</option>
+              <option value="Bangla">Bangla</option>
+            </select>
+          </div>
+          <div className="input-card">
+            <label>Topic</label>
+            <input name="topic" placeholder="Enter topic" onChange={handleChange} />
+          </div>
+          <div className="input-card">
+            <label>Class Level</label>
+            <select
+              name="classLevel"
+              value={formData.classLevel}
+              onChange={handleChange}
+            >
+              <option value="">Select Class</option>
+              {Array.from({ length: 12 }, (_, i) => (
+                <option key={i} value={i + 1}>
+                  Grade {i + 1}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="input-card">
+            <label>Instructor</label>
+            <input
+              type="text"
+              value={user ? user.name : "Loading..."}
+              readOnly
+              className="readonly-input"
+            />
+          </div>
+          <div className="input-card">
+            <label>Version</label>
+            <select
+              name="version"
+              value={formData.version}
+              onChange={handleChange}
+            >
+              <option value="">Select Version</option>
+              <option value="Bangla">Bangla</option>
+              <option value="English">English</option>
+            </select>
+          </div>
+
+          <div className="input-card">
+            <label>Video File</label>
+            <input type="file" accept="video/*" onChange={handleFileChange} className="file-input" required />
+          </div>
+
+          <button type="submit" className="upload-btn" disabled={uploading}>
+            {uploading ? "Uploading..." : "Upload Lecture"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

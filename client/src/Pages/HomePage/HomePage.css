@@ -1,16 +1,23 @@
 .home-page {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding-top: 80px;
   background-color: #fbfdff;
   color: #333;
-  text-align: center;
-  padding: 20px;
-  padding-top: 80px;
 }
-
+.hero-section {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.hero-inner {
+  max-width: 1200px;     
+  margin: 0 auto;
+  padding-left: 1.5rem;     
+  padding-right: 1.5rem;
+}
 .home-page h1 {
   font-size: 2.5em;
   color: #ffffff;

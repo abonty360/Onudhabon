@@ -71,7 +71,7 @@ const RegisterForm = () => {
     }
 
     try {
-      const response = await axios.post('/api/localguardian/register', formData);
+      const response = await axios.post('/api/user/register', formData);
       alert('Registration successful!');
       navigate('/login');
     } catch (error) {
