@@ -10,9 +10,9 @@ import ProfilePage from './Pages/ProfilePage/ProfilePage';
 import UploadLecture from './Upload/UploadLecture';
 import UploadMaterial from './Upload/UploadMaterial';
 
-import ForumList from './Pages/ForumList.jsx';
-import ForumDetail from './Pages/ForumDetail.jsx';
-import NewPostForm from './Pages/NewPostForm.jsx';
+import ForumList from './Pages/ForumPage/ForumList.jsx';
+import ForumDetail from './Pages/ForumPage/ForumDetail.jsx';
+import NewPostForm from './Pages/ForumPage/NewPostForm.jsx';
 
 
 import './App.css';

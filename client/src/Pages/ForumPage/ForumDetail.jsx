@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { Container, Card, ListGroup } from "react-bootstrap";
-import ReplyBox from "../Components/ReplyBox";
+import ReplyBox from "../../Components/ReplyBox";
 
 const ForumDetail = () => {
   const { id } = useParams();
   const [post, setPost] = useState(null);
 
-  const fetchPost = () => {
+  const fetchPost = useCallback(() => {
     axios
       .get(`http://localhost:5000/api/forum/${id}`)
       .then((res) => setPost(res.data))
       .catch((err) => console.error(err));
-  };
+  }, [id]);
 
   useEffect(() => {
     fetchPost();
-  }, [id]);
+  }, [fetchPost]);
 
   if (!post) return <p>Loading...</p>;
 
