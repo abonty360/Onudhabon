@@ -23,6 +23,7 @@ export default class NavbarComponent extends Component {
                             <Nav.Link as={Link} to="/lecture">Lectures</Nav.Link>
                             <Nav.Link as={Link} to="/material">Materials</Nav.Link>
                             <Nav.Link as={Link} to="/about">About</Nav.Link>
+                            <Nav.Link as={Link} to="/forum">Forum</Nav.Link>
                         </Nav>
                         <Form className="d-flex align-items-center gap-2">
                             <Form.Control

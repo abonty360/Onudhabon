@@ -12,6 +12,7 @@ import connectDb from './db/connect.js';
 import localGuardianRoutes from './routes/localGuardianRoutes.js';
 import lectureRoutes from './routes/lectureRoutes.js';   
 import materialRoutes from './routes/materialRoutes.js';
+import forumRoutes from "./routes/forumRoutes.js";
 
 connectDb();
 
@@ -21,7 +22,8 @@ app.use(express.json());
 
 app.use('/api/localguardian', localGuardianRoutes);
 app.use('/api/lectures', lectureRoutes);    
-app.use('/api/materials', materialRoutes); 
+app.use('/api/materials', materialRoutes);
+app.use("/api/forum", forumRoutes); 
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, ()=> console.log(`server running on port ${PORT}`));
