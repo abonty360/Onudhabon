@@ -1,10 +1,10 @@
 import express from "express"
-import { getLocalGuardian, newLocalGuardian } from "../controllers/localGuardianController.js";
+import { getUser, newUser } from "../controllers/userController.js";
 
-const localGuardianRoutes = express.Router();
+const userRoutes = express.Router();
 
-localGuardianRoutes.get('/', getLocalGuardian);
+userRoutes.get('/', getUser);
 
-localGuardianRoutes.post('/', newLocalGuardian);
+userRoutes.post('/', newUser);
 
-export default localGuardianRoutes;
+export default userRoutes;

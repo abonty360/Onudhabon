@@ -1,4 +1,6 @@
 import express from "express";
+import { auth } from "../middleware/auth.js";
+import checkRole from "../middleware/checkRole.js";
 import upload from "../middleware/upload.js";
 import Lecture from "../models/Lecture.js";
 import cloudinary from "../config/cloudinary.js";
@@ -6,7 +8,7 @@ import cloudinary from "../config/cloudinary.js";
 const router = express.Router();
 
 
-router.post("/", upload.single("video"), async (req, res) => {
+router.post("/", auth, checkRole("educator"), upload.single("video"), async (req, res) => {
   try {
     const { title, description, instructor, version, classLevel, subject, topic } = req.body;
 
@@ -22,12 +24,12 @@ router.post("/", upload.single("video"), async (req, res) => {
     const newLecture = new Lecture({
       title,
       description,
-      instructor,
+      instructor: req.user.name,
       version,
       classLevel,
       subject,
       topic,
-      videoUrl: req.file.path || req.file.url,  
+      videoUrl: uploadResult.secure_url,  
       thumbnail: uploadResult.eager[0].secure_url,
     });
 

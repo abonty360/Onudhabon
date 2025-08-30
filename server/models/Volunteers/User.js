@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const localguardianschema= new mongoose.Schema(
+const userSchema= new mongoose.Schema(
     {
         name : {type: String, required : true},
         email : {type: String, required : true, unique : true},
@@ -12,6 +12,6 @@ const localguardianschema= new mongoose.Schema(
     }
 );
 
-const Localguardian = mongoose.model('Localguardian', localguardianschema);
+const User = mongoose.model('User', userSchema);
 
-export default Localguardian;
+export default User;

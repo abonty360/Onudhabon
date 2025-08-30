@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 import { Link } from "react-router-dom";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import "./LecturePage.css";
+import UploadLecture from "../../Upload/UploadLecture";
 
 function LecturePage({ isLoggedIn, handleLogout }) {
   const [lectures, setLectures] = useState([]);
@@ -13,6 +15,7 @@ function LecturePage({ isLoggedIn, handleLogout }) {
   const [selectedTopic, setSelectedTopic] = useState("All Topics");
   const [selectedVersion, setSelectedVersion] = useState("Both Versions");
   const [topics, setTopics] = useState([]);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:5000/api/lectures")
@@ -23,6 +26,16 @@ function LecturePage({ isLoggedIn, handleLogout }) {
       })
       .catch((err) => console.error("GET lectures error:", err));
   }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decoded = jwtDecode(token); 
+        setUser(decoded);
+      }
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     let filtered = lectures;
@@ -85,11 +98,11 @@ function LecturePage({ isLoggedIn, handleLogout }) {
           educators. All content is free and available for everyone.
         </p>
 
-        <div className="upload-btn-box">
-          <Link to="/lecture/upload" className="btn btn-primary">
-            <i className="bi bi-upload"></i> Upload New Lecture
-          </Link>
-        </div>
+        {isLoggedIn && user?.roles === "Educator" ? (
+          <UploadLecture />
+        ) : (
+          <p>Only educators can upload lectures.</p>
+        )}
 
         <div className="filter-box">
           <input type="text"

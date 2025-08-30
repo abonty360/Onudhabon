@@ -33,7 +33,9 @@ function UploadLecture() {
     try {
       setUploading(true);
       const res = await axios.post("http://localhost:5000/api/lectures", data, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { "Content-Type": "multipart/form-data" ,
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
       });
       alert("Lecture uploaded successfully!");
       console.log(res.data);
