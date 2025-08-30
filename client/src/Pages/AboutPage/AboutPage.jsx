@@ -29,9 +29,9 @@ const About = ({ isLoggedIn, handleLogout }) => {
       </div>
       <div className="about-page">
         <Container className="py-0 pb-5">
-          <Row className="g-4">
+          <Row className="g-4 align-items-stretch">
             <Col md={6}>
-              <Card className="about-card text-center">
+              <Card className="about-card text-center h-100">
                 <div className="about-icon">
                   <GoGoal size={40} color="#007bff" />
                 </div>

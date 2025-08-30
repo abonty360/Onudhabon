@@ -66,8 +66,7 @@ function App() {
       <Route path="/material/upload" element={<UploadMaterial />} />
       <Route path="/profile" element={<ProfilePage isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} />
       <Route path="/about" element={<AboutPage isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} />
-
-      <Route path="/forum" element={<ForumList />} />
+      <Route path="/forum" element={<ForumList isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} />
       <Route path="/forum/new" element={<NewPostForm />} />
       <Route path="/forum/:id" element={<ForumDetail />} />
     </Routes>

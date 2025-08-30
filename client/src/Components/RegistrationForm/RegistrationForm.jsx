@@ -157,7 +157,7 @@ const RegisterForm = () => {
         </div>
       </div>
 
-      <p>Volunteer Roles (Select all that apply)</p>
+      <p>Volunteer Roles (Select One)</p>
       <div className={`volunteer-roles ${submitted && formData.roles.length === 0 ? 'error' : ''}`}>
         {rolesList.map((role, i) => (
           <label className="role-card" key={i}>
