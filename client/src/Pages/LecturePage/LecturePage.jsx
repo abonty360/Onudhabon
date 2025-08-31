@@ -91,7 +91,7 @@ function LecturePage({ isLoggedIn, handleLogout }) {
 
   return (
     <>
-      <NavbarComponent isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+      <NavbarComponent isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />
       <LectureHero/>
       <div className="lecture-container">
         <h1>Video Lectures</h1>

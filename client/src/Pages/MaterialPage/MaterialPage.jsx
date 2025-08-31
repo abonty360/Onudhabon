@@ -90,7 +90,7 @@ function MaterialPage({ isLoggedIn, handleLogout }) {
   }, [selectedSubject]);
   return (
     <>
-      <NavbarComponent isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+      <NavbarComponent isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />
       <MaterialHero/>
       <div className="material-container">
         <h1>Study Materials</h1>

@@ -1,6 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component} from 'react'
 import { Navbar, Nav, Container, Form, Button, Image } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { PersonCircle } from 'react-bootstrap-icons';
+import { NavLink } from 'react-router-dom';
 import logo from '../../assets/navbar_logo.png'
 import topBarLogo from '../../assets/hero-section-logo.png'
 import './Navbarcomp.css';
@@ -28,34 +29,36 @@ export default class NavbarComponent extends Component {
         }
     };
     render() {
-        const { isLoggedIn, handleLogout } = this.props;
+        const { isLoggedIn, handleLogout, user } = this.props;
         const { scrolled } = this.state;
+        const getNavLinkClass = ({ isActive }) =>
+            isActive ? 'nav-link active-link' : 'nav-link';
         return (
             <header className={`site-header fixed-top ${scrolled ? 'scrolled' : ''}`}>
                 <Navbar expand="md" className="top-bar navbar-dark">
                     <Container fluid>
-                        <Navbar.Brand as={Link} to="/" className="d-flex align-items-center gap-2 m-0">
+                        <Navbar.Brand as={NavLink} to="/" className="d-flex align-items-center gap-2 m-0">
                             <Image src={topBarLogo} alt="Onudhabon Logo" height="60" />
                         </Navbar.Brand>
                         <Navbar.Toggle aria-controls="topbar-nav" className="border-0" />
                         <Navbar.Collapse id="topbar-nav">
                             <Nav className="me-auto mx-4">
-                                <Nav.Link as={Link} to="/home">Home</Nav.Link>
-                                <Nav.Link as={Link} to="/lecture">Lectures</Nav.Link>
-                                <Nav.Link as={Link} to="/material">Materials</Nav.Link>
-                                <Nav.Link as={Link} to="/about">About</Nav.Link>
-                                <Nav.Link as={Link} to="/forum">Forum</Nav.Link>
+                                <Nav.Link as={NavLink} to="/home" className={getNavLinkClass}>Home</Nav.Link>
+                                <Nav.Link as={NavLink} to="/lecture" className={getNavLinkClass}>Lectures</Nav.Link>
+                                <Nav.Link as={NavLink} to="/material" className={getNavLinkClass}>Materials</Nav.Link>
+                                <Nav.Link as={NavLink} to="/about" className={getNavLinkClass}>About</Nav.Link>
+                                <Nav.Link as={NavLink} to="/forum" className={getNavLinkClass}>Forum</Nav.Link>
                             </Nav>
                             <Form className="d-flex align-items-center gap-2">
-                                <Button
-                                    variant="outline-light"
-                                    className="custom-search-btn"
-                                >
-                                    <i className="bi bi-search"></i> Search
-                                </Button>
+
                                 {isLoggedIn ? (
                                     <>
-                                        <span className="text-white">Welcome, User</span>
+                                        <NavLink to="/profile" className="d-flex align-items-center text-decoration-none text-white gap-2">
+                                            <PersonCircle size={28} /> 
+                                            <span className="fw-semibold">
+                                                {user?.name || 'User'} 
+                                            </span>
+                                        </NavLink>
                                         <Button
                                             variant="light"
                                             onClick={handleLogout}
@@ -66,7 +69,7 @@ export default class NavbarComponent extends Component {
                                 ) : (
                                     <Button
                                         variant="light"
-                                        as={Link}
+                                        as={NavLink}
                                         to="/login"
                                     >
                                         <i className="bi bi-box-arrow-in-right"></i> Login
@@ -78,28 +81,28 @@ export default class NavbarComponent extends Component {
                 </Navbar>
                 <Navbar expand="lg" className="shadow-sm custom-navbar">
                     <Container fluid>
-                        <Navbar.Brand as={Link} to="/" className="d-flex align-items-center gap-2">
+                        <Navbar.Brand as={NavLink} to="/" className="d-flex align-items-center gap-2">
                             <Image src={logo} alt="Onudhabon Logo" height="60" />
                         </Navbar.Brand>
                         <Navbar.Toggle aria-controls="main-navbar" />
                         <Navbar.Collapse id="main-navbar">
                             <Nav className="me-auto mx-4">
-                                <Nav.Link as={Link} to="/home">Home</Nav.Link>
-                                <Nav.Link as={Link} to="/lecture">Lectures</Nav.Link>
-                                <Nav.Link as={Link} to="/material">Materials</Nav.Link>
-                                <Nav.Link as={Link} to="/about">About</Nav.Link>
-                                <Nav.Link as={Link} to="/forum">Forum</Nav.Link>
+                                <Nav.Link as={NavLink} to="/home" className={getNavLinkClass}>Home</Nav.Link>
+                                <Nav.Link as={NavLink} to="/lecture" className={getNavLinkClass}>Lectures</Nav.Link>
+                                <Nav.Link as={NavLink} to="/material" className={getNavLinkClass}>Materials</Nav.Link>
+                                <Nav.Link as={NavLink} to="/about" className={getNavLinkClass}>About</Nav.Link>
+                                <Nav.Link as={NavLink} to="/forum" className={getNavLinkClass}>Forum</Nav.Link>
                             </Nav>
                             <Form className="d-flex align-items-center gap-2">
-                                <Form.Control
-                                    type="search"
-                                    placeholder="Search"
-                                    className="me-2"
-                                    aria-label="Search"
-                                />
+
                                 {isLoggedIn ? (
                                     <>
-                                        <span>Welcome, User</span>
+                                        <NavLink to="/profile" className="d-flex align-items-center text-decoration-none text-white gap-2">
+                                            <PersonCircle size={28} /> 
+                                            <span className="fw-semibold">
+                                                {user?.name || 'User'} 
+                                            </span>
+                                        </NavLink>
                                         <Button
                                             variant="primary"
                                             onClick={handleLogout}
@@ -111,7 +114,7 @@ export default class NavbarComponent extends Component {
                                 ) : (
                                     <Button
                                         variant="primary"
-                                        as={Link}
+                                        as={NavLink}
                                         to="/login"
                                         className="custom-login-btn"
                                     >

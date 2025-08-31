@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import ForumCard from "../../Components/ForumComp/ForumCard";
 import ForumHero from "../../Components/HeroSection/ForumHero.jsx";
@@ -12,6 +13,7 @@ import "./ForumPage.css";
 
 const ForumList = ({ isLoggedIn, handleLogout }) => {
   const [posts, setPosts] = useState([]);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     axios
@@ -20,9 +22,19 @@ const ForumList = ({ isLoggedIn, handleLogout }) => {
       .catch((err) => console.error(err));
   }, []);
 
+  useEffect(() => {
+        if (isLoggedIn) {
+          const token = localStorage.getItem("token");
+          if (token) {
+            const decoded = jwtDecode(token);
+            setUser(decoded);
+          }
+        }
+      }, [isLoggedIn]);
+
   return (
     <>
-      <NavbarComponent isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+      <NavbarComponent isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />
       <ForumHero />
       {/* The typo is already fixed here */}
       <div className="forum-page-container">

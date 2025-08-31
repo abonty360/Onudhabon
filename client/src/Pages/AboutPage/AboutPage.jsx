@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card } from "react-bootstrap";
+import { jwtDecode } from "jwt-decode";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import "./AboutPage.css";
@@ -13,9 +14,21 @@ import { FaHandHoldingHeart } from "react-icons/fa";
 import { FaFacebook, FaGithub } from "react-icons/fa";
 
 const About = ({ isLoggedIn, handleLogout }) => {
+    const [user, setUser] = useState(null);
+  
+      useEffect(() => {
+        if (isLoggedIn) {
+          const token = localStorage.getItem("token");
+          if (token) {
+            const decoded = jwtDecode(token);
+            setUser(decoded);
+          }
+        }
+      }, [isLoggedIn]);
+
   return (
     <>
-      <NavbarComponent isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+      <NavbarComponent isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />
       <AboutHero />
       <div className="about-page">
         <Container className="py-0 pb-5">
