@@ -121,7 +121,7 @@
 }
 
 .upload-btn {
-  background-color: #4CAF50;
+  background-color: #34149a;
   color: white;
   padding: 10px 16px;
   border: none;
@@ -131,5 +131,5 @@
 }
 
 .upload-btn:hover {
-  background-color: #45a049;
+  background-color: #376084;
 }

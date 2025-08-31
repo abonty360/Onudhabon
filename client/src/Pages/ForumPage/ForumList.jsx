@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ForumCard from "../../Components/ForumComp/ForumCard";
+import ForumHero from "../../Components/HeroSection/ForumHero.jsx";
 import { Button, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
@@ -22,13 +23,13 @@ const ForumList = ({ isLoggedIn, handleLogout }) => {
   return (
     <>
       <NavbarComponent isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
-
+      <ForumHero />
       {/* The typo is already fixed here */}
       <div className="forum-page-container">
         <Container className="mt-4">
           {/* STEP 2: Add the "forum-header" class to this div */}
           <div className="d-flex justify-content-between align-items-center forum-header">
-            <h2>Volunteer Forum</h2>
+            <h2>Posts</h2>
             <Link to="/forum/new">
               <Button variant="success">+ New Post</Button>
             </Link>

@@ -3,6 +3,7 @@ import { Container, Row, Col, Card } from "react-bootstrap";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import "./AboutPage.css";
+import AboutHero from "../../Components/HeroSection/AboutHero.jsx";
 import { GoGoal } from "react-icons/go";
 import { FaGlobeAmericas } from "react-icons/fa";
 import { FaShieldAlt } from "react-icons/fa";
@@ -15,18 +16,7 @@ const About = ({ isLoggedIn, handleLogout }) => {
   return (
     <>
       <NavbarComponent isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
-
-      <div className="about-page text-center">
-         <Container>
-        <h1>About Onudhabon</h1>
-        <p>
-          We believe every child deserves access to quality education,
-          regardless of their circumstances. Onudhabon connects dedicated
-          volunteers with underserved communities to create lasting educational
-          impact.
-        </p>
-         </Container>
-      </div>
+      <AboutHero />
       <div className="about-page">
         <Container className="py-0 pb-5">
           <Row className="g-4 align-items-stretch">

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import "./LecturePage.css";
+import LectureHero from "../../Components/HeroSection/LectureHero.jsx";
 
 function LecturePage({ isLoggedIn, handleLogout }) {
   const [lectures, setLectures] = useState([]);
@@ -91,13 +92,9 @@ function LecturePage({ isLoggedIn, handleLogout }) {
   return (
     <>
       <NavbarComponent isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+      <LectureHero/>
       <div className="lecture-container">
         <h1>Video Lectures</h1>
-        <p>
-          Access high-quality educational videos created by our volunteer
-          educators. All content is free and available for everyone.
-        </p>
-
         {isLoggedIn && user?.roles === "Educator" ? (
           <button
             onClick={() => navigate("/lecture/upload")}

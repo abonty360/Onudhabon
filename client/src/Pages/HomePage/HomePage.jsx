@@ -43,18 +43,27 @@ const Homepage = ({ isLoggedIn, handleLogout }) => {
     <>
       <NavbarComponent isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
       <div className="home-page">
-        {!isLoggedIn && (
-          <section className="hero-section py-5 bg-primary text-white text-center">
-            <div className="p-0">
-              <h1 className="display-5 fw-bold">Exploring Education Through Community</h1>
-              <p className="lead mission-statement">Connecting volunteers, educators, and communities all across Bangladesh to provide quality education for underprivileged children.</p>
+        <section className="hero-section text-white text-center">
+          <div className="p-0">
+            <h1 className="display-5 fw-bold">Exploring Education Through Community</h1>
+            <p className="lead mission-statement">Connecting volunteers, educators, and communities all across Bangladesh to provide quality education for underprivileged children.
+            </p>
+            {!isLoggedIn ? (
               <div className="d-flex justify-content-center gap-3 mt-3">
                 <Button variant="light" as={Link} to="/login">Become a Volunteer</Button>
                 <Button variant="outline-light">Donate Now</Button>
               </div>
-            </div>
-          </section>
-        )}
+            ) : (
+              <div className="mt-4">
+                <blockquote className="blockquote">
+                  <p className="mb-0 fst-italic">
+                    "One book, one pen, one child, and one volunteer can change the world."
+                  </p>
+                </blockquote>
+              </div>
+            )}
+          </div>
+        </section>
 
         <Container className="py-4">
           <Row className="text-center">
