@@ -121,3 +121,16 @@
   background: #007bff;
   color: white;
 }
+.upload-btn {
+  background-color: #34149a;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 1rem 0;
+}
+
+.upload-btn:hover {
+  background-color: #376084;
+}

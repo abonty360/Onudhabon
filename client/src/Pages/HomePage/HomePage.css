@@ -1,16 +1,41 @@
 .home-page {
-
   display: block;
   width: 100%;
   margin: 0;
   padding-top: 80px;
-  background-color: #fbfdff;
+  background-color: #fafaf8;
   color: #333;
 }
 .hero-section {
+  position: relative;
   width: 100%;
-  margin: 0;
-  padding: 0;
+  margin-top: -120px;
+  background-image: url('../../assets/hero-section.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  color: #fff;
+  padding-top: 120px; 
+  padding-bottom: 60px;
+}
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45); 
+  z-index: 0; 
+}
+.hero-section > * {
+  position: relative;
+  z-index: 1; 
+}
+.hero-section .btn {
+  font-weight: 500;
+  padding: 0.6rem 1.4rem;
+  border-radius: 50px;
 }
 .hero-inner {
   max-width: 1200px;     
@@ -32,4 +57,16 @@
 .mission-statement {
   color: #ffffff; 
   font-size: 1.3em; 
+}
+
+.hero-section blockquote {
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: 1.25rem;
+  line-height: 1.6;
+}
+
+.hero-section blockquote footer {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
 }

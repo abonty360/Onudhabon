@@ -59,14 +59,14 @@ function App() {
       <Route path="/" element={<Navigate to="/home" />} />
       <Route path="/login" element={<LoginPage handleLogin={handleLogin} />} />
       <Route path="/register" element={<RegistrationPage />} />
-      <Route path="/home" element={<HomePage isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} />
+      <Route path="/home" element={<HomePage isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />} />
       <Route path="/lecture" element={<LecturePage isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />} />
       <Route path="/lecture/upload" element={<UploadLecture />} />
-      <Route path="/material" element={<MaterialPage isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} />
+      <Route path="/material" element={<MaterialPage isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />} />
       <Route path="/material/upload" element={<UploadMaterial />} />
-      <Route path="/profile" element={<ProfilePage isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} />
-      <Route path="/about" element={<AboutPage isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} />
-      <Route path="/forum" element={<ForumList isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} />
+      <Route path="/profile" element={<ProfilePage isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />} />
+      <Route path="/about" element={<AboutPage isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />} />
+      <Route path="/forum" element={<ForumList isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />} />
       <Route path="/forum/new" element={<NewPostForm />} />
       <Route path="/forum/:id" element={<ForumDetail />} />
     </Routes>

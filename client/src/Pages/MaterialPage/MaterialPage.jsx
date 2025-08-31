@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import "./MaterialPage.css";
+import MaterialHero from "../../Components/HeroSection/MaterialHero.jsx";
 
 function MaterialPage({ isLoggedIn, handleLogout }) {
   const [materials, setMaterials] = useState([]);
@@ -89,14 +90,10 @@ function MaterialPage({ isLoggedIn, handleLogout }) {
   }, [selectedSubject]);
   return (
     <>
-      <NavbarComponent isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+      <NavbarComponent isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />
+      <MaterialHero/>
       <div className="material-container">
         <h1>Study Materials</h1>
-        <p>
-          Download free educational materials including worksheets, study guides,
-          and reference documents created by our volunteer educators.
-        </p>
-
         {isLoggedIn && user?.roles === "Educator" ? (
           <button
             onClick={() => navigate("/material/upload")}
