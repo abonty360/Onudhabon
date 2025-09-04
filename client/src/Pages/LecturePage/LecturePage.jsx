@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import "./LecturePage.css";
+import LectureHero from "../../Components/HeroSection/LectureHero.jsx";
 
 function LecturePage({ isLoggedIn, handleLogout }) {
   const [lectures, setLectures] = useState([]);
@@ -13,6 +15,8 @@ function LecturePage({ isLoggedIn, handleLogout }) {
   const [selectedTopic, setSelectedTopic] = useState("All Topics");
   const [selectedVersion, setSelectedVersion] = useState("Both Versions");
   const [topics, setTopics] = useState([]);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("http://localhost:5000/api/lectures")
@@ -23,6 +27,16 @@ function LecturePage({ isLoggedIn, handleLogout }) {
       })
       .catch((err) => console.error("GET lectures error:", err));
   }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decoded = jwtDecode(token);
+        setUser(decoded);
+      }
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     let filtered = lectures;
@@ -77,78 +91,98 @@ function LecturePage({ isLoggedIn, handleLogout }) {
 
   return (
     <>
-      <NavbarComponent isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+      <NavbarComponent isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />
+      <LectureHero/>
       <div className="lecture-container">
         <h1>Video Lectures</h1>
-        <p>
-          Access high-quality educational videos created by our volunteer
-          educators. All content is free and available for everyone.
-        </p>
-
-        <div className="upload-btn-box">
-          <Link to="/lecture/upload" className="btn btn-primary">
-            <i className="bi bi-upload"></i> Upload New Lecture
-          </Link>
-        </div>
+        {isLoggedIn && user?.roles === "Educator" ? (
+          <button
+            onClick={() => navigate("/lecture/upload")}
+            className="upload-btn"
+          >
+            Upload Lecture
+          </button>
+        ) : (
+          <p>Only educators can upload lectures.</p>
+        )}
 
         <div className="filter-box">
-          <input type="text"
-            placeholder="Search lectures, instructors, or topics..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <select
-            value={selectedClass}
-            onChange={(e) => setSelectedClass(e.target.value)}>
-            <option>All Classes</option>
-            <option>Grade 1</option>
-            <option>Grade 2</option>
-            <option>Grade 3</option>
-            <option>Grade 4</option>
-            <option>Grade 5</option>
-            <option>Grade 6</option>
-            <option>Grade 7</option>
-            <option>Grade 8</option>
-            <option>Grade 9</option>
-            <option>Grade 10</option>
-            <option>Grade 11</option>
-            <option>Grade 12</option>
-          </select>
-          <select
-            value={selectedSubject}
-            onChange={(e) => setSelectedSubject(e.target.value)}>
-            <option>All Subjects</option>
-            <option>Mathematics</option>
-            <option>Physics</option>
-            <option>Chemistry</option>
-            <option>Biology</option>
-            <option>History</option>
-            <option>Statistics</option>
-            <option>English</option>
-            <option>Bangla</option>
-          </select>
-          <select
-            value={selectedTopic}
-            onChange={(e) => setSelectedTopic(e.target.value)}
-            disabled={selectedSubject === "All Subjects"}>
-            {selectedSubject === "All Subjects" ? (
-              <option>Select subject</option>
-            ) : (
-              <>
-                <option>All Topics</option>
-                {topics.map((topic, idx) => (
-                  <option key={idx}>{topic}</option>
-                ))}
-              </>
-            )}
-          </select>
-          <select
-            value={selectedVersion}
-            onChange={(e) => setSelectedVersion(e.target.value)}>
-            <option>Both Versions</option>
-            <option>Bangla</option>
-            <option>English</option>
-          </select>
+          <div className="filter-item">
+            <label>Search</label>
+            <input type="text"
+              placeholder="Search lectures, instructors, or topics..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
+          <div className="filter-item">
+            <label>Class</label>
+            <select
+              value={selectedClass}
+              onChange={(e) => setSelectedClass(e.target.value)}>
+              <option>All Classes</option>
+              <option>Grade 1</option>
+              <option>Grade 2</option>
+              <option>Grade 3</option>
+              <option>Grade 4</option>
+              <option>Grade 5</option>
+              <option>Grade 6</option>
+              <option>Grade 7</option>
+              <option>Grade 8</option>
+              <option>Grade 9</option>
+              <option>Grade 10</option>
+              <option>Grade 11</option>
+              <option>Grade 12</option>
+            </select>
+          </div>
+
+          <div className="filter-item">
+            <label>Subject</label>
+            <select
+              value={selectedSubject}
+              onChange={(e) => setSelectedSubject(e.target.value)}>
+              <option>All Subjects</option>
+              <option>Mathematics</option>
+              <option>Physics</option>
+              <option>Chemistry</option>
+              <option>Biology</option>
+              <option>History</option>
+              <option>Statistics</option>
+              <option>English</option>
+              <option>Bangla</option>
+            </select>
+          </div>
+
+          <div className="filter-item">
+            <label>Topic</label>
+            <select
+              value={selectedTopic}
+              onChange={(e) => setSelectedTopic(e.target.value)}
+              disabled={selectedSubject === "All Subjects"}>
+              {selectedSubject === "All Subjects" ? (
+                <option>Select subject</option>
+              ) : (
+                <>
+                  <option>All Topics</option>
+                  {topics.map((topic, idx) => (
+                    <option key={idx}>{topic}</option>
+                  ))}
+                </>
+              )}
+            </select>
+          </div>
+
+          <div className="filter-item">
+            <label>Version</label>
+            <select
+              value={selectedVersion}
+              onChange={(e) => setSelectedVersion(e.target.value)}>
+              <option>Both Versions</option>
+              <option>Bangla</option>
+              <option>English</option>
+            </select>
+          </div>
         </div>
 
         <div className="lecture-grid">

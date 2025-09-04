@@ -71,7 +71,7 @@ const RegisterForm = () => {
     }
 
     try {
-      const response = await axios.post('/api/localguardian/register', formData);
+      const response = await axios.post('/api/user/register', formData);
       alert('Registration successful!');
       navigate('/login');
     } catch (error) {
@@ -157,7 +157,7 @@ const RegisterForm = () => {
         </div>
       </div>
 
-      <p>Volunteer Roles (Select all that apply)</p>
+      <p>Volunteer Roles (Select One)</p>
       <div className={`volunteer-roles ${submitted && formData.roles.length === 0 ? 'error' : ''}`}>
         {rolesList.map((role, i) => (
           <label className="role-card" key={i}>

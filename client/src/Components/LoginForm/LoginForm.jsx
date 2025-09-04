@@ -12,12 +12,12 @@ function LoginForm({ handleLogin }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Clear previous errors
+    setError(''); 
 
     try {
-      const response = await axios.post('/api/localguardian/login', { email, password });
-      if (response.status === 200) {
-        handleLogin();
+      const response = await axios.post('/api/user/login', { email, password });
+      if (response.status === 200 && response.data.token) {
+        handleLogin(response.data.token);
         navigate('/home');
       } else {
         setError('Login failed. Please check your credentials.');
