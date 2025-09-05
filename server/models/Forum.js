@@ -14,20 +14,42 @@ const forumSchema = new mongoose.Schema({
             type: String,
         },
     ],
-    author: { // Add an author field
-        type: String,
-        default: "Anonymous"
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
     },
-    replies: [ // Add a replies array
+    // --- NEW FIELDS FOR THE MAIN POST ---
+    likes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    dislikes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    // ------------------------------------
+    replies: [
         {
             author: {
-                type: String,
-                default: "User"
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+                required: true,
             },
             text: {
                 type: String,
                 required: true
             },
+            // --- NEW FIELDS FOR EACH REPLY ---
+            likes: [{
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User'
+            }],
+            dislikes: [{
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User'
+            }],
+            // ---------------------------------
             createdAt: {
                 type: Date,
                 default: Date.now
