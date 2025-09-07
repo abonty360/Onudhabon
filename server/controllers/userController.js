@@ -96,3 +96,24 @@ export const updateProfile = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 }
+
+export const updateProfilePicture = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({ message: "No file uploaded" });
+        }
+
+        user.picture = req.file.path;
+        await user.save();
+
+        res.json({ message: "Profile picture updated successfully", user });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}

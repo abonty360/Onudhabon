@@ -8,6 +8,7 @@ const ProfilePage = () => {
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [bio, setBio] = useState('');
+  const [picture, setPicture] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,6 +56,28 @@ const ProfilePage = () => {
     }
   };
 
+  const handlePictureChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const token = localStorage.getItem("token");
+    const formData = new FormData();
+    formData.append("picture", file);
+
+    try {
+      const res = await axios.post('http://localhost:5000/api/user/profile/picture', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      setUser(res.data.user);
+    } catch (err) {
+      setError("Failed to update profile picture.");
+      console.error("Failed to update profile picture:", err);
+    }
+  };
+
   if (error) {
     return <div className="profile-page error">{error}</div>;
   }
@@ -67,7 +90,13 @@ const ProfilePage = () => {
     <div className="profile-container">
       <div className="profile-card">
         <div className="profile-header">
-          <img src={user.picture || 'https://via.placeholder.com/150'} alt="Profile" className="profile-picture" />
+          <div className="profile-picture-container">
+            <img src={user.picture || 'https://via.placeholder.com/150'} alt="Profile" className="profile-picture" />
+            <label htmlFor="profile-picture-input" className="profile-picture-edit">
+              <i className="fas fa-camera"></i>
+            </label>
+            <input id="profile-picture-input" type="file" accept="image/*" onChange={handlePictureChange} style={{ display: 'none' }} />
+          </div>
           <div className="profile-header-content">
             <h1 className="profile-name">{user.name}</h1>
           </div>
