@@ -12,6 +12,18 @@ export const getUser = async (req, res) => {
     }
 }
 
+export const getProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select('-password');
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 export const register = async (req, res) => {
     try {
         const { name, email, phone, location, password, roles } = req.body;
@@ -62,6 +74,45 @@ export const login = async (req, res) => {
             token,
             user: { name: user.name, roles: user.roles, email: user.email }
         });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export const updateProfile = async (req, res) => {
+    try {
+        const { bio } = req.body;
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.bio = bio;
+        await user.save();
+
+        res.json({ message: "Profile updated successfully", user });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export const updateProfilePicture = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({ message: "No file uploaded" });
+        }
+
+        user.picture = req.file.path;
+        await user.save();
+
+        res.json({ message: "Profile picture updated successfully", user });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

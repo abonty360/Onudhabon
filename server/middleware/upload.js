@@ -17,6 +17,11 @@ if (file.mimetype.startsWith("video")) {
         resourceType = "raw"; 
 folder = "onudhabon/materials";
       }
+    else if (file.mimetype.startsWith("image"))
+      {
+        resourceType = "image"; 
+folder = "onudhabon/profile_pictures";
+      }
 
     return {
       folder: folder,
