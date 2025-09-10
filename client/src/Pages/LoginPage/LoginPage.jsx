@@ -1,9 +1,14 @@
 import React from 'react';
+import { useLocation, Link } from 'react-router-dom';
+import { Alert } from 'react-bootstrap';
 import LoginForm from '../../Components/LoginForm/LoginForm';
-import { Link } from 'react-router-dom';
 import './LoginPage.css';
 
 function LoginPage({ handleLogin }) {
+
+  const location = useLocation();
+  const message = location.state?.message; // Safely get the message, will be 'undefined' if not passed
+
   return (
     <div className="login-page-container">
       <div className="login-card">
@@ -18,6 +23,12 @@ function LoginPage({ handleLogin }) {
           <Link to="/login" className="tab active">Login</Link>
           <Link to="/register" className="tab">Register</Link>
         </div>
+
+        {message && (
+          <Alert variant="warning" className="mx-3 mb-3">
+            {message}
+          </Alert>
+        )}
 
         <LoginForm handleLogin={handleLogin} />
 
