@@ -14,7 +14,8 @@ import UploadMaterial from "./Upload/UploadMaterial";
 import ForumList from "./Pages/ForumPage/ForumList.jsx";
 import ForumDetail from "./Pages/ForumPage/ForumDetail.jsx";
 import NewPostForm from "./Pages/ForumPage/NewPostForm.jsx";
-import SettingsForm from "./Pages/SettingsForm";
+import SettingsPage from "./Pages/SettingsPage.jsx";
+
 import Footer from "./Components/Footer";
 
 import "./App.css";
@@ -96,12 +97,14 @@ function App() {
         path="/profile"
         element={
           <ProfilePage
+            key={Date.now()}
             isLoggedIn={isLoggedIn}
             user={user}
             handleLogout={handleLogout}
           />
         }
       />
+
       <Route
         path="/about"
         element={
@@ -124,7 +127,7 @@ function App() {
       />
       <Route path="/forum/new" element={<NewPostForm />} />
       <Route path="/forum/:id" element={<ForumDetail />} />
-      <Route path="/settings" element={<SettingsForm />} />
+      <Route path="/settings" element={<SettingsPage />} />
     </Routes>
   );
 }
