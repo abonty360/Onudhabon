@@ -27,12 +27,13 @@ export const getProfile = async (req, res) => {
 export const register = async (req, res) => {
     try {
         const { name, email, phone, location, password, roles } = req.body;
+        const trimmedName = name.trimStart();
         const allowedRoles = ["Local Guardian", "Educator"];
         if (!roles || !allowedRoles.includes(roles)) {
             return res.status(400).json({ message: "Invalid role specified" });
         }
         const user = new User({
-            name,
+            name: trimmedName,
             email,
             phone,
             location,
