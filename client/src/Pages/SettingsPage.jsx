@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "./SettingsPage.css";
 
 const SettingsPage = () => {
   const [user, setUser] = useState(null);
@@ -13,7 +14,6 @@ const SettingsPage = () => {
   });
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [picture, setPicture] = useState(null);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
@@ -102,68 +102,86 @@ const SettingsPage = () => {
     }
   };
 
-  if (!user) return <p>Loading...</p>;
+  if (!user) return <p className="loading-text">Loading...</p>;
 
   return (
     <div className="settings-container">
-      <h2>Account Settings</h2>
+      <h2 className="page-title">Account Settings</h2>
       {message && <p className="message">{message}</p>}
 
-      {/* Profile Picture */}
-      <div className="picture-section">
+      {}
+      <div className="section-card picture-section">
         <img
           src={user.picture || "https://via.placeholder.com/150"}
           alt="Profile"
           className="profile-pic"
         />
-        <input type="file" accept="image/*" onChange={handlePictureUpload} />
+        <label className="upload-label">
+          Change Picture
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handlePictureUpload}
+            className="file-input"
+          />
+        </label>
       </div>
 
-      {/* Profile Info */}
-      <form onSubmit={handleProfileUpdate} className="settings-form">
-        <label>Name</label>
-        <input name="name" value={formData.name} onChange={handleChange} />
+      {}
+      <div className="section-card">
+        <h3>Profile Info</h3>
+        <form onSubmit={handleProfileUpdate} className="settings-form">
+          <label>Name</label>
+          <input name="name" value={formData.name} onChange={handleChange} />
 
-        <label>Email</label>
-        <input
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-        />
+          <label>Email</label>
+          <input
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+          />
 
-        <label>Phone</label>
-        <input name="phone" value={formData.phone} onChange={handleChange} />
+          <label>Phone</label>
+          <input name="phone" value={formData.phone} onChange={handleChange} />
 
-        <label>Location</label>
-        <input
-          name="location"
-          value={formData.location}
-          onChange={handleChange}
-        />
+          <label>Location</label>
+          <input
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+          />
 
-        <label>Bio</label>
-        <textarea name="bio" value={formData.bio} onChange={handleChange} />
+          <label>Bio</label>
+          <textarea name="bio" value={formData.bio} onChange={handleChange} />
 
-        <button type="submit">Save Profile</button>
-      </form>
+          <button type="submit" className="btn-primary">
+            Save Profile
+          </button>
+        </form>
+      </div>
 
-      {/* Password Change */}
-      <form onSubmit={handlePasswordUpdate} className="settings-form">
-        <label>Old Password</label>
-        <input
-          type="password"
-          value={oldPassword}
-          onChange={(e) => setOldPassword(e.target.value)}
-        />
-        <label>New Password</label>
-        <input
-          type="password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-        />
-        <button type="submit">Change Password</button>
-      </form>
+      {}
+      <div className="section-card">
+        <h3>Change Password</h3>
+        <form onSubmit={handlePasswordUpdate} className="settings-form">
+          <label>Old Password</label>
+          <input
+            type="password"
+            value={oldPassword}
+            onChange={(e) => setOldPassword(e.target.value)}
+          />
+          <label>New Password</label>
+          <input
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <button type="submit" className="btn-primary">
+            Change Password
+          </button>
+        </form>
+      </div>
 
       <button className="back-button" onClick={() => navigate(-1)}>
         Back
