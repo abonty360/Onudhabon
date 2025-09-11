@@ -68,12 +68,13 @@ const RegisterForm = () => {
     const { name, email, phone, location, password, confirmPassword, terms, roles } = formData;
     const allowedDomains = ['@gmail.com', '@outlook.com', '@yahoo.com', '@hotmail.com', '@aust.edu'];
     const emailDomain = email.substring(email.lastIndexOf('@'));
+    const specialCharRegex = /[@#$%]/;
     return (
       name &&
       email && allowedDomains.includes(emailDomain) &&
       phone && phone.length === 10 &&
       location &&
-      password && password.length >= 6 &&
+      password && password.length >= 6 && specialCharRegex.test(password) &&
       confirmPassword &&
       password === confirmPassword &&
       terms &&
@@ -111,14 +112,15 @@ const RegisterForm = () => {
   };
 
   const getInputClass = (field) => {
-    const { email } = formData;
+    const { email, password } = formData;
     const allowedDomains = ['@gmail.com', '@outlook.com', '@yahoo.com', '@hotmail.com', '@aust.edu'];
     const emailDomain = email.substring(email.lastIndexOf('@'));
+    const specialCharRegex = /[@#$%]/;
     const error =
       (submitted || touched[field]) &&
       (!formData[field] ||
         (field === 'confirmPassword' && formData.password !== formData.confirmPassword) ||
-        (field === 'password' && formData.password.length > 0 && formData.password.length < 6) ||
+        (field === 'password' && (formData.password.length < 6 || !specialCharRegex.test(password))) ||
         (field === 'phone' && formData.phone.length !== 10) ||
         (field === 'email' && !allowedDomains.includes(emailDomain)));
     return `input-with-icon ${error ? 'error' : ''}`;
@@ -220,8 +222,8 @@ const RegisterForm = () => {
           />
         </div>
       </div>
-      {(submitted || touched.password) && formData.password.length > 0 && formData.password.length < 6 && (
-        <p className="error-message">Password must be at least 6 characters long.</p>
+      {(submitted || touched.password) && (formData.password.length < 6 || !/[@#$%]/.test(formData.password)) && (
+        <p className="error-message">Password must be at least 6 characters long and contain special characters</p>
       )}
 
       <div className={getInputClass('confirmPassword')}>
