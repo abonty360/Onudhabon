@@ -27,10 +27,18 @@ const RegisterForm = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    if (name === 'phone') {
+      const digits = value.replace(/\D/g, '');
+      setFormData(prev => ({
+        ...prev,
+        [name]: digits
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      }));
+    }
   };
 
   const handleRoleChange = (label) => {
@@ -49,7 +57,7 @@ const RegisterForm = () => {
     return (
       name &&
       email &&
-      phone &&
+      phone && phone.length === 10 &&
       location &&
       password && password.length >= 6 &&
       confirmPassword &&
@@ -71,7 +79,11 @@ const RegisterForm = () => {
     }
 
     try {
-      const response = await axios.post('/api/user/register', formData);
+      const submissionData = {
+        ...formData,
+        phone: `+880${formData.phone}`
+      };
+      const response = await axios.post('/api/user/register', submissionData);
       alert('Registration successful!');
       navigate('/login');
     } catch (error) {
@@ -86,11 +98,11 @@ const RegisterForm = () => {
 
   const getInputClass = (field) => {
     const error =
-      submitted || touched[field]
-        ? !formData[field] || 
-          (field === 'confirmPassword' && formData.password !== formData.confirmPassword) ||
-          (field === 'password' && formData.password.length > 0 && formData.password.length < 6)
-        : false;
+      (submitted || touched[field]) &&
+      (!formData[field] ||
+        (field === 'confirmPassword' && formData.password !== formData.confirmPassword) ||
+        (field === 'password' && formData.password.length > 0 && formData.password.length < 6) ||
+        (field === 'phone' && formData.phone.length !== 10));
     return `input-with-icon ${error ? 'error' : ''}`;
   };
 
@@ -132,6 +144,7 @@ const RegisterForm = () => {
       <div className={getInputClass('phone')}>
         <FaPhone className="icon" />
         <div className="input-inner-box">
+          <span className="phone-prefix">+880</span>
           <input
             type="tel"
             name="phone"
