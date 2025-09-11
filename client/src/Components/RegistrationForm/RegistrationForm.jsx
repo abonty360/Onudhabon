@@ -48,15 +48,29 @@ const RegisterForm = () => {
     }));
   };
 
+  const [emailError, setEmailError] = useState('');
+
   const handleBlur = (field) => {
     setTouched(prev => ({ ...prev, [field]: true }));
+    if (field === 'email') {
+      const { email } = formData;
+      const allowedDomains = ['@gmail.com', '@outlook.com', '@yahoo.com', '@hotmail.com', '@aust.edu'];
+      const emailDomain = email.substring(email.lastIndexOf('@'));
+      if (email && !allowedDomains.includes(emailDomain)) {
+        setEmailError('Incorrect Domain');
+      } else {
+        setEmailError('');
+      }
+    }
   };
 
   const isValid = () => {
     const { name, email, phone, location, password, confirmPassword, terms, roles } = formData;
+    const allowedDomains = ['@gmail.com', '@outlook.com', '@yahoo.com', '@hotmail.com', '@aust.edu'];
+    const emailDomain = email.substring(email.lastIndexOf('@'));
     return (
       name &&
-      email &&
+      email && allowedDomains.includes(emailDomain) &&
       phone && phone.length === 10 &&
       location &&
       password && password.length >= 6 &&
@@ -97,12 +111,16 @@ const RegisterForm = () => {
   };
 
   const getInputClass = (field) => {
+    const { email } = formData;
+    const allowedDomains = ['@gmail.com', '@outlook.com', '@yahoo.com', '@hotmail.com', '@aust.edu'];
+    const emailDomain = email.substring(email.lastIndexOf('@'));
     const error =
       (submitted || touched[field]) &&
       (!formData[field] ||
         (field === 'confirmPassword' && formData.password !== formData.confirmPassword) ||
         (field === 'password' && formData.password.length > 0 && formData.password.length < 6) ||
-        (field === 'phone' && formData.phone.length !== 10));
+        (field === 'phone' && formData.phone.length !== 10) ||
+        (field === 'email' && !allowedDomains.includes(emailDomain)));
     return `input-with-icon ${error ? 'error' : ''}`;
   };
 
@@ -140,6 +158,7 @@ const RegisterForm = () => {
           />
         </div>
       </div>
+      {emailError && <p className="error-message">{emailError}</p>}
 
       <div className={getInputClass('phone')}>
         <FaPhone className="icon" />
