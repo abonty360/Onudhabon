@@ -89,7 +89,7 @@ Before running the project locally, ensure you have:
 1.  Clone the repository
 2.  Install dependencies (npm install)
 3.  Set up .env file
-4.  Run the backend server (cd server & npm start)
+4.  Run the backend server (cd server & npm run dev)
 5.  Run the frontend client (cd client & npm start)
 
 ## 📌 Tech Stack
