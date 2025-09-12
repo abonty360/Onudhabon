@@ -1,26 +1,25 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom"; // 1. Import useNavigate
-import { Container, Card, ListGroup, Button } from "react-bootstrap"; // 2. Import Button
+import { useParams, useNavigate } from "react-router-dom";
+import { Container, Card, ListGroup, Button } from "react-bootstrap";
 import ReplyBox from "../../Components/ForumComp/ReplyBox";
-import { jwtDecode } from "jwt-decode"; // 3. Import jwt-decode
+import { jwtDecode } from "jwt-decode";
 
 const ForumDetail = () => {
-  const { id: postId } = useParams(); // Rename id to postId for clarity
+  const { id: postId } = useParams();
   const [post, setPost] = useState(null);
-  const [userId, setUserId] = useState(null); // 4. Add state for the user's ID
+  const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
   const [currentReplyPage, setCurrentReplyPage] = useState(1);
-  const REPLIES_PER_PAGE = 5; // You can change this number
+  const REPLIES_PER_PAGE = 5;
   const repliesSectionRef = useRef(null);
-  const isInitialMount = useRef(true); // A ref to track the first render
+  const isInitialMount = useRef(true);
 
-  // 5. Get user ID from token on component load
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        setUserId(jwtDecode(token).id); // Or ._id etc.
+        setUserId(jwtDecode(token).id);
       } catch (error) {
         console.log("Invalid token.");
       }
@@ -38,15 +37,17 @@ const ForumDetail = () => {
     fetchPost();
   }, [fetchPost]);
 
-  // --- 6. HANDLER FUNCTIONS ---
-
   const handlePostAction = async (action) => {
     if (!userId) {
-      return navigate('/login', { state: { message: "You must be logged in to vote." } });
+      return navigate("/login", {
+        state: { message: "You must be logged in to vote." },
+      });
     }
     try {
-      await axios.patch(`http://localhost:5000/api/forum/${postId}/${action}`, { userId });
-      fetchPost(); // Re-fetch the post to show updated counts
+      await axios.patch(`http://localhost:5000/api/forum/${postId}/${action}`, {
+        userId,
+      });
+      fetchPost();
     } catch (error) {
       console.error(`Error ${action}ing post:`, error);
     }
@@ -54,26 +55,28 @@ const ForumDetail = () => {
 
   const handleReplyAction = async (replyId, action) => {
     if (!userId) {
-      return navigate('/login', { state: { message: "You must be logged in to vote." } });
+      return navigate("/login", {
+        state: { message: "You must be logged in to vote." },
+      });
     }
     try {
-      await axios.patch(`http://localhost:5000/api/forum/${postId}/replies/${replyId}/${action}`, { userId });
-      fetchPost(); // Re-fetch the post to show updated counts
+      await axios.patch(
+        `http://localhost:5000/api/forum/${postId}/replies/${replyId}/${action}`,
+        { userId }
+      );
+      fetchPost();
     } catch (error) {
       console.error(`Error ${action}ing reply:`, error);
     }
   };
 
-  // -----------------------------
-
   useEffect(() => {
-    // We don't want to scroll on the very first page load, only on subsequent page changes.
     if (isInitialMount.current) {
       isInitialMount.current = false;
     } else {
-      repliesSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+      repliesSectionRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [currentReplyPage]); // Run this effect when the reply page changes
+  }, [currentReplyPage]);
 
   if (!post) return <p>Loading...</p>;
 
@@ -88,17 +91,28 @@ const ForumDetail = () => {
         <Card.Body>
           <Card.Title>{post.title}</Card.Title>
           <Card.Subtitle className="text-muted mb-2">
-            By {post.author ? `${post.author.name} (${post.author.roles})` : "Anonymous"} •{" "}
-            {new Date(post.createdAt).toLocaleString()}
+            By{" "}
+            {post.author
+              ? `${post.author.name} (${post.author.roles})`
+              : "Anonymous"}{" "}
+            • {new Date(post.createdAt).toLocaleString()}
           </Card.Subtitle>
           <Card.Text className="my-3">{post.content}</Card.Text>
 
-          {/* 7. ADD BUTTONS FOR THE MAIN POST */}
           <div>
-            <Button variant="outline-success" size="sm" onClick={() => handlePostAction('like')} className="me-2">
+            <Button
+              variant="outline-success"
+              size="sm"
+              onClick={() => handlePostAction("like")}
+              className="me-2"
+            >
               Like ({post.likes.length})
             </Button>
-            <Button variant="outline-danger" size="sm" onClick={() => handlePostAction('dislike')}>
+            <Button
+              variant="outline-danger"
+              size="sm"
+              onClick={() => handlePostAction("dislike")}
+            >
               Dislike ({post.dislikes.length})
             </Button>
           </div>
@@ -109,20 +123,37 @@ const ForumDetail = () => {
       <ListGroup className="mb-3">
         {displayedReplies && displayedReplies.length > 0 ? (
           displayedReplies.map((reply) => (
-            <ListGroup.Item key={reply._id} className="d-flex justify-content-between align-items-start">
+            <ListGroup.Item
+              key={reply._id}
+              className="d-flex justify-content-between align-items-start"
+            >
               <div>
-                <strong>{reply.author ? `${reply.author.name} (${reply.author.roles})` : "User"}:</strong> {reply.text}
+                <strong>
+                  {reply.author
+                    ? `${reply.author.name} (${reply.author.roles})`
+                    : "User"}
+                  :
+                </strong>{" "}
+                {reply.text}
                 <br />
                 <small className="text-muted">
                   {new Date(reply.createdAt).toLocaleString()}
                 </small>
               </div>
-              {/* 8. ADD BUTTONS FOR EACH REPLY */}
               <div className="ms-3">
-                <Button variant="outline-success" size="sm" onClick={() => handleReplyAction(reply._id, 'like')} className="me-2">
+                <Button
+                  variant="outline-success"
+                  size="sm"
+                  onClick={() => handleReplyAction(reply._id, "like")}
+                  className="me-2"
+                >
                   Like ({reply.likes.length})
                 </Button>
-                <Button variant="outline-danger" size="sm" onClick={() => handleReplyAction(reply._id, 'dislike')}>
+                <Button
+                  variant="outline-danger"
+                  size="sm"
+                  onClick={() => handleReplyAction(reply._id, "dislike")}
+                >
                   Dislike ({reply.dislikes.length})
                 </Button>
               </div>
