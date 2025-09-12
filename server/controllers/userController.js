@@ -37,7 +37,7 @@ export const register = async (req, res) => {
             email,
             phone,
             location,
-            password,
+            password, // Password will be hashed by the pre-save hook in the User model
             roles
         });
 
@@ -61,7 +61,8 @@ export const login = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        if (user.password !== password) {
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
         const token = jwt.sign(
