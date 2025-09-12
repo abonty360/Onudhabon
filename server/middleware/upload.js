@@ -14,7 +14,7 @@ if (file.mimetype.startsWith("video")) {
     }
     else if (file.mimetype === "application/pdf") 
       {
-        resourceType = "raw"; 
+        resourceType = "auto"; 
 folder = "onudhabon/materials";
       }
     else if (file.mimetype.startsWith("image"))
@@ -27,6 +27,11 @@ folder = "onudhabon/profile_pictures";
       folder: folder,
       resource_type: resourceType,
       public_id: file.originalname.split(".")[0],
+      type: "upload",    
+      access_mode: "public",
+      use_filename: true,       // ✅ keeps original filename
+      unique_filename: false,   // ✅ prevents random suffixes
+      overwrite: true  
     };
   },
 });

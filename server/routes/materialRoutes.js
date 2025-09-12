@@ -46,7 +46,7 @@ router.post("/", auth, checkRole("Educator"), upload.single("file"), async (req,
       classLevel,
       subject,
       topic,
-      fileUrl: req.file.path,
+      fileUrl: req.file.secure_url || req.file.path,
       size: req.file && req.file.size
         ? parseFloat((req.file.size / (1024 * 1024)).toFixed(2))
         : null

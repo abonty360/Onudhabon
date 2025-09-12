@@ -5,6 +5,7 @@ import LoginPage from './Pages/LoginPage/LoginPage';
 import RegistrationPage from './Pages/RegistrationPage/RegistrationPage';
 import HomePage from './Pages/HomePage/HomePage';
 import AboutPage from './Pages/AboutPage/AboutPage';
+import StudentProgress from './Pages/StudentProgressPage/StudentProgressPage.jsx';
 import LecturePage from './Pages/LecturePage/LecturePage';
 import MaterialPage from './Pages/MaterialPage/MaterialPage';
 import ProfilePage from './Pages/ProfilePage/ProfilePage';
@@ -69,6 +70,7 @@ function App() {
       <Route path="/forum" element={<ForumList isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />} />
       <Route path="/forum/new" element={<NewPostForm />} />
       <Route path="/forum/:id" element={<ForumDetail />} />
+      <Route path="/studentprogress" element={<StudentProgress isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />} />
     </Routes>
   );
 }

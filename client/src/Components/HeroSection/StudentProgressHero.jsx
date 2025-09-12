@@ -1,9 +1,9 @@
 import React , {useEffect} from "react";
 import { Container } from "react-bootstrap";
-import aboutHeroImg from "../../assets/hero-section.jpg";
+import studentHeroImg from "../../assets/student-hero.jpg";
 import "./Hero.css";
 
-const AboutHero = () => {
+const StudentprogressHero = () => {
     useEffect(() => {
     const header = document.querySelector(".site-header");
     if (header) {
@@ -14,7 +14,7 @@ const AboutHero = () => {
   return (
     <section className="hero text-white text-center"
     style={{
-        backgroundImage: `url(${aboutHeroImg})`,
+        backgroundImage: `url(${studentHeroImg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         marginTop: "calc(-1 * var(--header-offset))",
@@ -24,17 +24,14 @@ const AboutHero = () => {
     >
       <div className="overlay"></div>
       <Container>
-        <h5>Home/About</h5>
-        <h1 className="display-5 fw-bold">About Onudhabon</h1>
+        <h5>Home/Student Progress</h5>
+        <h1 className="display-5 fw-bold">Student progress</h1>
         <p>
-          We believe every child deserves access to quality education,
-          regardless of their circumstances. Onudhabon connects dedicated
-          volunteers with underserved communities to create lasting educational
-          impact.
+          Track student's progress
         </p>
       </Container>
     </section>
   );
 };
 
-export default AboutHero;
+export default StudentprogressHero;

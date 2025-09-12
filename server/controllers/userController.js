@@ -14,7 +14,7 @@ export const getUser = async (req, res) => {
 
 export const getProfile = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).select('-password');
+        const user = await User.findById(req.user.id).select('name email picture role roles phone location bio');
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -37,7 +37,7 @@ export const register = async (req, res) => {
             email,
             phone,
             location,
-            password, // Password will be hashed by the pre-save hook in the User model
+            password, 
             roles
         });
 

@@ -7,9 +7,9 @@ import logo from '../../assets/navbar_logo.png'
 import topBarLogo from '../../assets/hero-section-logo.png'
 import './Navbarcomp.css';
 
-const NavbarComponent = ({ isLoggedIn, handleLogout }) => {
+const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
     const [scrolled, setScrolled] = useState(false);
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(passedUser || null);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -41,10 +41,10 @@ const NavbarComponent = ({ isLoggedIn, handleLogout }) => {
             }
         };
 
-        if (isLoggedIn) {
+        if (isLoggedIn && !passedUser) {
             fetchProfile();
         }
-    }, [isLoggedIn]);
+    }, [isLoggedIn, passedUser]);
 
     const getNavLinkClass = ({ isActive }) =>
         isActive ? 'nav-link active-link' : 'nav-link';
@@ -77,6 +77,11 @@ const NavbarComponent = ({ isLoggedIn, handleLogout }) => {
                             <Nav.Link as={NavLink} to="/material" className={getNavLinkClass}>Materials</Nav.Link>
                             <Nav.Link as={NavLink} to="/about" className={getNavLinkClass}>About</Nav.Link>
                             <Nav.Link as={NavLink} to="/forum" className={getNavLinkClass}>Forum</Nav.Link>
+                            {user?.roles === "Local Guardian" && (
+                                <Nav.Link as={NavLink} to="/studentprogress" className={getNavLinkClass}>
+                                    Student Progress
+                                </Nav.Link>
+                            )}
                         </Nav>
                         <Form className="d-flex align-items-center gap-2">
                             {isLoggedIn ? (
@@ -88,7 +93,7 @@ const NavbarComponent = ({ isLoggedIn, handleLogout }) => {
                                     >
                                         <i className="bi bi-box-arrow-in-right me-1"></i> Logout
                                     </Button>
-                                </> 
+                                </>
                             ) : (
                                 <Button
                                     variant="light"
@@ -115,6 +120,11 @@ const NavbarComponent = ({ isLoggedIn, handleLogout }) => {
                             <Nav.Link as={NavLink} to="/material" className={getNavLinkClass}>Materials</Nav.Link>
                             <Nav.Link as={NavLink} to="/about" className={getNavLinkClass}>About</Nav.Link>
                             <Nav.Link as={NavLink} to="/forum" className={getNavLinkClass}>Forum</Nav.Link>
+                            {user?.roles === "Local Guardian" && (
+                                <Nav.Link as={NavLink} to="/studentprogress" className={getNavLinkClass}>
+                                    Student Progress
+                                </Nav.Link>
+                            )}
                         </Nav>
                         <Form className="d-flex align-items-center gap-2">
                             {isLoggedIn ? (
@@ -127,7 +137,7 @@ const NavbarComponent = ({ isLoggedIn, handleLogout }) => {
                                     >
                                         <i className="bi bi-box-arrow-in-right me-1"></i> Logout
                                     </Button>
-                                </> 
+                                </>
                             ) : (
                                 <Button
                                     variant="primary"
