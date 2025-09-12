@@ -1,4 +1,3 @@
-// In ForumList.jsx
 import React, { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
@@ -9,20 +8,21 @@ import { Link } from "react-router-dom";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import "./ForumPage.css";
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from "react-router-dom";
 
 const ForumList = ({ isLoggedIn, handleLogout }) => {
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(null);
   const [totalPages, setTotalPages] = useState(1);
-  const POSTS_PER_PAGE = 5; // Match the default limit on the backend
+  const POSTS_PER_PAGE = 5;
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentPage = parseInt(searchParams.get('page')) || 1;
+  const currentPage = parseInt(searchParams.get("page")) || 1;
 
-  // We define the function to fetch posts
   const fetchPosts = (page) => {
     axios
-      .get(`http://localhost:5000/api/forum?page=${page}&limit=${POSTS_PER_PAGE}`)
+      .get(
+        `http://localhost:5000/api/forum?page=${page}&limit=${POSTS_PER_PAGE}`
+      )
       .then((res) => {
         setPosts(res.data.posts);
         setTotalPages(res.data.totalPages);
@@ -30,14 +30,12 @@ const ForumList = ({ isLoggedIn, handleLogout }) => {
       .catch((err) => console.error(err));
   };
 
-  // This one useEffect is enough to fetch the posts when the component loads
   useEffect(() => {
-    fetchPosts(currentPage); // Fetch posts for the current page
+    fetchPosts(currentPage);
   }, [currentPage]);
-  // This useEffect for handling login status is correct
 
   useEffect(() => {
-    window.scrollTo(0, 0); // Scrolls the window to the top
+    window.scrollTo(0, 0);
   }, [currentPage]);
 
   useEffect(() => {
@@ -52,14 +50,17 @@ const ForumList = ({ isLoggedIn, handleLogout }) => {
 
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
-      // This will update the URL to "?page=..." and trigger a re-render
       setSearchParams({ page: newPage.toString() });
     }
   };
 
   return (
     <>
-      <NavbarComponent isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />
+      <NavbarComponent
+        isLoggedIn={isLoggedIn}
+        user={user}
+        handleLogout={handleLogout}
+      />
       <ForumHero />
       <div className="forum-page-container">
         <Container className="mt-4">
@@ -71,7 +72,11 @@ const ForumList = ({ isLoggedIn, handleLogout }) => {
           </div>
           {posts.length > 0 ? (
             posts.map((post) => (
-              <ForumCard key={post._id} post={post} onPostUpdate={() => fetchPosts(currentPage)} />
+              <ForumCard
+                key={post._id}
+                post={post}
+                onPostUpdate={() => fetchPosts(currentPage)}
+              />
             ))
           ) : (
             <p className="no-posts-message">
@@ -98,7 +103,6 @@ const ForumList = ({ isLoggedIn, handleLogout }) => {
               </Button>
             </div>
           )}
-
         </Container>
         <Footer />
       </div>

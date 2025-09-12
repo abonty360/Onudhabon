@@ -1,4 +1,3 @@
-// In ForumCard.jsx
 import React, { useState, useEffect } from "react";
 import { Card, Badge, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
@@ -13,7 +12,7 @@ const ForumCard = ({ post, onPostUpdate }) => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        setUserId(jwtDecode(token).id); // Or ._id, etc.
+        setUserId(jwtDecode(token).id);
       } catch (error) {
         console.error("Invalid token");
       }
@@ -22,19 +21,27 @@ const ForumCard = ({ post, onPostUpdate }) => {
 
   const handleLike = async () => {
     if (!userId) {
-      navigate('/login', { state: { message: "You need to log in to like posts." } });
+      navigate("/login", {
+        state: { message: "You need to log in to like posts." },
+      });
       return;
     }
-    await axios.patch(`http://localhost:5000/api/forum/${post._id}/like`, { userId });
+    await axios.patch(`http://localhost:5000/api/forum/${post._id}/like`, {
+      userId,
+    });
     onPostUpdate();
   };
 
   const handleDislike = async () => {
     if (!userId) {
-      navigate('/login', { state: { message: "You need to log in to dislike posts." } });
+      navigate("/login", {
+        state: { message: "You need to log in to dislike posts." },
+      });
       return;
     }
-    await axios.patch(`http://localhost:5000/api/forum/${post._id}/dislike`, { userId });
+    await axios.patch(`http://localhost:5000/api/forum/${post._id}/dislike`, {
+      userId,
+    });
     onPostUpdate();
   };
 
@@ -43,8 +50,11 @@ const ForumCard = ({ post, onPostUpdate }) => {
       <Card.Body>
         <Card.Title>{post.title}</Card.Title>
         <Card.Subtitle className="text-muted mb-2">
-          By {post.author ? `${post.author.name} (${post.author.roles})` : "Anonymous"} •{" "}
-          {new Date(post.createdAt).toLocaleString()}
+          By{" "}
+          {post.author
+            ? `${post.author.name} (${post.author.roles})`
+            : "Anonymous"}{" "}
+          • {new Date(post.createdAt).toLocaleString()}
         </Card.Subtitle>
         <div className="mb-2">
           {post.tags &&
@@ -55,17 +65,19 @@ const ForumCard = ({ post, onPostUpdate }) => {
             ))}
         </div>
         <Card.Text>{post.content?.slice(0, 120)}...</Card.Text>
-
-        {/* --- THIS IS THE BLOCK THAT WAS MISSING --- */}
         <div className="d-flex justify-content-between align-items-center mt-3">
           <Link to={`/forum/${post._id}`}>
             <Button variant="outline-primary">
               View Details ({post.replies?.length || 0} replies)
             </Button>
           </Link>
-
           <div>
-            <Button variant="outline-success" size="sm" onClick={handleLike} className="me-2">
+            <Button
+              variant="outline-success"
+              size="sm"
+              onClick={handleLike}
+              className="me-2"
+            >
               Like ({post.likes.length})
             </Button>
             <Button variant="outline-danger" size="sm" onClick={handleDislike}>
@@ -73,8 +85,6 @@ const ForumCard = ({ post, onPostUpdate }) => {
             </Button>
           </div>
         </div>
-        {/* --- END OF MISSING BLOCK --- */}
-
       </Card.Body>
     </Card>
   );

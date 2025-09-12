@@ -1,38 +1,24 @@
-/* General container for the entire page content below the navbar */
 .forum-page-container {
-    background-color: #f8f9fa;
-    /* A very light grey background */
-    padding: 2rem 1rem;
-    /* Add some padding on the top/bottom and sides */
-    min-height: 80vh;
-    /* Ensure it takes up most of the screen height */
+  background-color: #f8f9fa;
+  padding: 2rem 1rem;
+  min-height: 80vh;
 }
 
-/* Styles for the header section holding the title and the button */
 .forum-header {
-    border-bottom: 2px solid #dee2e6;
-    /* A subtle line under the header */
-    padding-bottom: 1rem;
-    /* Space between the text and the line */
-    margin-bottom: 2rem;
-    /* Space between the header and the first post */
+  border-bottom: 2px solid #dee2e6;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
-/* Style for the "Volunteer Forum" title */
 .forum-header h2 {
-    color: #212529;
-    /* A dark color to ensure it's visible */
-    font-weight: 600;
-    /* Make it a bit bolder */
-    margin: 0;
-    /* Remove any default margins */
+  color: #212529;
+  font-weight: 600;
+  margin: 0;
 }
 
-/* Style for the message when there are no posts */
 .no-posts-message {
-    text-align: center;
-    color: #6c757d;
-    /* A muted grey color */
-    font-size: 1.2rem;
-    padding: 3rem 0;
+  text-align: center;
+  color: #6c757d;
+  font-size: 1.2rem;
+  padding: 3rem 0;
 }

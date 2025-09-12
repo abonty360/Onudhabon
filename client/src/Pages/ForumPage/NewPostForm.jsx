@@ -2,34 +2,33 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Container, Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode"; // <-- 1. IMPORT THE LIBRARY
+import { jwtDecode } from "jwt-decode";
 
 const NewPostForm = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
-  const [authorId, setAuthorId] = useState(null); // <-- 2. WE'LL JUST STORE THE ID
+  const [authorId, setAuthorId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 3. GET THE TOKEN INSTEAD OF 'userInfo'
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        const decodedToken = jwtDecode(token); // 4. DECODE THE TOKEN
-        console.log("Decoded Token:", decodedToken); // IMPORTANT: Check your console for this!
-        setAuthorId(decodedToken.id); // 5. SET THE AUTHOR'S ID
+        const decodedToken = jwtDecode(token);
+        console.log("Decoded Token:", decodedToken);
+        setAuthorId(decodedToken.id);
       } catch (error) {
         console.error("Error decoding token:", error);
-        navigate('/login', {
+        navigate("/login", {
           replace: true,
-          state: { message: 'Your session is invalid. Please log in again.' }
+          state: { message: "Your session is invalid. Please log in again." },
         });
       }
     } else {
-      navigate('/login', {
-        replace: true, // This is the magic part
-        state: { message: 'You must be logged in to create a post.' }
+      navigate("/login", {
+        replace: true,
+        state: { message: "You must be logged in to create a post." },
       });
     }
   }, [navigate]);
@@ -37,7 +36,7 @@ const NewPostForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!authorId) { // 6. CHECK IF WE HAVE THE AUTHOR ID
+    if (!authorId) {
       alert("You must be logged in to create a post.");
       return;
     }
@@ -46,20 +45,19 @@ const NewPostForm = () => {
       title,
       content,
       tags: tags.split(",").map((t) => t.trim()),
-      author: authorId, // 7. SEND THE AUTHOR ID
+      author: authorId,
     });
     navigate("/forum");
   };
 
   if (!authorId) {
-    return <p>Loading...</p>; // Or some other loading indicator
+    return <p>Loading...</p>;
   }
 
   return (
     <Container className="mt-4">
       <h2>New Post</h2>
       <Form onSubmit={handleSubmit}>
-        {/* ... your form groups for title, content, tags ... */}
         <Form.Group className="mb-2">
           <Form.Label>Title</Form.Label>
           <Form.Control
