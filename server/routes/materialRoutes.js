@@ -1,4 +1,6 @@
 import express from "express";
+import { auth } from "../middleware/auth.js";
+import checkRole from "../middleware/checkRole.js";
 import upload from "../middleware/upload.js";
 import Material from "../models/Material.js";
 
@@ -14,9 +16,23 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", upload.single("file"), async (req, res) => {
+router.get("/topics/:subject", async (req, res) => {
   try {
-    const { title, description, subject, classLevel, author, topic } = req.body;
+    const { subject } = req.params;
+    if (!subject) {
+      return res.status(400).json({ error: "Subject is required" });
+    }
+
+    const topics = await Material.distinct("topic", { subject });
+    res.json(topics);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post("/", auth, checkRole("Educator"), upload.single("file"), async (req, res) => {
+  try {
+    const {title, description, instructor, version, classLevel, subject, topic } = req.body;
 
     if (!req.file || !req.file.path) {
       return res.status(400).json({ error: "File upload failed" });
@@ -25,11 +41,12 @@ router.post("/", upload.single("file"), async (req, res) => {
     const newMaterial = new Material({
       title,
       description,
-      subject,
+      instructor: req.user.name,
+      version,
       classLevel,
-      author,
+      subject,
       topic,
-      fileUrl: req.file.path,
+      fileUrl: req.file.secure_url || req.file.path,
       size: req.file && req.file.size
         ? parseFloat((req.file.size / (1024 * 1024)).toFixed(2))
         : null

@@ -1,21 +1,162 @@
+.site-header {
+  width: 100%;
+  z-index: 1030;
+}
+
+.site-header .top-bar {
+  background-color: transparent;
+  font-size: 0.85rem;
+  padding: 4px 0;
+  transition: all 0.3s ease;
+}
+
+.site-header.scrolled .custom-navbar {
+  opacity: 1;
+  pointer-events: auto;
+  background-color: #fff;
+  padding-top: 0.3rem !important;
+  padding-bottom: 0.3rem !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.top-bar .container-fluid {
+  padding-left: 0.8rem;
+  padding-right: 0.8rem;
+}
+
+@media (max-width: 767.98px) {
+  .top-bar .navbar-collapse {
+    background-color: #343a58;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+  }
+
+  .top-bar .nav-link {
+    color: #333 !important;
+    font-weight: 500;
+    padding: 0.25rem 0;
+  }
+
+  .top-bar .nav-link:hover {
+    color: #ffd700 !important;
+  }
+}
+
+.top-bar .nav-link {
+  color: #fff !important;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.25rem 0;
+}
+
+.top-bar .nav-link:hover {
+  color: #ffd700 !important;
+}
+
+.top-bar .navbar-brand img {
+  display: block;
+}
+
+
+.site-header .custom-navbar {
+  opacity: 0;
+  pointer-events: none;
+  background-color: rgba(255, 255, 255, 0.95);
+  transition: opacity 0.3s ease;
+}
+
+.site-header.scrolled .top-bar {
+  opacity: 0;
+  visibility: hidden;
+  height: 0;
+  padding: 0;
+}
+
+.site-header.scrolled .custom-navbar {
+  background-color: #fff;
+  padding-top: 0.3rem !important;
+  padding-bottom: 0.3rem !important;
+}
+
 .custom-login-btn {
-    width: 120px;
-    height: 36px;
-    padding: 4px 10px;
-    font-size: 0.95rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap; 
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  line-height: 1.5;
+  border-radius: 0.375rem;
+}
+
+.custom-login-btn:hover {
+  background-color: #0056b3;
 }
 
 .custom-navbar {
-    padding-top: 0.5rem  !important;
-    padding-bottom: 0.5rem !important;  
-    min-height: 64px;
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+  min-height: 64px;
+}
+
+.custom-navbar .nav-link {
+  font-weight: 500;
+  font-size: 1rem;
+  color: #333 !important;
+  transition: color 0.3s ease;
+}
+
+.custom-navbar .nav-link:hover {
+  color: #007bff !important;
 }
 
 .custom-navbar .container-fluid {
-    padding-left: 0.8rem;
-    padding-right: 0.8rem;
+  padding-left: 0.8rem;
+  padding-right: 0.8rem;
+}
+
+.top-bar .active-link,
+.top-bar .nav-link.active {
+  color: #ffd700 !important;
+  font-weight: 600;
+}
+.custom-navbar .active-link,
+.custom-navbar .nav-link.active {
+  color: #007bff !important;
+  font-weight: 600;
+}
+
+.top-bar .fw-semibold {
+  font-size: 0.95rem;
+}
+
+.top-bar .bi-person-circle {
+  vertical-align: middle;
+}
+.custom-navbar .fw-semibold {
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.custom-navbar .bi-person-circle {
+  vertical-align: middle;
+  color: #333;
+}
+
+.profile-link {
+  padding: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.profile-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+}
+
+.custom-navbar .profile-link:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.top-bar .profile-link:hover .fw-semibold {
+  color: #ffd700 !important;
 }

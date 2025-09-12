@@ -1,0 +1,130 @@
+.upload-page {
+  background: #dceefa; 
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  font-family: Arial, sans-serif;
+}
+
+.upload-container {
+  background: #fff;
+  width: 100%;
+  max-width: 700px;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.upload-container:hover {
+  transform: translateY(-4px);
+}
+
+.upload-container h2 {
+  text-align: center;
+  color: navy;
+  margin-bottom: 20px;
+}
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.input-card {
+  background: #f9fbff;
+  border: 1px solid #dce7f7;
+  border-radius: 8px;
+  padding: 12px 15px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-card:hover {
+  background: #eef6ff;
+  border-color: #87ceeb; 
+}
+
+.input-card label {
+  font-weight: bold;
+  color: navy;
+  margin-bottom: 6px;
+}
+
+.input-card input,
+.input-card select {
+  border: none;
+  outline: none;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-card select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background: #fff url("data:image/svg+xml;utf8,<svg fill='navy' height='32' viewBox='0 0 24 24' width='32' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") 
+    no-repeat right 12px center;
+  background-size: 20px; 
+  padding-right: 35px; 
+  cursor: pointer;
+  transition: border 0.2s ease, background 0.2s ease;
+}
+
+.input-card select:hover {
+  border-color: #87ceeb;
+  background-color: #f0f8ff;
+}
+.readonly-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f9f9f9; 
+  color: #333;
+  font-size: 14px;
+  cursor: not-allowed; 
+}
+.file-input {
+  padding: 10px;
+  background: #f0f8ff;
+  border-radius: 8px;
+  border: 1px dashed #87ceeb;
+  cursor: pointer;
+}
+
+.file-input:hover {
+  background: #e0f2ff;
+  border-color: navy;
+}
+
+.upload-btn {
+  background: navy;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background 0.2s ease;
+}
+
+.upload-btn:hover {
+  background: #004080; 
+}
+
+.upload-btn:disabled {
+  background: gray;
+  cursor: not-allowed;
+}

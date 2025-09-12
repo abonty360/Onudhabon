@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import './RegistrationForm.css';
 import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaLock } from 'react-icons/fa';
 
 const rolesList = [
   { label: 'Local Guardian', desc: 'Register and track students in your community' },
-  { label: 'Lecturer', desc: 'Create and deliver educational content' },
-  { label: 'Material Provider', desc: 'Contribute educational resources and materials' },
-  { label: 'Evaluator', desc: 'Assess and evaluate student progress' },
+  { label: 'Educator', desc: 'Create and deliver educational content' },
 ];
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -26,31 +27,54 @@ const RegisterForm = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    if (name === 'phone') {
+      const digits = value.replace(/\D/g, '');
+      setFormData(prev => ({
+        ...prev,
+        [name]: digits
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      }));
+    }
   };
 
   const handleRoleChange = (label) => {
     setFormData(prev => ({
       ...prev,
-      roles: [label],
+      roles: label,
     }));
   };
 
+  const [emailError, setEmailError] = useState('');
+
   const handleBlur = (field) => {
     setTouched(prev => ({ ...prev, [field]: true }));
+    if (field === 'email') {
+      const { email } = formData;
+      const allowedDomains = ['@gmail.com', '@outlook.com', '@yahoo.com', '@hotmail.com', '@aust.edu'];
+      const emailDomain = email.substring(email.lastIndexOf('@'));
+      if (email && !allowedDomains.includes(emailDomain)) {
+        setEmailError('Incorrect Domain');
+      } else {
+        setEmailError('');
+      }
+    }
   };
 
   const isValid = () => {
     const { name, email, phone, location, password, confirmPassword, terms, roles } = formData;
+    const allowedDomains = ['@gmail.com', '@outlook.com', '@yahoo.com', '@hotmail.com', '@aust.edu'];
+    const emailDomain = email.substring(email.lastIndexOf('@'));
+    const specialCharRegex = /[@#$%]/;
     return (
       name &&
-      email &&
-      phone &&
+      email && allowedDomains.includes(emailDomain) &&
+      phone && phone.length === 10 &&
       location &&
-      password && password.length >= 6 &&
+      password && password.length >= 6 && specialCharRegex.test(password) &&
       confirmPassword &&
       password === confirmPassword &&
       terms &&
@@ -58,7 +82,7 @@ const RegisterForm = () => {
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitted(true);
 
@@ -69,17 +93,36 @@ const RegisterForm = () => {
       return;
     }
 
-    alert('Form submitted successfully!');
-    // Submit logic here
+    try {
+      const submissionData = {
+        ...formData,
+        phone: `+880${formData.phone}`
+      };
+      const response = await axios.post('/api/user/register', submissionData);
+      alert('Registration successful!');
+      navigate('/login');
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        alert(error.response.data.message);
+      } else {
+        alert('Registration failed. Please try again.');
+      }
+      console.error('Registration error:', error);
+    }
   };
 
   const getInputClass = (field) => {
+    const { email, password } = formData;
+    const allowedDomains = ['@gmail.com', '@outlook.com', '@yahoo.com', '@hotmail.com', '@aust.edu'];
+    const emailDomain = email.substring(email.lastIndexOf('@'));
+    const specialCharRegex = /[@#$%]/;
     const error =
-      submitted || touched[field]
-        ? !formData[field] || 
-          (field === 'confirmPassword' && formData.password !== formData.confirmPassword) ||
-          (field === 'password' && formData.password.length > 0 && formData.password.length < 6)
-        : false;
+      (submitted || touched[field]) &&
+      (!formData[field] ||
+        (field === 'confirmPassword' && formData.password !== formData.confirmPassword) ||
+        (field === 'password' && (formData.password.length < 6 || !specialCharRegex.test(password))) ||
+        (field === 'phone' && formData.phone.length !== 10) ||
+        (field === 'email' && !allowedDomains.includes(emailDomain)));
     return `input-with-icon ${error ? 'error' : ''}`;
   };
 
@@ -117,10 +160,12 @@ const RegisterForm = () => {
           />
         </div>
       </div>
+      {emailError && <p className="error-message">{emailError}</p>}
 
       <div className={getInputClass('phone')}>
         <FaPhone className="icon" />
         <div className="input-inner-box">
+          <span className="phone-prefix">+880</span>
           <input
             type="tel"
             name="phone"
@@ -146,7 +191,7 @@ const RegisterForm = () => {
         </div>
       </div>
 
-      <p>Volunteer Roles (Select all that apply)</p>
+      <p>Volunteer Roles (Select One)</p>
       <div className={`volunteer-roles ${submitted && formData.roles.length === 0 ? 'error' : ''}`}>
         {rolesList.map((role, i) => (
           <label className="role-card" key={i}>
@@ -177,8 +222,8 @@ const RegisterForm = () => {
           />
         </div>
       </div>
-      {(submitted || touched.password) && formData.password.length > 0 && formData.password.length < 6 && (
-        <p className="error-message">Password must be at least 6 characters long.</p>
+      {(submitted || touched.password) && (formData.password.length < 6 || !/[@#$%]/.test(formData.password)) && (
+        <p className="error-message">Password must be at least 6 characters long and contain special characters</p>
       )}
 
       <div className={getInputClass('confirmPassword')}>
