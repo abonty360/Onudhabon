@@ -204,11 +204,9 @@ function MaterialPage({ isLoggedIn, handleLogout }) {
                     <div className="meta">
                       <span>{mat.author}</span>
                       <span>{new Date(mat.date).toLocaleDateString()}</span>
-                      <span>{mat.downloads} downloads</span>
                     </div>
                   </div>
 
-                  {/* Preview Section */}
                   <div className="material-preview">
                     {isPDF ? (
                       <iframe
@@ -223,7 +221,6 @@ function MaterialPage({ isLoggedIn, handleLogout }) {
                     )}
                   </div>
 
-                  {/* Actions */}
                   <div className="material-actions">
                     <span>{mat.size} MB</span>
                     <a
