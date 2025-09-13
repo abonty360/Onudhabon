@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
+import LectureReviewHero from "../../Components/HeroSection/LectureReviewHero";
 import "./AdminReview.css";
 
 function AdminReviewLectures({ isLoggedIn, handleLogout }) {
@@ -44,6 +45,7 @@ function AdminReviewLectures({ isLoggedIn, handleLogout }) {
   return (
     <>
       <NavbarComponent isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />
+      <LectureReviewHero />
       <div className="admin-review-container">
         <h1>Review Pending Lectures</h1>
         {lectures.length > 0 ? (

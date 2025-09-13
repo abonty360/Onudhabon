@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { jwtDecode } from "jwt-decode";
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import LoginPage from './Pages/LoginPage/LoginPage';
 import RegistrationPage from './Pages/RegistrationPage/RegistrationPage';
 import HomePage from './Pages/HomePage/HomePage';
@@ -24,8 +24,8 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -54,6 +54,7 @@ function App() {
     localStorage.removeItem("token");
     setUser(null);
     setIsLoggedIn(false);
+    navigate("/login");
   };
 
   return (
