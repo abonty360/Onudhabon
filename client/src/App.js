@@ -16,6 +16,8 @@ import ForumDetail from './Pages/ForumPage/ForumDetail.jsx';
 import NewPostForm from './Pages/ForumPage/NewPostForm.jsx';
 import AdminReviewLectures from './Pages/AdminReview/AdminReviewLectures.jsx';
 import AdminReviewMaterials from './Pages/AdminReview/AdminReviewMaterials.jsx';
+import AdminReviewStudents from './Pages/AdminReview/AdminReviewStudent.jsx';
+
 
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -26,6 +28,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -41,6 +44,7 @@ function App() {
         localStorage.removeItem("token");
       }
     }
+    setLoading(false);
   }, []);
 
   const handleLogin = (token) => {
@@ -56,6 +60,10 @@ function App() {
     setIsLoggedIn(false);
     navigate("/login");
   };
+
+  if (loading) {
+    return <div>Loading...</div>; // or a spinner component
+  }
 
   return (
     <Routes>
@@ -82,6 +90,14 @@ function App() {
         ? <AdminReviewMaterials isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />
         : <Navigate to="/login" />
       }
+      />
+      <Route
+        path="/admin/review-students"
+        element={
+          isLoggedIn && user?.roles === "Admin"
+            ? <AdminReviewStudents isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />
+            : <Navigate to="/login" />
+        }
       />
     </Routes>
   );

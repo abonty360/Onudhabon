@@ -90,6 +90,9 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
                                     <Nav.Link as={NavLink} to="/admin/review-materials" className={getNavLinkClass}>
                                         Review Materials
                                     </Nav.Link>
+                                    <Nav.Link as={NavLink} to="/admin/review-students" className={getNavLinkClass}>
+                                        Review Students
+                                    </Nav.Link>
                                 </>
                             )}
                         </Nav>
@@ -142,6 +145,9 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
                                     </Nav.Link>
                                     <Nav.Link as={NavLink} to="/admin/review-materials" className={getNavLinkClass}>
                                         Review Materials
+                                    </Nav.Link>
+                                    <Nav.Link as={NavLink} to="/admin/review-students" className={getNavLinkClass}>
+                                        Review Students
                                     </Nav.Link>
                                 </>
                             )}

@@ -15,6 +15,7 @@ import lectureRoutes from './routes/lectureRoutes.js';
 import materialRoutes from './routes/materialRoutes.js';
 import forumRoutes from "./routes/forumRoutes.js";
 import articleRoutes from './routes/articles.js';
+import studentRoutes from './routes/studentRoutes.js';
 
 connectDb();
 
@@ -27,6 +28,7 @@ app.use('/api/lectures', lectureRoutes);
 app.use('/api/materials', materialRoutes);
 app.use("/api/forum", forumRoutes);
 app.use('/api/articles', articleRoutes);
+app.use('/api/students', studentRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));
