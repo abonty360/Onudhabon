@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
     },
     roles: {
         type: String,
-        enum: ['Local Guardian', 'Educator'],
+        enum: ['Local Guardian', 'Educator', 'Admin'],
         required: true
     },
     bio: {
