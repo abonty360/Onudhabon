@@ -82,6 +82,16 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
                                     Student Progress
                                 </Nav.Link>
                             )}
+                            {user?.roles === "Admin" && (
+                                <>
+                                    <Nav.Link as={NavLink} to="/admin/review-lectures" className={getNavLinkClass}>
+                                        Review Lectures
+                                    </Nav.Link>
+                                    <Nav.Link as={NavLink} to="/admin/review-materials" className={getNavLinkClass}>
+                                        Review Materials
+                                    </Nav.Link>
+                                </>
+                            )}
                         </Nav>
                         <Form className="d-flex align-items-center gap-2">
                             {isLoggedIn ? (
@@ -124,6 +134,16 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
                                 <Nav.Link as={NavLink} to="/studentprogress" className={getNavLinkClass}>
                                     Student Progress
                                 </Nav.Link>
+                            )}
+                            {user?.roles === "Admin" && (
+                                <>
+                                    <Nav.Link as={NavLink} to="/admin/review-lectures" className={getNavLinkClass}>
+                                        Review Lectures
+                                    </Nav.Link>
+                                    <Nav.Link as={NavLink} to="/admin/review-materials" className={getNavLinkClass}>
+                                        Review Materials
+                                    </Nav.Link>
+                                </>
                             )}
                         </Nav>
                         <Form className="d-flex align-items-center gap-2">

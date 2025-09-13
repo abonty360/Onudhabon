@@ -29,8 +29,8 @@ folder = "onudhabon/profile_pictures";
       public_id: file.originalname.split(".")[0],
       type: "upload",    
       access_mode: "public",
-      use_filename: true,       // ✅ keeps original filename
-      unique_filename: false,   // ✅ prevents random suffixes
+      use_filename: true,       
+      unique_filename: false,   
       overwrite: true  
     };
   },
