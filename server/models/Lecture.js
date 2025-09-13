@@ -10,6 +10,7 @@ const lectureSchema = new mongoose.Schema({
   topic: { type: String, required: true },
   thumbnail: { type: String },
   videoUrl: { type: String, required: true },
+  status: { type: String, enum: ["pending", "approved", "declined"], default: "pending" },
   createdAt: { type: Date, default: Date.now }
 });
 

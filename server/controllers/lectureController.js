@@ -14,10 +14,11 @@ export const newLecture = async (req, res) => {
       topic,
       videoUrl: req.file.path,  
       thumbnail: req.file?.thumbnail_url || null,
+      status: "pending"
     });
 
     await lecture.save();
-    res.status(201).json(lecture);
+    res.status(201).json({ message: "Lecture uploaded and pending admin approval", lecture });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -25,7 +26,7 @@ export const newLecture = async (req, res) => {
 
 export const getLectures = async (req, res) => {
   try {
-    const lectures = await Lecture.find();
+    const lectures = await Lecture.find({ status: "approved" }).sort({ createdAt: -1 });
     res.json(lectures);
   } catch (err) {
     res.status(500).json({ error: err.message });

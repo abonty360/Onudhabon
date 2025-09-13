@@ -1,0 +1,192 @@
+/* Container spacing (accounts for fixed navbar) */
+.student-progress-container {
+  padding: 2rem;
+  padding-top: 6rem; /* push content below fixed header */
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #f9fafb;
+}
+
+/* Section headings */
+.student-progress-container h2 {
+  margin: 1rem 0 1.25rem;
+  font-weight: 600;
+  color: #1f2937; /* slate-800 */
+}
+
+/* Enrollment form */
+.student-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 1.25rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb; /* gray-200 */
+  padding: 1.25rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+  margin-bottom: 2rem;
+}
+
+.student-form input[type="text"],
+.student-form input[type="number"],
+.student-form input[type="file"] {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #d1d5db; /* gray-300 */
+  border-radius: 6px;
+  background: #fff;
+  font-size: 0.95rem;
+  color: #111827; /* gray-900 */
+}
+
+.student-form input[type="file"] {
+  padding: 0.45rem 0.5rem;
+  background: #f8fafc; /* slate-50 */
+}
+
+.student-form label {
+  grid-column: 1 / -1;
+  font-size: 0.9rem;
+  color: #374151; /* gray-700 */
+  margin-top: 0.25rem;
+}
+
+.student-form button[type="submit"] {
+  grid-column: 1 / -1;
+  justify-self: start;
+  background: #2563eb; /* blue-600 */
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.student-form button[type="submit"]:hover {
+  background: #1d4ed8; /* blue-700 */
+}
+
+/* Student list grid */
+.student-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+/* Student card */
+.student-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb; /* gray-200 */
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.student-card h4 {
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+  color: #111827; /* gray-900 */
+}
+
+.student-card p {
+  margin: 0.15rem 0;
+  color: #374151; /* gray-700 */
+  font-size: 0.95rem;
+}
+
+.student-card a {
+  margin-top: 0.25rem;
+  color: #2563eb; /* blue-600 */
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.student-card a:hover {
+  text-decoration: underline;
+}
+
+/* Status badges */
+.status-pending,
+.status-verified,
+.status-declined {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.status-pending {
+  background: #fff7ed; /* orange-50 */
+  color: #c2410c;      /* orange-700 */
+  border: 1px solid #fdba74; /* orange-300 */
+}
+
+.status-verified {
+  background: #ecfdf5; /* emerald-50 */
+  color: #047857;      /* emerald-700 */
+  border: 1px solid #6ee7b7; /* emerald-300 */
+}
+
+.status-declined {
+  background: #fef2f2; /* red-50 */
+  color: #b91c1c;      /* red-700 */
+  border: 1px solid #fca5a5; /* red-300 */
+}
+
+/* Responsive tweaks */
+@media (max-width: 992px) {
+  .student-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .student-form {
+    grid-template-columns: 1fr;
+  }
+  .student-list {
+    grid-template-columns: 1fr;
+  }
+  .student-progress-container {
+    padding: 1.25rem;
+    padding-top: 5.5rem;
+  }
+}
+
+.toggle-form-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #2563eb; /* blue-600 */
+  color: white;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: background 0.2s ease;
+}
+
+.toggle-form-btn:hover {
+  background-color: #1d4ed8; /* blue-700 */
+}
+
+.toggle-form-btn .icon {
+  font-size: 1.2rem;
+  font-weight: bold;
+  line-height: 1;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.toggle-form-btn.open .icon {
+  transform: rotate(90deg); /* optional rotation effect */
+}

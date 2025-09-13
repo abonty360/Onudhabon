@@ -5,7 +5,7 @@ import User from "../models/Volunteers/User.js";
 
 export const getAllUsers = async (req, res) => {
     try {
-        const users = await User.find().select('-password'); 
+        const users = await User.find().select('-password');
         res.json(users);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -37,7 +37,7 @@ export const register = async (req, res) => {
             email,
             phone,
             location,
-            password, 
+            password,
             roles
         });
 
@@ -119,3 +119,32 @@ export const updateProfilePicture = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 }
+
+export const createAdmin = async (req, res) => {
+    try {
+        const { name, email, phone, location, password } = req.body;
+        if (req.user.roles !== "Admin") {
+            return res.status(403).json({ message: "Access denied" });
+        }
+        const existing = await User.findOne({ email });
+        if (existing) {
+            return res.status(409).json({ message: "This email is already registered." });
+        }
+
+        const trimmedName = name.trimStart();
+
+        const admin = new User({
+            name: trimmedName,
+            email,
+            phone,
+            location,
+            password,
+            roles: "Admin"
+        });
+
+        await admin.save();
+        res.status(201).json({ message: "Admin created successfully", admin });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

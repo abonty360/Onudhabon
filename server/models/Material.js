@@ -11,6 +11,7 @@ const materialSchema = new mongoose.Schema({
   fileUrl: { type: String, required: true },
   size: Number,
   downloads: { type: Number, default: 0 },
+  status: { type: String, enum: ["pending", "approved", "declined"], default: "pending" },
   date: { type: Date, default: Date.now }
 });
 
