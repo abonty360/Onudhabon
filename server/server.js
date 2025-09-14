@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import http from 'http';
+import { init as initSocket } from './socket.js';
 
 dotenv.config();
 console.log("ENV check:", {
@@ -20,8 +22,10 @@ import studentRoutes from './routes/studentRoutes.js';
 connectDb();
 
 const app = express();
+const server = http.createServer(app);
 app.use(cors());
 app.use(express.json());
+initSocket(server);
 
 app.use('/api/user', userRoutes);
 app.use('/api/lectures', lectureRoutes);
@@ -31,4 +35,4 @@ app.use('/api/articles', articleRoutes);
 app.use('/api/students', studentRoutes);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`server running on port ${PORT}`));

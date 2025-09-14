@@ -1,26 +1,23 @@
-/* Container spacing (accounts for fixed navbar) */
 .student-progress-container {
   padding: 2rem;
-  padding-top: 6rem; /* push content below fixed header */
+  padding-top: 6rem; 
   max-width: 1200px;
   margin: 0 auto;
   background: #f9fafb;
 }
 
-/* Section headings */
 .student-progress-container h2 {
   margin: 1rem 0 1.25rem;
   font-weight: 600;
-  color: #1f2937; /* slate-800 */
+  color: #1f2937; 
 }
 
-/* Enrollment form */
 .student-form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem 1.25rem;
   background: #ffffff;
-  border: 1px solid #e5e7eb; /* gray-200 */
+  border: 1px solid #e5e7eb; 
   padding: 1.25rem;
   border-radius: 8px;
   box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
@@ -32,29 +29,29 @@
 .student-form input[type="file"] {
   width: 100%;
   padding: 0.6rem 0.75rem;
-  border: 1px solid #d1d5db; /* gray-300 */
+  border: 1px solid #d1d5db; 
   border-radius: 6px;
   background: #fff;
   font-size: 0.95rem;
-  color: #111827; /* gray-900 */
+  color: #111827; 
 }
 
 .student-form input[type="file"] {
   padding: 0.45rem 0.5rem;
-  background: #f8fafc; /* slate-50 */
+  background: #f8fafc; 
 }
 
 .student-form label {
   grid-column: 1 / -1;
   font-size: 0.9rem;
-  color: #374151; /* gray-700 */
+  color: #374151; 
   margin-top: 0.25rem;
 }
 
 .student-form button[type="submit"] {
   grid-column: 1 / -1;
   justify-self: start;
-  background: #2563eb; /* blue-600 */
+  background: #2563eb; 
   color: #fff;
   border: none;
   padding: 0.6rem 1rem;
@@ -65,20 +62,18 @@
 }
 
 .student-form button[type="submit"]:hover {
-  background: #1d4ed8; /* blue-700 */
+  background: #1d4ed8; 
 }
 
-/* Student list grid */
 .student-list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
 }
 
-/* Student card */
 .student-card {
   background: #ffffff;
-  border: 1px solid #e5e7eb; /* gray-200 */
+  border: 1px solid #e5e7eb; 
   border-radius: 8px;
   padding: 1rem;
   box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
@@ -90,18 +85,18 @@
 .student-card h4 {
   margin: 0 0 0.25rem;
   font-weight: 600;
-  color: #111827; /* gray-900 */
+  color: #111827; 
 }
 
 .student-card p {
   margin: 0.15rem 0;
-  color: #374151; /* gray-700 */
+  color: #374151; 
   font-size: 0.95rem;
 }
 
 .student-card a {
   margin-top: 0.25rem;
-  color: #2563eb; /* blue-600 */
+  color: #2563eb; 
   font-weight: 600;
   text-decoration: none;
 }
@@ -110,7 +105,6 @@
   text-decoration: underline;
 }
 
-/* Status badges */
 .status-pending,
 .status-verified,
 .status-declined {
@@ -123,24 +117,23 @@
 }
 
 .status-pending {
-  background: #fff7ed; /* orange-50 */
-  color: #c2410c;      /* orange-700 */
-  border: 1px solid #fdba74; /* orange-300 */
+  background: #fff7ed; 
+  color: #c2410c;    
+  border: 1px solid #fdba74; 
 }
 
 .status-verified {
-  background: #ecfdf5; /* emerald-50 */
-  color: #047857;      /* emerald-700 */
-  border: 1px solid #6ee7b7; /* emerald-300 */
+  background: #ecfdf5; 
+  color: #047857;      
+  border: 1px solid #6ee7b7; 
 }
 
 .status-declined {
-  background: #fef2f2; /* red-50 */
-  color: #b91c1c;      /* red-700 */
-  border: 1px solid #fca5a5; /* red-300 */
+  background: #fef2f2; 
+  color: #b91c1c;      
+  border: 1px solid #fca5a5; 
 }
 
-/* Responsive tweaks */
 @media (max-width: 992px) {
   .student-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -164,7 +157,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #2563eb; /* blue-600 */
+  background-color: #2563eb; 
   color: white;
   padding: 0.6rem 1rem;
   border: none;
@@ -176,7 +169,7 @@
 }
 
 .toggle-form-btn:hover {
-  background-color: #1d4ed8; /* blue-700 */
+  background-color: #1d4ed8; 
 }
 
 .toggle-form-btn .icon {
@@ -188,5 +181,97 @@
 }
 
 .toggle-form-btn.open .icon {
-  transform: rotate(90deg); /* optional rotation effect */
+  transform: rotate(90deg); 
 }
+
+.page-container {
+  padding: 2rem;
+}
+
+.update-btn {
+  background: #f9bd45;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0.75rem;
+}
+
+.update-btn:hover {
+  background: #e0a800;
+}
+
+.update-form {
+  background: #f9f9f9;
+  border: 1px solid #eee;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.form-group select,
+.form-group input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.save-btn {
+  background: #28a745;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background: #218838;
+}
+
+.promote-btn {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100;
+}
+
+.completed-classes {
+  margin: 0.75rem 0;
+  padding: 0.5rem 0.75rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.completed-classes h5 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.completed-classes ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.completed-classes li {
+  font-size: 0.9rem;
+  padding: 0.25rem 0;
+}
+
