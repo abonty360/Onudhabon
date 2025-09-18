@@ -18,6 +18,7 @@ import materialRoutes from './routes/materialRoutes.js';
 import forumRoutes from "./routes/forumRoutes.js";
 import articleRoutes from './routes/articles.js';
 import studentRoutes from './routes/studentRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 
 connectDb();
 
@@ -33,6 +34,7 @@ app.use('/api/materials', materialRoutes);
 app.use("/api/forum", forumRoutes);
 app.use('/api/articles', articleRoutes);
 app.use('/api/students', studentRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`server running on port ${PORT}`));

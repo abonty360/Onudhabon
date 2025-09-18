@@ -1,0 +1,39 @@
+
+
+.notification-panel {
+    position: absolute;
+    top: 50px;
+
+    right: 0;
+    width: 350px;
+    max-height: 400px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    z-index: 1050;
+
+    color: #333;
+}
+
+.notification-panel-header {
+    padding: 0.75rem 1.25rem;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+}
+
+.list-group-item.action:hover {
+    background-color: #f8f9fa;
+}
+
+.unread-notification {
+    background-color: #eaf2ff;
+
+}
+
+.notification-timestamp {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-top: 4px;
+}
