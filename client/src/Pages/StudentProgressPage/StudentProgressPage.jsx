@@ -167,7 +167,16 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
                 setStudents(prev => [res.data.student, ...prev]);
                 setShowForm(false);
             })
-            .catch(err => console.error("Error enrolling student:", err));
+            .catch(err => {
+                if (err.response && err.response.status === 403) {
+                    alert(err.response.data.error);
+                } else if (err.response && err.response.data && err.response.data.error) {
+                    alert(err.response.data.error);
+                } else {
+                    alert("Error enrolling student. Please try again.");
+                }
+                console.error("Error enrolling student:", err);
+            });
     };
     return (
         <>
@@ -177,7 +186,13 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
                 <div className="student-progress-container">
                     <button
                         className={`toggle-form-btn ${showForm ? "open" : ""}`}
-                        onClick={() => setShowForm(prev => !prev)}
+                        onClick={() => {
+                            if (user?.isRestricted) {
+                                alert("You are restricted from enrolling new students.");
+                            } else {
+                                setShowForm(prev => !prev);
+                            }
+                        }}
                     >
                         <span className="icon">{showForm ? "×" : "+"}</span>
                         {showForm ? "Hide Enrollment Form" : "Enroll New Student"}
@@ -248,7 +263,16 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
                                             subjects={prog.subjects}
                                         />
                                     )}
-                                    <button className="update-btn" onClick={() => setShowForm(showForm === stu._id ? null : stu._id)}>
+                                    <button
+                                        className="update-btn"
+                                        onClick={() => {
+                                            if (user?.isRestricted) {
+                                                alert("You are restricted from updating student progress.");
+                                            } else {
+                                                setShowForm(showForm === stu._id ? null : stu._id);
+                                            }
+                                        }}
+                                    >
                                         {showForm === stu._id ? "Cancel Update" : "Update Progress"}
                                     </button>
                                     {showForm === stu._id && stu.status !== "pending" && stu.status !== "declined" && (

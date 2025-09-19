@@ -72,6 +72,27 @@ function AdminReviewStudents({ isLoggedIn, handleLogout }) {
     setRestrictionMessage("");
   };
 
+  const handleToggleRestrict = async (id, currentStatus) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/user/${id}/restrict`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+      });
+      const updatedUser = await response.json();
+      if (response.ok) {
+        setSelectedStudent(updatedUser.user);
+        setRestrictionMessage(
+          `${updatedUser.user.name} is now ${updatedUser.user.isRestricted ? "restricted" : "unrestricted"}.`
+        );
+      } else {
+        setRestrictionMessage(updatedUser.message || "Failed to update restriction status.");
+      }
+    } catch (err) {
+      console.error("Error toggling restriction:", err);
+      setRestrictionMessage("Failed to update restriction status.");
+    }
+  };
+
   return (
     <>
       <NavbarComponent isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />
@@ -127,7 +148,12 @@ function AdminReviewStudents({ isLoggedIn, handleLogout }) {
             <p><strong>Role:</strong> {selectedStudent.roles}</p>
             <p><strong>Bio:</strong> {selectedStudent.bio}</p>
             <p><strong>Status:</strong> {selectedStudent.isRestricted ? "Restricted" : "Active"}</p>
-            {/* Add restrict/unrestrict button if applicable for guardians */}
+            <button
+              onClick={() => handleToggleRestrict(selectedStudent._id, selectedStudent.isRestricted)}
+              className={selectedStudent.isRestricted ? "unrestrict-btn" : "restrict-btn"}
+            >
+              {selectedStudent.isRestricted ? "Unrestrict" : "Restrict"}
+            </button>
             <button onClick={handleCloseProfileModal} className="close-modal-btn">Close</button>
           </div>
         </div>
