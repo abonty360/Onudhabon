@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
@@ -19,24 +19,36 @@ function MaterialPage({ isLoggedIn, handleLogout }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/materials")
-      .then((res) => res.json())
-      .then((data) => {
-        setMaterials(data);
-        setFilteredMaterials(data);
+    if (isLoggedIn && user?.roles === "Educator") {
+      fetch("http://localhost:5000/api/materials/mine", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       })
-      .catch((err) => console.error("GET materials error:", err));
-  }, []);
+        .then(res => res.json())
+        .then(data => {
+          setMaterials(data); 
+          setFilteredMaterials(data);
+        })
+        .catch(err => console.error("GET my materials error:", err));
+    } else {
+      fetch("http://localhost:5000/api/materials")
+        .then(res => res.json())
+        .then(data => {
+          setMaterials(data);
+          setFilteredMaterials(data);
+        })
+        .catch(err => console.error("GET materials error:", err));
+    }
+  }, [isLoggedIn, user]);
 
-    useEffect(() => {
-      if (isLoggedIn) {
-        const token = localStorage.getItem("token");
-        if (token) {
-          const decoded = jwtDecode(token);
-          setUser(decoded);
-        }
+  useEffect(() => {
+    if (isLoggedIn) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decoded = jwtDecode(token);
+        setUser(decoded);
       }
-    }, [isLoggedIn]);
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     let filtered = materials;
@@ -91,7 +103,7 @@ function MaterialPage({ isLoggedIn, handleLogout }) {
   return (
     <>
       <NavbarComponent isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />
-      <MaterialHero/>
+      <MaterialHero />
       <div className="material-container">
         <h1>Study Materials</h1>
         {isLoggedIn && user?.roles === "Educator" ? (
@@ -186,42 +198,66 @@ function MaterialPage({ isLoggedIn, handleLogout }) {
 
         <div className="material-list">
           {filteredMaterials.length > 0 ? (
-            filteredMaterials.map((mat) => (
-              <div key={mat._id} className="material-card">
-                <div className="material-info">
-                  <h3>{mat.title}</h3>
-                  <p>{mat.description}</p>
-                  <div className="tags">
-                    <span>Grade {mat.classLevel}</span>
-                    <span>{mat.subject}</span>
-                    <span>{mat.topic}</span>
+            filteredMaterials.map((mat) => {
+              const isPDF =
+                mat.fileUrl &&
+                mat.fileUrl.toLowerCase().includes(".pdf");
+
+              return (
+                <div key={mat._id} className="material-card">
+                  <div className="material-info">
+                    <h3>{mat.title}</h3>
+                    <p>{mat.description}</p>
+                    <div className="tags">
+                      <span>Grade {mat.classLevel}</span>
+                      <span>{mat.subject}</span>
+                      <span>{mat.topic}</span>
+                      {isLoggedIn && user?.roles === "Educator" && (
+                        <span
+                          className={`status-badge ${mat.status === "pending"
+                              ? "pending"
+                              : mat.status === "approved"
+                                ? "approved"
+                                : "declined"
+                            }`}
+                        >
+                          {mat.status.charAt(0).toUpperCase() + mat.status.slice(1)}
+                        </span>
+                      )}
+                    </div>
+                    <div className="meta">
+                      <span>{mat.author}</span>
+                      <span>{new Date(mat.date).toLocaleDateString()}</span>
+                    </div>
                   </div>
-                  <div className="meta">
-                    <span>{mat.author}</span>
-                    <span>{new Date(mat.date).toLocaleDateString()}</span>
-                    <span>{mat.downloads} downloads</span>
+
+                  <div className="material-preview">
+                    {isPDF ? (
+                      <iframe
+                        src={`${mat.fileUrl}#toolbar=0`}
+                        title={mat.title}
+                        width="100%"
+                        height="300px"
+                        style={{ border: "none" }}
+                      ></iframe>
+                    ) : (
+                      <div className="no-preview">No preview available</div>
+                    )}
+                  </div>
+
+                  <div className="material-actions">
+                    <span>{mat.size} MB</span>
+                    <a
+                      href={mat.fileUrl}
+                      download
+                      className="download-btn"
+                    >
+                      Download
+                    </a>
                   </div>
                 </div>
-                <div className="material-actions">
-                  <span>{mat.size} MB</span>
-                  <a
-                    href={mat.fileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="preview-btn"
-                  >
-                    Preview
-                  </a>
-                  <a
-                    href={mat.fileUrl}
-                    download
-                    className="download-btn"
-                  >
-                    Download
-                  </a>
-                </div>
-              </div>
-            ))
+              );
+            })
           ) : (
             <p>No materials found.</p>
           )}

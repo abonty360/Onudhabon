@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Navbar, Nav, Container, Form, Button, Image } from 'react-bootstrap';
 import { PersonCircle } from 'react-bootstrap-icons';
 import { NavLink } from 'react-router-dom';
@@ -6,10 +6,19 @@ import axios from 'axios';
 import logo from '../../assets/navbar_logo.png'
 import topBarLogo from '../../assets/hero-section-logo.png'
 import './Navbarcomp.css';
+import NotificationBell from '../Notification/NotificationBell';
+import NotificationPanel from '../Notification/NotificationPanel';
 
-const NavbarComponent = ({ isLoggedIn, handleLogout }) => {
+
+const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
     const [scrolled, setScrolled] = useState(false);
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(passedUser || null);
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    const [isPanelOpen, setIsPanelOpen] = useState(false);
+    const [notifications, setNotifications] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const notificationRef = useRef(null); 
 
     useEffect(() => {
         const handleScroll = () => {
@@ -41,10 +50,91 @@ const NavbarComponent = ({ isLoggedIn, handleLogout }) => {
             }
         };
 
-        if (isLoggedIn) {
+        if (isLoggedIn && !passedUser) {
             fetchProfile();
         }
+    }, [isLoggedIn, passedUser]);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+                setIsPanelOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+
+    useEffect(() => {
+        const fetchUnreadCount = async () => {
+            const token = localStorage.getItem("token");
+            if (token && isLoggedIn) {
+                try {
+                    const res = await axios.get('http://localhost:5000/api/notifications/unread-count', {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    setUnreadCount(res.data.count);
+                } catch (err) {
+                    console.error("Failed to fetch unread notification count:", err);
+                }
+            }
+        };
+
+        fetchUnreadCount();
+
+        const interval = setInterval(fetchUnreadCount, 6000); 
+        return () => clearInterval(interval); 
+
     }, [isLoggedIn]);
+
+    const handleBellClick = async () => {
+        setIsPanelOpen(prev => !prev); // Toggle the panel
+
+        // If we are opening the panel and there are unread notifications
+        if (!isPanelOpen && unreadCount > 0) {
+            try {
+                const token = localStorage.getItem("token");
+                // Mark them as read on the backend
+                await axios.patch('http://localhost:5000/api/notifications/mark-as-read', {}, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                // Set the count to 0 on the frontend immediately for a snappy UI
+                setUnreadCount(0);
+            } catch (err) {
+                console.error("Failed to mark notifications as read:", err);
+            }
+        }
+    };
+
+    const handleNotificationRead = (notificationId) => {
+        setNotifications(currentNotifications =>
+            currentNotifications.map(n =>
+                n._id === notificationId ? { ...n, isRead: true } : n
+            )
+        );
+    };
+
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            if (isPanelOpen) {
+                setIsLoading(true);
+                try {
+                    const token = localStorage.getItem("token");
+                    const res = await axios.get('http://localhost:5000/api/notifications', {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    setNotifications(res.data);
+                } catch (err) {
+                    console.error("Failed to fetch notifications:", err);
+                }
+                setIsLoading(false);
+            }
+        };
+        fetchNotifications();
+    }, [isPanelOpen]);
 
     const getNavLinkClass = ({ isActive }) =>
         isActive ? 'nav-link active-link' : 'nav-link';
@@ -77,10 +167,41 @@ const NavbarComponent = ({ isLoggedIn, handleLogout }) => {
                             <Nav.Link as={NavLink} to="/material" className={getNavLinkClass}>Materials</Nav.Link>
                             <Nav.Link as={NavLink} to="/about" className={getNavLinkClass}>About</Nav.Link>
                             <Nav.Link as={NavLink} to="/forum" className={getNavLinkClass}>Forum</Nav.Link>
+                            {user?.roles === "Local Guardian" && (
+                                <Nav.Link as={NavLink} to="/studentprogress" className={getNavLinkClass}>
+                                    Student Progress
+                                </Nav.Link>
+                            )}
+                            {user?.roles === "Admin" && (
+                                <>
+                                    <Nav.Link as={NavLink} to="/admin/review-lectures" className={getNavLinkClass}>
+                                        Review Lectures
+                                    </Nav.Link>
+                                    <Nav.Link as={NavLink} to="/admin/review-materials" className={getNavLinkClass}>
+                                        Review Materials
+                                    </Nav.Link>
+                                    <Nav.Link as={NavLink} to="/admin/review-students" className={getNavLinkClass}>
+                                        Review Students
+                                    </Nav.Link>
+                                </>
+                            )}
                         </Nav>
                         <Form className="d-flex align-items-center gap-2">
                             {isLoggedIn ? (
                                 <>
+                                    <div ref={notificationRef} className="position-relative">
+                                        <NotificationBell
+                                            unreadCount={unreadCount}
+                                            onClick={handleBellClick}
+                                        />
+                                        {isPanelOpen && (
+                                            <NotificationPanel
+                                                notifications={notifications}
+                                                isLoading={isLoading}
+                                                onNotificationRead={handleNotificationRead}
+                                            />
+                                        )}
+                                    </div>
                                     {renderProfileLink("text-white")}
                                     <Button
                                         variant="light"
@@ -88,7 +209,7 @@ const NavbarComponent = ({ isLoggedIn, handleLogout }) => {
                                     >
                                         <i className="bi bi-box-arrow-in-right me-1"></i> Logout
                                     </Button>
-                                </> 
+                                </>
                             ) : (
                                 <Button
                                     variant="light"
@@ -115,6 +236,24 @@ const NavbarComponent = ({ isLoggedIn, handleLogout }) => {
                             <Nav.Link as={NavLink} to="/material" className={getNavLinkClass}>Materials</Nav.Link>
                             <Nav.Link as={NavLink} to="/about" className={getNavLinkClass}>About</Nav.Link>
                             <Nav.Link as={NavLink} to="/forum" className={getNavLinkClass}>Forum</Nav.Link>
+                            {user?.roles === "Local Guardian" && (
+                                <Nav.Link as={NavLink} to="/studentprogress" className={getNavLinkClass}>
+                                    Student Progress
+                                </Nav.Link>
+                            )}
+                            {user?.roles === "Admin" && (
+                                <>
+                                    <Nav.Link as={NavLink} to="/admin/review-lectures" className={getNavLinkClass}>
+                                        Review Lectures
+                                    </Nav.Link>
+                                    <Nav.Link as={NavLink} to="/admin/review-materials" className={getNavLinkClass}>
+                                        Review Materials
+                                    </Nav.Link>
+                                    <Nav.Link as={NavLink} to="/admin/review-students" className={getNavLinkClass}>
+                                        Review Students
+                                    </Nav.Link>
+                                </>
+                            )}
                         </Nav>
                         <Form className="d-flex align-items-center gap-2">
                             {isLoggedIn ? (
@@ -127,7 +266,7 @@ const NavbarComponent = ({ isLoggedIn, handleLogout }) => {
                                     >
                                         <i className="bi bi-box-arrow-in-right me-1"></i> Logout
                                     </Button>
-                                </> 
+                                </>
                             ) : (
                                 <Button
                                     variant="primary"

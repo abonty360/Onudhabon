@@ -24,6 +24,7 @@ const ForumHero = () => {
         >
       <div className="overlay"></div>
       <Container>
+        <h5>Home/Lectures</h5>
         <h1 className="display-5 fw-bold">Inspiring Minds, One Lecture at a Time</h1>
         <p className="lead">
           Dive into a world of knowledge where passionate educators and volunteers share 

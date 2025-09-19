@@ -41,7 +41,7 @@ router.post("/", auth, checkRole("Educator"), upload.single("video"), async (req
 
 router.get("/", async (req, res) => {
   try {
-    const lectures = await Lecture.find().sort({ createdAt: -1 });
+    const lectures = await Lecture.find({ status: "approved" }).sort({ createdAt: -1 });
     res.status(200).json(lectures);
   } catch (err) {
     console.error("Error fetching lectures:", err);
@@ -58,6 +58,30 @@ router.get("/topics/:subject", async (req, res) => {
 
     const topics = await Lecture.distinct("topic", { subject });
     res.json(topics);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.get("/review", auth, checkRole("Admin"), async (req, res) => {
+  const pendingLectures = await Lecture.find({ status: "pending" }).sort({ createdAt: -1 });
+  res.json(pendingLectures);
+});
+
+router.patch("/:id/approve", auth, checkRole("Admin"), async (req, res) => {
+  const lecture = await Lecture.findByIdAndUpdate(req.params.id, { status: "approved" }, { new: true });
+  res.json({ message: "Lecture approved", lecture });
+});
+
+router.patch("/:id/decline", auth, checkRole("Admin"), async (req, res) => {
+  const lecture = await Lecture.findByIdAndUpdate(req.params.id, { status: "declined" }, { new: true });
+  res.json({ message: "Lecture declined", lecture });
+});
+
+router.get("/mine", auth, checkRole("Educator"), async (req, res) => {
+  try {
+    const myLectures = await Lecture.find({ instructor: req.user.name }).sort({ createdAt: -1 });
+    res.json(myLectures);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

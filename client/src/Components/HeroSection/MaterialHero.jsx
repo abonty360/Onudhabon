@@ -24,6 +24,7 @@ const ForumHero = () => {
         >
       <div className="overlay"></div>
       <Container>
+        <h5>Home/Materials</h5>
         <h1 className="display-5 fw-bold">Learning Resources for Every Journey</h1>
         <p className="lead">
           Access a growing library of study materials, guides, and tools created by 

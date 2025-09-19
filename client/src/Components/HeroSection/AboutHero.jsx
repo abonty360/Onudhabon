@@ -24,7 +24,8 @@ const AboutHero = () => {
     >
       <div className="overlay"></div>
       <Container>
-        <h1>About Onudhabon</h1>
+        <h5>Home/About</h5>
+        <h1 className="display-5 fw-bold">About Onudhabon</h1>
         <p>
           We believe every child deserves access to quality education,
           regardless of their circumstances. Onudhabon connects dedicated
