@@ -180,14 +180,23 @@ const RegisterForm = () => {
       <div className={getInputClass('location')}>
         <FaMapMarkerAlt className="icon" />
         <div className="input-inner-box">
-          <input
-            type="text"
+          <select
             name="location"
-            placeholder="City, Country"
             value={formData.location}
             onChange={handleChange}
             onBlur={() => handleBlur('location')}
-          />
+            className="location-select"
+          >
+            <option value="">Select Division</option>
+            <option value="Dhaka">Dhaka</option>
+            <option value="Rajshahi">Rajshahi</option>
+            <option value="Sylhet">Sylhet</option>
+            <option value="Chittagong">Chittagong</option>
+            <option value="Barisal">Barisal</option>
+            <option value="Rangpur">Rangpur</option>
+            <option value="Khulna">Khulna</option>
+            <option value="Mymensingh">Mymensingh</option>
+          </select>
         </div>
       </div>
 

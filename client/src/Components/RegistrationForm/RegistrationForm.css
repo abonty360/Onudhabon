@@ -201,3 +201,20 @@
 .form-mission-text {
   color: #7e8085;
 }
+
+.location-select {
+  background-color: transparent; 
+  border: none;
+  outline: none;
+  flex: 1;
+  padding: 0;
+  font-size: 1em;
+  color: #333;
+  width: 100%; /* Ensure it takes full width of its container */
+  cursor: pointer;
+}
+
+.location-select option {
+  color: #333;
+  background-color: #fff;
+}
