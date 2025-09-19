@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { io } from 'socket.io-client';
-import { Bar } from 'react-chartjs-2';
 import CombinedProgressChart from '../Chart/CombinedProgressChart.js';
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
@@ -14,6 +13,7 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
     const [progressData, setProgressData] = useState({});
     const [showForm, setShowForm] = useState(false);
     const [updateForm, setUpdateForm] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         birthCertificateId: "",
         fullName: "",
@@ -121,26 +121,6 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
         }
     };
 
-    const renderChart = (studentId) => {
-        const data = progressData[studentId];
-        if (!data) return null;
-        const labels = data.subjects.map(s => s.name);
-        const percentages = data.subjects.map(s => s.subjectProgress.toFixed(1));
-        return (
-            <Bar
-                data={{
-                    labels,
-                    datasets: [{
-                        label: 'Subject Progress (%)',
-                        data: percentages,
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)'
-                    }]
-                }}
-                options={{ responsive: true, plugins: { legend: { display: false } } }}
-            />
-        );
-    };
-
     const handleChange = (e) => {
         const { name, value, files } = e.target;
         if (files) {
@@ -151,6 +131,7 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
     };
     const handleSubmit = (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
         const data = new FormData();
         Object.keys(formData).forEach(key => {
             data.append(key, formData[key]);
@@ -176,7 +157,11 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
                     alert("Error enrolling student. Please try again.");
                 }
                 console.error("Error enrolling student:", err);
-            });
+
+            })
+          .finally(() => {
+                setIsSubmitting(false);
+          });
     };
     return (
         <>
@@ -229,7 +214,9 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
                             <input type="number" name="enrollmentYear" placeholder="Enrollment Year" min="2025" onChange={handleChange} required />
                             <label>Consent Letter (PDF/Image)</label>
                             <input type="file" name="consentLetter" accept=".pdf,.jpg,.jpeg,.png" onChange={handleChange} required />
-                            <button type="submit">Submit Enrollment</button>
+                            <button type="submit" disabled={isSubmitting}>
+                                {isSubmitting ? "Submitting..." : "Submit Enrollment"}
+                            </button>
                         </form>
                     )}
                     <h2>My Students</h2>

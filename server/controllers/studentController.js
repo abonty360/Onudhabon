@@ -73,19 +73,6 @@ export async function updateProgress(req, res) {
       subject.lecturesSupplied = Math.max(subject.lecturesSupplied, Number(lecturesSupplied));
     }
 
-    // ✅ Auto-create subject if missing
-    if (!subject) {
-      subject = {
-        name: subjectName,
-        lecturesSupplied: lecturesSupplied || 0,
-        lecturesCompleted: 0,
-        gradeSum: 0,
-        gradeCount: 0
-      };
-      student.subjects.push(subject);
-      subject = student.subjects[student.subjects.length - 1];
-    }
-    // Enforce completed ≤ supplied
     subject.lecturesCompleted = Math.min(
       subject.lecturesSupplied,
       Number(lecturesCompletedDelta)

@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import http from 'http';
 import { init as initSocket } from './socket.js';
+import adminVolunteersRoutes from "./routes/adminVolunteers.js";
 
 dotenv.config();
 console.log("ENV check:", {
@@ -37,6 +38,7 @@ app.use("/api/forum", forumRoutes);
 app.use('/api/articles', articleRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use("/api/admin/volunteers", adminVolunteersRoutes);
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`server running on port ${PORT}`));

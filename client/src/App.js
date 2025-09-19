@@ -20,6 +20,8 @@ import AdminReviewMaterials from "./Pages/AdminReview/AdminReviewMaterials.jsx";
 import AdminReviewStudents from "./Pages/AdminReview/AdminReviewStudent.jsx";
 import SettingsPage from "./Pages/SettingsPage.jsx";
 import Donation from "./Pages/DonationPage/Donation";
+import ViewVolunteersPage from "./Pages/VolunteerPage/ViewVolunteerPage.jsx";
+import VolunteerProfilePage from "./Pages/VolunteerPage/VolunteerProfilePage.jsx";
 
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -63,7 +65,7 @@ function App() {
   };
 
   if (loading) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
   return (
@@ -146,6 +148,28 @@ function App() {
           )
         }
       />
+      <Route path="/admin/volunteers" element={
+        isLoggedIn && user?.roles === "Admin" ? (
+          <ViewVolunteersPage
+            isLoggedIn={isLoggedIn}
+            user={user}
+            handleLogout={handleLogout}
+          />
+        ) : (
+          <Navigate to="/login" />
+        )
+      } />
+      <Route path="/admin/volunteers/:id" element={
+        isLoggedIn && user?.roles === "Admin" ? (
+          <VolunteerProfilePage
+            isLoggedIn={isLoggedIn}
+            user={user}
+            handleLogout={handleLogout}
+          />
+        ) : (
+          <Navigate to="/login" />
+        )
+      } />
     </Routes>
   );
 }
