@@ -10,6 +10,7 @@ function AdminReviewLectures({ isLoggedIn, handleLogout }) {
   const [user, setUser] = useState(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [selectedInstructor, setSelectedInstructor] = useState(null);
+  const [restrictionMessage, setRestrictionMessage] = useState("");
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -34,12 +35,39 @@ function AdminReviewLectures({ isLoggedIn, handleLogout }) {
 
   const handleViewProfile = (instructor) => {
     setSelectedInstructor(instructor);
+    setRestrictionMessage(""); // Clear previous message
     setShowProfileModal(true);
   };
 
   const handleCloseProfileModal = () => {
     setShowProfileModal(false);
     setSelectedInstructor(null);
+    setRestrictionMessage("");
+  };
+
+  const handleToggleRestrict = (id, currentStatus) => {
+    fetch(`http://localhost:5000/api/user/${id}/restrict`, {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+    })
+      .then(res => res.json())
+      .then(updatedUser => {
+        setLectures(prevLectures =>
+          prevLectures.map(lec =>
+            lec.instructor && lec.instructor._id === id ? { ...lec, instructor: updatedUser.user } : lec
+          )
+        );
+        if (selectedInstructor && selectedInstructor._id === id) {
+          setSelectedInstructor(updatedUser.user);
+          setRestrictionMessage(
+            `${updatedUser.user.name} is now ${updatedUser.user.isRestricted ? "restricted" : "unrestricted"}.`
+          );
+        }
+      })
+      .catch(err => {
+        console.error("Error toggling restriction:", err);
+        setRestrictionMessage("Failed to update restriction status.");
+      });
   };
 
   const handleAction = (id, action) => {
@@ -72,8 +100,10 @@ function AdminReviewLectures({ isLoggedIn, handleLogout }) {
                 <p><strong>Instructor:</strong> {lec.instructor ? lec.instructor.name : "N/A"}</p>
                 <button onClick={() => handleViewProfile(lec.instructor)} className="view-profile-btn" disabled={!lec.instructor}>View Profile</button>
                 <p><strong>Grade:</strong> {lec.classLevel} | <strong>Subject:</strong> {lec.subject}</p>
-                <button onClick={() => handleAction(lec._id, "approve")} className="approve-btn">Approve</button>
-                <button onClick={() => handleAction(lec._id, "decline")} className="decline-btn">Decline</button>
+                <div className="review-actions">
+                  <button onClick={() => handleAction(lec._id, "approve")} className="approve-btn">Approve</button>
+                  <button onClick={() => handleAction(lec._id, "decline")} className="decline-btn">Decline</button>
+                </div>
               </div>
             </div>
           ))
@@ -87,6 +117,11 @@ function AdminReviewLectures({ isLoggedIn, handleLogout }) {
         <div className="profile-modal-overlay">
           <div className="profile-modal-content scrollable-content">
             <h2>Instructor Profile</h2>
+            {restrictionMessage && (
+              <p className="restriction-status-message">
+                {restrictionMessage}
+              </p>
+            )}
             {selectedInstructor.picture && (
               <div className="profile-picture-container">
                 <img src={selectedInstructor.picture} alt="Profile" className="profile-picture" />
@@ -98,6 +133,13 @@ function AdminReviewLectures({ isLoggedIn, handleLogout }) {
             <p><strong>Location:</strong> {selectedInstructor.location}</p>
             <p><strong>Role:</strong> {selectedInstructor.roles}</p>
             <p><strong>Bio:</strong> {selectedInstructor.bio}</p>
+            <p><strong>Status:</strong> {selectedInstructor.isRestricted ? "Restricted" : "Active"}</p>
+            <button
+              onClick={() => handleToggleRestrict(selectedInstructor._id, selectedInstructor.isRestricted)}
+              className={selectedInstructor.isRestricted ? "unrestrict-btn" : "restrict-btn"}
+            >
+              {selectedInstructor.isRestricted ? "Unrestrict" : "Restrict"}
+            </button>
             <button onClick={handleCloseProfileModal} className="close-modal-btn">Close</button>
           </div>
         </div>

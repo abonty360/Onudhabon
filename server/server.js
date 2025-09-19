@@ -34,5 +34,5 @@ app.use("/api/forum", forumRoutes);
 app.use('/api/articles', articleRoutes);
 app.use('/api/students', studentRoutes);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 server.listen(PORT, () => console.log(`server running on port ${PORT}`));

@@ -8,7 +8,7 @@ const NewPostForm = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
-  const [authorId, setAuthorId] = useState(null);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,8 +16,7 @@ const NewPostForm = () => {
     if (token) {
       try {
         const decodedToken = jwtDecode(token);
-        console.log("Decoded Token:", decodedToken);
-        setAuthorId(decodedToken.id);
+        setUser(decodedToken);
       } catch (error) {
         console.error("Error decoding token:", error);
         navigate("/login", {
@@ -36,8 +35,13 @@ const NewPostForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!authorId) {
+    if (!user) {
       alert("You must be logged in to create a post.");
+      return;
+    }
+
+    if (user.isRestricted) {
+      alert("You are restricted from posting.");
       return;
     }
 
@@ -45,12 +49,12 @@ const NewPostForm = () => {
       title,
       content,
       tags: tags.split(",").map((t) => t.trim()),
-      author: authorId,
+      author: user.id,
     });
     navigate("/forum");
   };
 
-  if (!authorId) {
+  if (!user) {
     return <p>Loading...</p>;
   }
 

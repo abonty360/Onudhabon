@@ -8,7 +8,7 @@ import { jwtDecode } from "jwt-decode";
 const ForumDetail = () => {
   const { id: postId } = useParams();
   const [post, setPost] = useState(null);
-  const [userId, setUserId] = useState(null);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [currentReplyPage, setCurrentReplyPage] = useState(1);
   const REPLIES_PER_PAGE = 5;
@@ -19,7 +19,7 @@ const ForumDetail = () => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        setUserId(jwtDecode(token).id);
+        setUser(jwtDecode(token));
       } catch (error) {
         console.log("Invalid token.");
       }
@@ -38,14 +38,18 @@ const ForumDetail = () => {
   }, [fetchPost]);
 
   const handlePostAction = async (action) => {
-    if (!userId) {
+    if (!user) {
       return navigate("/login", {
         state: { message: "You must be logged in to vote." },
       });
     }
+    if (user.isRestricted) {
+      alert(`You are restricted from ${action}ing posts.`);
+      return;
+    }
     try {
       await axios.patch(`http://localhost:5000/api/forum/${postId}/${action}`, {
-        userId,
+        userId: user.id,
       });
       fetchPost();
     } catch (error) {
@@ -54,15 +58,19 @@ const ForumDetail = () => {
   };
 
   const handleReplyAction = async (replyId, action) => {
-    if (!userId) {
+    if (!user) {
       return navigate("/login", {
         state: { message: "You must be logged in to vote." },
       });
     }
+    if (user.isRestricted) {
+      alert(`You are restricted from ${action}ing replies.`);
+      return;
+    }
     try {
       await axios.patch(
         `http://localhost:5000/api/forum/${postId}/replies/${replyId}/${action}`,
-        { userId }
+        { userId: user.id }
       );
       fetchPost();
     } catch (error) {
@@ -100,21 +108,25 @@ const ForumDetail = () => {
           <Card.Text className="my-3">{post.content}</Card.Text>
 
           <div>
-            <Button
-              variant="outline-success"
-              size="sm"
-              onClick={() => handlePostAction("like")}
-              className="me-2"
-            >
-              Like ({post.likes.length})
-            </Button>
-            <Button
-              variant="outline-danger"
-              size="sm"
-              onClick={() => handlePostAction("dislike")}
-            >
-              Dislike ({post.dislikes.length})
-            </Button>
+            {!user?.isRestricted && (
+              <>
+                <Button
+                  variant="outline-success"
+                  size="sm"
+                  onClick={() => handlePostAction("like")}
+                  className="me-2"
+                >
+                  Like ({post.likes.length})
+                </Button>
+                <Button
+                  variant="outline-danger"
+                  size="sm"
+                  onClick={() => handlePostAction("dislike")}
+                >
+                  Dislike ({post.dislikes.length})
+                </Button>
+              </>
+            )}
           </div>
         </Card.Body>
       </Card>
@@ -146,6 +158,7 @@ const ForumDetail = () => {
                   size="sm"
                   onClick={() => handleReplyAction(reply._id, "like")}
                   className="me-2"
+                  disabled={user?.isRestricted}
                 >
                   Like ({reply.likes.length})
                 </Button>
@@ -153,6 +166,7 @@ const ForumDetail = () => {
                   variant="outline-danger"
                   size="sm"
                   onClick={() => handleReplyAction(reply._id, "dislike")}
+                  disabled={user?.isRestricted}
                 >
                   Dislike ({reply.dislikes.length})
                 </Button>

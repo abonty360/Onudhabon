@@ -72,9 +72,17 @@ function App() {
       <Route path="/register" element={<RegistrationPage />} />
       <Route path="/home" element={<HomePage isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />} />
       <Route path="/lecture" element={<LecturePage isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />} />
-      <Route path="/lecture/upload" element={<UploadLecture />} />
+      <Route path="/lecture/upload" element={isLoggedIn && user?.roles === "Educator"
+        ? <UploadLecture />
+        : <Navigate to="/login" />
+      }
+      />
       <Route path="/material" element={<MaterialPage isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />} />
-      <Route path="/material/upload" element={<UploadMaterial />} />
+      <Route path="/material/upload" element={isLoggedIn && user?.roles === "Educator"
+        ? <UploadMaterial />
+        : <Navigate to="/login" />
+      }
+      />
       <Route path="/profile" element={<ProfilePage isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />} />
       <Route path="/about" element={<AboutPage isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />} />
       <Route path="/forum" element={<ForumList isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />} />

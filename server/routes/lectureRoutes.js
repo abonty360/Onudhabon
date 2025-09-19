@@ -1,5 +1,5 @@
 import express from "express";
-import { auth } from "../middleware/auth.js";
+import { auth, checkRestriction } from "../middleware/auth.js";
 import checkRole from "../middleware/checkRole.js";
 import upload from "../middleware/upload.js";
 import Lecture from "../models/Lecture.js";
@@ -7,7 +7,7 @@ import cloudinary from "../config/cloudinary.js";
 
 const router = express.Router();
 
-router.post("/", auth, checkRole("Educator"), upload.single("video"), async (req, res) => {
+router.post("/", auth, checkRole("Educator"), checkRestriction, upload.single("video"), async (req, res) => {
   try {
     const { title, description, instructor, version, classLevel, subject, topic } = req.body;
 
@@ -78,7 +78,7 @@ router.patch("/:id/decline", auth, checkRole("Admin"), async (req, res) => {
   res.json({ message: "Lecture declined", lecture });
 });
 
-router.get("/mine", auth, checkRole("Educator"), async (req, res) => {
+router.get("/mine", auth, checkRole("Educator"), checkRestriction, async (req, res) => {
   try {
     const myLectures = await Lecture.find({ instructor: req.user._id }).sort({ createdAt: -1 });
     res.json(myLectures);

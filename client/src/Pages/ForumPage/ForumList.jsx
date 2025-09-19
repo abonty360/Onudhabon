@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import "./ForumPage.css";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 const ForumList = ({ isLoggedIn, handleLogout }) => {
   const [posts, setPosts] = useState([]);
@@ -17,6 +17,7 @@ const ForumList = ({ isLoggedIn, handleLogout }) => {
   const POSTS_PER_PAGE = 5;
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get("page")) || 1;
+  const navigate = useNavigate();
 
   const fetchPosts = (page) => {
     axios
@@ -54,6 +55,14 @@ const ForumList = ({ isLoggedIn, handleLogout }) => {
     }
   };
 
+  const handleNewPostClick = () => {
+    if (user?.isRestricted) {
+      alert("You are restricted from posting.");
+    } else {
+      navigate("/forum/new");
+    }
+  };
+
   return (
     <>
       <NavbarComponent
@@ -66,9 +75,7 @@ const ForumList = ({ isLoggedIn, handleLogout }) => {
         <Container className="mt-4">
           <div className="d-flex justify-content-between align-items-center forum-header">
             <h2>Posts</h2>
-            <Link to="/forum/new">
-              <Button variant="success">+ New Post</Button>
-            </Link>
+            <Button variant="success" onClick={handleNewPostClick}>+ New Post</Button>
           </div>
           {posts.length > 0 ? (
             posts.map((post) => (
