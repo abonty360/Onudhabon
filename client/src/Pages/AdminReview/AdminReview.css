@@ -77,22 +77,20 @@
 }
 
 .view-profile-btn {
-  background-color: #007bff; /* Blue */
+  background-color: #007bff; /* same blue */
   color: white;
-  padding: 8px 14px;
+  padding: 10px 20px;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
-  border-radius: 4px;
-  font-weight: 600;
-  transition: background-color 0.2s ease, transform 0.15s ease;
-  margin-right: 10px;
+  text-decoration: none; 
+  display: inline-block;
 }
 
 .view-profile-btn:hover {
   background-color: #0056b3;
-  transform: translateY(-1px);
+  text-decoration: none; 
 }
-
 .profile-modal-overlay {
   position: fixed;
   top: 0;

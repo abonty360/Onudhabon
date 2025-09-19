@@ -1,5 +1,5 @@
 import express from "express";
-import { login, register, getProfile, updateProfile, updateProfilePicture, updatePassword, getAllUsers, createAdmin, toggleRestrictUser } from "../controllers/userController.js";
+import { login, register, getProfile, updateProfile, updateProfilePicture, updatePassword, getAllUsers, createAdmin, toggleRestrictUser, getUserById } from "../controllers/userController.js";
 import { auth, verifyAdmin } from "../middleware/auth.js";
 
 import upload from "../middleware/upload.js";
@@ -24,5 +24,6 @@ router.post(
 );
 router.post("/create-admin", auth, verifyAdmin, createAdmin);
 router.patch("/:id/restrict", auth, verifyAdmin, toggleRestrictUser);
+router.get("/:id", auth, verifyAdmin, getUserById);
 
 export default router;
