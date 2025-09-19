@@ -5,107 +5,135 @@ import CombinedProgressChart from "../Chart/CombinedProgressChart";
 import "./VolunteerProfilePage.css"
 
 export default function VolunteerProfilePage({ isLoggedIn, user, handleLogout }) {
-  const { id } = useParams();
-  const [volunteer, setVolunteer] = useState(null);
+    const { id } = useParams();
+    const [volunteer, setVolunteer] = useState(null);
 
-   useEffect(() => {
-    axios
-      .get(`/api/admin/volunteers/${id}`)
-      .then((res) => setVolunteer(res.data))
-      .catch((err) => {
-        console.error("Error fetching volunteer profile:", err);
-      });
-  }, [id]);
+    useEffect(() => {
+        axios
+            .get(`/api/admin/volunteers/${id}`)
+            .then((res) => setVolunteer(res.data))
+            .catch((err) => {
+                console.error("Error fetching volunteer profile:", err);
+            });
+    }, [id]);
 
-  if (!volunteer) return <p>Loading...</p>;
+    if (!volunteer) return <p>Loading...</p>;
 
-  return (
-    <div className="container mt-4">
-      <h2>{volunteer.name}</h2>
-      <p>Role: {volunteer.roles}</p>
+    return (
+        <div className="container mt-4">
+            <h2>{volunteer.name}</h2>
+            <p>Role: {volunteer.roles}</p>
 
-      {volunteer.roles === "Local Guardian" && (
-        <>
-          <h4>Enrolled Students</h4>
-          <div className="student-list">
-            {volunteer.students?.map((stu) => {
-              const prog = volunteer.progressData?.[String(stu._id)];
-              return (
-                <div key={stu._id} className="student-card">
-                  <h4>{stu.fullName}</h4>
-                  <p>Birth Cert ID: {stu.birthCertificateId}</p>
-                  <p>
-                    Current Class:{" "}
-                    {prog?.classLevel ?? stu.classLevel}
-                  </p>
+            {volunteer.roles === "Local Guardian" && (
+                <>
+                    <h4>Enrolled Students</h4>
+                    <div className="student-list">
+                        {volunteer.students?.map((stu) => {
+                            const prog = volunteer.progressData?.[String(stu._id)];
+                            return (
+                                <div key={stu._id} className="student-card">
+                                    <h4>{stu.fullName}</h4>
+                                    <p>Birth Cert ID: {stu.birthCertificateId}</p>
+                                    <p>
+                                        Current Class:{" "}
+                                        {prog?.classLevel ?? stu.classLevel}
+                                    </p>
 
-                  {prog?.completedClasses?.length > 0 && (
-                    <div className="completed-classes">
-                      <h5>
-                        Classes Completed: {prog.completedClasses.length}
-                      </h5>
-                      <ul>
-                        {prog.completedClasses.map((c) => (
-                          <li key={c.classLevel}>
-                            Class {c.classLevel} –{" "}
-                            {c.overallProgress.toFixed(1)}%
-                          </li>
-                        ))}
-                      </ul>
+                                    {prog?.completedClasses?.length > 0 && (
+                                        <div className="completed-classes">
+                                            <h5>
+                                                Classes Completed: {prog.completedClasses.length}
+                                            </h5>
+                                            <ul>
+                                                {prog.completedClasses.map((c) => (
+                                                    <li key={c.classLevel}>
+                                                        Class {c.classLevel} –{" "}
+                                                        {c.overallProgress.toFixed(1)}%
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+
+                                    <p>Enrollment Year: {stu.enrollmentYear}</p>
+
+                                    {/*
+                                    {prog?.subjects?.length > 0 ? (
+                                        <CombinedProgressChart
+                                            overallProgress={prog.overallProgress}
+                                            subjects={prog.subjects}
+                                        />
+                                    ) : (
+                                        <p>No progress data available yet.</p>
+                                    )}
+                                    */}
+
+                                    <p>
+                                        Status:{" "}
+                                        <span className={`status-${stu.status}`}>
+                                            {stu.status}
+                                        </span>
+                                    </p>
+                                    <p>Father: {stu.fatherName}</p>
+                                    <p>Mother: {stu.motherName}</p>
+
+                                    {stu.consentLetterUrl && (
+                                        <a
+                                            href={stu.consentLetterUrl}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            View Consent Letter
+                                        </a>
+                                    )}
+                                </div>
+                            );
+                        })}
                     </div>
-                  )}
+                </>
+            )}
 
-                  <p>Enrollment Year: {stu.enrollmentYear}</p>
+            {volunteer.roles === "Educator" && (
+                <div className="page-container">
+                    <h3>Uploaded Lectures</h3>
+                    {(!volunteer.lectures || volunteer.lectures.length === 0) ? (
+                        <p>No lectures uploaded yet.</p>
+                    ) : (
+                        <div className="student-list">
+                            {volunteer.lectures.map((lec) => (
+                                <div key={lec._id} className="student-card">
+                                    <h4>{lec.title}</h4>
+                                    <p>{lec.description}</p>
+                                    <p><strong>Subject:</strong> {lec.subject} — <strong>Topic:</strong> {lec.topic}</p>
+                                    <video controls src={lec.videoUrl} poster={lec.thumbnail}  style={{ width: "100%", borderRadius: "6px" }} />
+                                    <p>Status: {lec.status}</p>
+                                    <p>Uploaded: {new Date(lec.createdAt).toLocaleString()}</p>
+                                </div>
+                            ))}
+                        </div>
+                    )}
 
-                  {prog && (
-                    <CombinedProgressChart
-                      overallProgress={prog.overallProgress}
-                      subjects={prog.subjects}
-                    />
-                  )}
-
-                  <p>
-                    Status:{" "}
-                    <span className={`status-${stu.status}`}>
-                      {stu.status}
-                    </span>
-                  </p>
-                  <p>Father: {stu.fatherName}</p>
-                  <p>Mother: {stu.motherName}</p>
-
-                  {stu.consentLetterUrl && (
-                    <a
-                      href={stu.consentLetterUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      View Consent Letter
-                    </a>
-                  )}
+                    <h3 style={{ marginTop: "1.5rem" }}>Uploaded Materials</h3>
+                    {(!volunteer.materials || volunteer.materials.length === 0) ? (
+                        <p>No materials uploaded yet.</p>
+                    ) : (
+                        <div className="student-list">
+                            {volunteer.materials.map((mat) => (
+                                <div key={mat._id} className="student-card">
+                                    <h4>{mat.title}</h4>
+                                    <p>{mat.description}</p>
+                                    <p><strong>Subject:</strong> {mat.subject} — <strong>Topic:</strong> {mat.topic}</p>
+                                    <a href={mat.fileUrl} target="_blank" rel="noreferrer">Open Material</a>
+                                    {mat.size && <p>Size: {(mat.size / 1024 / 1024).toFixed(2)} MB</p>}
+                                    <p>Downloads: {mat.downloads}</p>
+                                    <p>Status: {mat.status}</p>
+                                    <p>Uploaded: {new Date(mat.date).toLocaleString()}</p>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
-              );
-            })}
-          </div>
-        </>
-      )}
-
-      {volunteer.roles === "Educator" && (
-        <>
-          <h4>Uploaded Lectures</h4>
-          <ul>
-            {volunteer.lectures?.map((l) => (
-              <li key={l._id}>{l.title}</li>
-            ))}
-          </ul>
-
-          <h4>Uploaded Materials</h4>
-          <ul>
-            {volunteer.materials?.map((m) => (
-              <li key={m._id}>{m.title}</li>
-            ))}
-          </ul>
-        </>
-      )}
-    </div>
-  );
+            )}
+        </div>
+    );
 }

@@ -3,7 +3,6 @@ import User from "../models/Volunteers/User.js";
 import Student from "../models/Student.js";
 import Lecture from "../models/Lecture.js";
 import Material from "../models/Material.js";
-import { getProgress } from "../controllers/studentController.js";
 import { ensureSubjectsMatchPlan } from "../services/planService.js";
 import { calculateProgress } from "../services/progressService.js";
 
@@ -30,7 +29,7 @@ router.get("/:id", async (req, res) => {
         if (volunteer.roles === "Local Guardian") {
             const students = await Student.find({ guardianId: volunteer._id })
                 .select(
-                    "fullName birthCertificateId classLevel enrollmentYear status fatherName motherName consentLetterUrl"
+                    "fullName birthCertificateId classLevel enrollmentYear status fatherName motherName consentLetterUrl completedClasses subjects"
                 );
             const progressData = {};
             for (const stu of students) {
@@ -51,9 +50,12 @@ router.get("/:id", async (req, res) => {
             }
             extraData.students = students;
             extraData.progressData = progressData;
-        } else if (volunteer.roles === "Educator") {
-            extraData.lectures = await Lecture.find({ instructor: volunteer._id });
-            extraData.materials = await Material.find({ instructor: volunteer._id });
+        } 
+        if (volunteer.roles === "Educator") {
+            extraData.lectures = await Lecture.find({ instructor: volunteer._id })
+            .select("title description version classLevel subject topic thumbnail videoUrl status createdAt");
+            extraData.materials = await Material.find({ instructor: volunteer._id })
+            .select("title description version classLevel subject topic fileUrl size downloads status date");
         }
 
         res.json({ ...volunteer.toObject(), ...extraData });
