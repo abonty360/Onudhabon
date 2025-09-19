@@ -1,6 +1,7 @@
 import express from "express";
 const router = express.Router();
 import Forum from "../models/Forum.js";
+import Notification from "../models/Notification.js";
 
 router.get("/", async (req, res) => {
   try {
@@ -54,15 +55,27 @@ router.post("/:id/replies", async (req, res) => {
   try {
     const { id } = req.params;
     const { text, author } = req.body;
-
     const post = await Forum.findById(id);
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
 
+    const postAuthorId = post.author.toString();
     post.replies.push({ text, author });
     await post.save();
+
+    if (postAuthorId !== author) {
+      const newReply = post.replies[post.replies.length - 1];
+
+      await Notification.create({
+        user: postAuthorId,
+        sender: author,
+        post: id,
+        reply: newReply._id,
+        type: 'reply',
+      });
+    }
 
     res.status(201).json({ message: "Reply added successfully!", post });
   } catch (error) {
@@ -86,7 +99,7 @@ router.patch("/:id/like", async (req, res) => {
     if (!post) {
       return res.status(404).json({ message: "Post not found." });
     }
-
+    const postAuthorId = post.author.toString();
     post.dislikes.pull(userId);
 
     const hasLiked = post.likes.includes(userId);
@@ -95,6 +108,14 @@ router.patch("/:id/like", async (req, res) => {
       post.likes.pull(userId);
     } else {
       post.likes.push(userId);
+      if (postAuthorId !== userId) {
+        await Notification.create({
+          user: postAuthorId,
+          sender: userId,
+          post: id,
+          type: 'like',
+        });
+      }
     }
 
     const updatedPost = await post.save();
@@ -119,6 +140,8 @@ router.patch("/:id/dislike", async (req, res) => {
       return res.status(404).json({ message: "Post not found." });
     }
 
+    const postAuthorId = post.author.toString();
+
     post.likes.pull(userId);
 
     const hasDisliked = post.dislikes.includes(userId);
@@ -127,6 +150,14 @@ router.patch("/:id/dislike", async (req, res) => {
       post.dislikes.pull(userId);
     } else {
       post.dislikes.push(userId);
+      if (postAuthorId !== userId) {
+        await Notification.create({
+          user: postAuthorId,
+          sender: userId,
+          post: id,
+          type: 'dislike',
+        });
+      }
     }
 
     const updatedPost = await post.save();
