@@ -35,3 +35,14 @@ export const verifyAdmin = async (req, res, next) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const checkRestriction = async (req, res, next) => {
+  try {
+    if (req.user.isRestricted) {
+      return res.status(403).json({ message: "Access denied. You are restricted from performing this action." });
+    }
+    next();
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};

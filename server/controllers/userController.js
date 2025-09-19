@@ -69,18 +69,21 @@ export const login = async (req, res) => {
 
     try {
         const { email, password } = req.body;
+        console.log("Login attempt with email:", email);
 
         const user = await User.findOne({ email });
+        console.log("User found in database:", user);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
+        console.log("Password match result:", isMatch);
         if (!isMatch) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
         const token = jwt.sign(
-            { id: user._id, email: user.email, roles: user.roles, name: user.name },
+            { id: user._id, email: user.email, roles: user.roles, name: user.name, isRestricted: user.isRestricted },
             process.env.JWT_SECRET,
             { expiresIn: "1h" }
         );
@@ -201,5 +204,24 @@ export const createAdmin = async (req, res) => {
         res.status(201).json({ message: "Admin created successfully", admin });
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+export const toggleRestrictUser = async (req, res) => {
+    try {
+        console.log("Received request to toggle restriction for user ID:", req.params.id);
+        const user = await User.findById(req.params.id);
+        console.log("User found:", user);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.isRestricted = !user.isRestricted;
+        await user.save();
+
+        res.json({ message: "User restriction status updated successfully", user });
+    } catch (error) {
+        console.error("Error in toggleRestrictUser:", error);
+        res.status(500).json({ message: "Server error" });
     }
 };

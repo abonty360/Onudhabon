@@ -1,5 +1,5 @@
 import express from "express";
-import { auth } from "../middleware/auth.js";
+import { auth, checkRestriction } from "../middleware/auth.js";
 import checkRole from "../middleware/checkRole.js";
 import upload from "../middleware/upload.js";
 import Material from "../models/Material.js";
@@ -30,7 +30,7 @@ router.get("/topics/:subject", async (req, res) => {
   }
 });
 
-router.post("/", auth, checkRole("Educator"), upload.single("file"), async (req, res) => {
+router.post("/", auth, checkRole("Educator"), checkRestriction, upload.single("file"), async (req, res) => {
   try {
     const {title, description, instructor, version, classLevel, subject, topic } = req.body;
 
@@ -41,7 +41,7 @@ router.post("/", auth, checkRole("Educator"), upload.single("file"), async (req,
     const newMaterial = new Material({
       title,
       description,
-      instructor: req.user.name,
+      instructor: req.user._id,
       version,
       classLevel,
       subject,
@@ -61,7 +61,7 @@ router.post("/", auth, checkRole("Educator"), upload.single("file"), async (req,
 });
 
 router.get("/review", auth, checkRole("Admin"), async (req, res) => {
-  const pendingMaterials = await Material.find({ status: "pending" }).sort({ date: -1 });
+  const pendingMaterials = await Material.find({ status: "pending" }).populate('instructor').sort({ date: -1 });
   res.json(pendingMaterials);
 });
 
@@ -75,9 +75,9 @@ router.patch("/:id/decline", auth, checkRole("Admin"), async (req, res) => {
   res.json({ message: "Material declined", material });
 });
 
-router.get("/mine", auth, checkRole("Educator"), async (req, res) => {
+router.get("/mine", auth, checkRole("Educator"), checkRestriction, async (req, res) => {
   try {
-    const myMaterials = await Material.find({ instructor: req.user.name }).sort({ date: -1 });
+    const myMaterials = await Material.find({ instructor: req.user._id }).sort({ date: -1 });
     res.json(myMaterials);
   } catch (err) {
     res.status(500).json({ error: err.message });

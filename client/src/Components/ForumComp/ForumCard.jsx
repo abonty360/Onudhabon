@@ -5,14 +5,14 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
 const ForumCard = ({ post, onPostUpdate }) => {
-  const [userId, setUserId] = useState(null);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        setUserId(jwtDecode(token).id);
+        setUser(jwtDecode(token));
       } catch (error) {
         console.error("Invalid token");
       }
@@ -20,27 +20,35 @@ const ForumCard = ({ post, onPostUpdate }) => {
   }, []);
 
   const handleLike = async () => {
-    if (!userId) {
+    if (!user) {
       navigate("/login", {
         state: { message: "You need to log in to like posts." },
       });
       return;
     }
+    if (user.isRestricted) {
+      alert("You are restricted from liking posts.");
+      return;
+    }
     await axios.patch(`http://localhost:5000/api/forum/${post._id}/like`, {
-      userId,
+      userId: user.id,
     });
     onPostUpdate();
   };
 
   const handleDislike = async () => {
-    if (!userId) {
+    if (!user) {
       navigate("/login", {
         state: { message: "You need to log in to dislike posts." },
       });
       return;
     }
+    if (user.isRestricted) {
+      alert("You are restricted from disliking posts.");
+      return;
+    }
     await axios.patch(`http://localhost:5000/api/forum/${post._id}/dislike`, {
-      userId,
+      userId: user.id,
     });
     onPostUpdate();
   };
@@ -72,17 +80,21 @@ const ForumCard = ({ post, onPostUpdate }) => {
             </Button>
           </Link>
           <div>
-            <Button
-              variant="outline-success"
-              size="sm"
-              onClick={handleLike}
-              className="me-2"
-            >
-              Like ({post.likes.length})
-            </Button>
-            <Button variant="outline-danger" size="sm" onClick={handleDislike}>
-              Dislike ({post.dislikes.length})
-            </Button>
+            {!user?.isRestricted && (
+              <>
+                <Button
+                  variant="outline-success"
+                  size="sm"
+                  onClick={handleLike}
+                  className="me-2"
+                >
+                  Like ({post.likes.length})
+                </Button>
+                <Button variant="outline-danger" size="sm" onClick={handleDislike}>
+                  Dislike ({post.dislikes.length})
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </Card.Body>

@@ -23,9 +23,16 @@ function UploadMaterial() {
     const token = localStorage.getItem("token");
     if (token) {
       const decoded = jwtDecode(token);
-      setUser({ name: decoded.name });
+      if (decoded.isRestricted) {
+        alert("You are restricted from uploading any contents.");
+        navigate("/home");
+      } else {
+        setUser(decoded);
+      }
+    } else {
+      navigate("/login");
     }
-  }, []);
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,6 +44,9 @@ function UploadMaterial() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (user && user.isRestricted) {
+      return alert("You are restricted from uploading any contents.");
+    }
     if (!file) return alert("Please select a PDF file!");
 
     const data = new FormData();
@@ -46,6 +56,9 @@ function UploadMaterial() {
       }
     });
     data.append("file", file);
+    data.append("instructor", user._id);
+
+    console.log("FormData before submission:", Object.fromEntries(data.entries()));
 
     try {
       setUploading(true);
@@ -70,82 +83,81 @@ function UploadMaterial() {
     <div className="upload-page">
       <div className="upload-container">
         <h2>Upload Material (PDF)</h2>
-        <form onSubmit={handleSubmit} className="upload-form">
-          <div className="input-card">
-            <label>Title</label>
-            <input name="title" placeholder="Enter title" onChange={handleChange} required />
-          </div>
-          <div className="input-card">
-            <label>Description</label>
-            <input name="description" placeholder="Enter description" onChange={handleChange} required />
-          </div>
-          <div className="input-card">
-            <label>Subject</label>
-            <select
-              name="subject"
-              value={formData.subject}
-              onChange={handleChange}
-            >
-              <option value="">Select Subject</option>
-              <option value="Mathematics">Mathematics</option>
-              <option value="Physics">Physics</option>
-              <option value="Chemistry">Chemistry</option>
-              <option value="Biology">Biology</option>
-              <option value="History">History</option>
-              <option value="Statistics">Statistics</option>
-              <option value="English">English</option>
-              <option value="Bangla">Bangla</option>
-            </select>
-          </div>
-          <div className="input-card">
-            <label>Topic</label>
-            <input name="topic" placeholder="Enter topic" onChange={handleChange} />
-          </div>
-          <div className="input-card">
-            <label>Class Level</label>
-            <select
-              name="classLevel"
-              value={formData.classLevel}
-              onChange={handleChange}
-            >
-              <option value="">Select Class</option>
-              {Array.from({ length: 12 }, (_, i) => (
-                <option key={i} value={i + 1}>
-                  Grade {i + 1}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="input-card">
-            <label>Instructor</label>
-            <input
-              type="text"
-              value={user ? user.name : "Loading..."}
-              readOnly
-              className="readonly-input"
-            />
-          </div>
-          <div className="input-card">
-            <label>Version</label>
-            <select
-              name="version"
-              value={formData.version}
-              onChange={handleChange}
-            >
-              <option value="">Select Version</option>
-              <option value="Bangla">Bangla</option>
-              <option value="English">English</option>
-            </select>
-          </div>
+          <form onSubmit={handleSubmit} className="upload-form">
+            <div className="input-card">
+              <label>Title</label>
+              <input name="title" placeholder="Enter title" onChange={handleChange} required />
+            </div>
+            <div className="input-card">
+              <label>Description</label>
+              <input name="description" placeholder="Enter description" onChange={handleChange} required />
+            </div>
+            <div className="input-card">
+              <label>Subject</label>
+              <select
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
+              >
+                <option value="">Select Subject</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Physics">Physics</option>
+                <option value="Chemistry">Chemistry</option>
+                <option value="Biology">Biology</option>
+                <option value="History">History</option>
+                <option value="Statistics">Statistics</option>
+                <option value="English">English</option>
+                <option value="Bangla">Bangla</option>
+              </select>
+            </div>
+            <div className="input-card">
+              <label>Topic</label>
+              <input name="topic" placeholder="Enter topic" onChange={handleChange} />
+            </div>
+            <div className="input-card">
+              <label>Class Level</label>
+              <select
+                name="classLevel"
+                value={formData.classLevel}
+                onChange={handleChange}
+              >
+                <option value="">Select Class</option>
+                {Array.from({ length: 12 }, (_, i) => (
+                  <option key={i} value={i + 1}>
+                    Grade {i + 1}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="input-card">
+              <label>Instructor</label>
+              <input
+                type="text"
+                value={user ? user.name : "Loading..."}
+                readOnly
+                className="readonly-input"
+              />
+            </div>
+            <div className="input-card">
+              <label>Version</label>
+                          <select
+                            name="version"
+                            value={formData.version}
+                            onChange={handleChange}
+                            required
+                          >
+                            <option value="Bangla">Bangla</option>
+                            <option value="English">English</option>
+                          </select>            </div>
 
-          <div className="input-card">
-            <label>PDF File</label>
-            <input type="file" accept="application/pdf" onChange={handleFileChange} required />
-          </div>
-          <button type="submit" className="upload-btn" disabled={uploading}>
-            {uploading ? "Uploading..." : "Upload Material"}
-          </button>
-        </form>
+            <div className="input-card">
+              <label>PDF File</label>
+              <input type="file" accept="application/pdf" onChange={handleFileChange} required />
+            </div>
+            <button type="submit" className="upload-btn" disabled={uploading}>
+              {uploading ? "Uploading..." : "Upload Material"}
+            </button>
+          </form>
       </div>
     </div>
   );
