@@ -23,7 +23,7 @@ function UploadMaterial() {
     const token = localStorage.getItem("token");
     if (token) {
       const decoded = jwtDecode(token);
-      setUser({ name: decoded.name });
+      setUser(decoded);
     }
   }, []);
 
@@ -46,6 +46,7 @@ function UploadMaterial() {
       }
     });
     data.append("file", file);
+    data.append("instructor", user._id);
 
     try {
       setUploading(true);

@@ -75,3 +75,103 @@
 .review-actions button:active {
   transform: translateY(0);
 }
+
+.view-profile-btn {
+  background-color: #007bff; /* Blue */
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  margin-right: 10px;
+}
+
+.view-profile-btn:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+.profile-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.profile-modal-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.profile-modal-content h2 {
+  margin-top: 0;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.profile-modal-content p {
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.profile-modal-content p strong {
+  color: #333;
+}
+
+.close-modal-btn {
+  background-color: #6c757d; /* Gray */
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  float: right;
+  transition: background-color 0.2s ease;
+}
+
+.close-modal-btn:hover {
+  background-color: #5a6268;
+}
+
+.scrollable-content {
+  max-height: 80vh; /* Adjust as needed */
+  overflow-y: auto;
+}
+
+/* Profile picture container for admin review modal */
+.profile-picture-container {
+  position: relative;
+  display: inline-block;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #ccc;
+  margin-bottom: 1rem;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+/* Profile picture for admin review modal */
+.profile-picture {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

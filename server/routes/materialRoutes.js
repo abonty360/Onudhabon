@@ -41,7 +41,7 @@ router.post("/", auth, checkRole("Educator"), upload.single("file"), async (req,
     const newMaterial = new Material({
       title,
       description,
-      instructor: req.user.name,
+      instructor: req.user._id,
       version,
       classLevel,
       subject,
@@ -61,7 +61,7 @@ router.post("/", auth, checkRole("Educator"), upload.single("file"), async (req,
 });
 
 router.get("/review", auth, checkRole("Admin"), async (req, res) => {
-  const pendingMaterials = await Material.find({ status: "pending" }).sort({ date: -1 });
+  const pendingMaterials = await Material.find({ status: "pending" }).populate('instructor').sort({ date: -1 });
   res.json(pendingMaterials);
 });
 
@@ -77,7 +77,7 @@ router.patch("/:id/decline", auth, checkRole("Admin"), async (req, res) => {
 
 router.get("/mine", auth, checkRole("Educator"), async (req, res) => {
   try {
-    const myMaterials = await Material.find({ instructor: req.user.name }).sort({ date: -1 });
+    const myMaterials = await Material.find({ instructor: req.user._id }).sort({ date: -1 });
     res.json(myMaterials);
   } catch (err) {
     res.status(500).json({ error: err.message });

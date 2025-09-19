@@ -22,7 +22,7 @@ function UploadLecture() {
     const token = localStorage.getItem("token");
     if (token) {
       const decoded = jwtDecode(token);
-      setUser({ name: decoded.name });
+      setUser(decoded);
     }
   }, []);
   const handleChange = (e) => {
@@ -44,6 +44,7 @@ function UploadLecture() {
       }
     });
     data.append("video", video);
+    data.append("instructor", user._id);
 
     try {
       setUploading(true);

@@ -38,7 +38,7 @@ export const newMaterial = async (req, res) => {
 
 export const getMaterials = async (req, res) => {
   try {
-    const materials = await Material.find({ status: "approved" }).sort({ date: -1 });
+    const materials = await Material.find({ status: "pending" }).populate('instructor');
     res.json(materials);
   } catch (err) {
     res.status(500).json({ error: err.message });

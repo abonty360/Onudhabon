@@ -8,6 +8,8 @@ import "./AdminReview.css";
 function AdminReviewMaterials({ isLoggedIn, handleLogout }) {
   const [materials, setMaterials] = useState([]);
   const [user, setUser] = useState(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [selectedInstructor, setSelectedInstructor] = useState(null);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -29,6 +31,16 @@ function AdminReviewMaterials({ isLoggedIn, handleLogout }) {
         .catch(err => console.error("Error fetching pending materials:", err));
     }
   }, [user]);
+
+  const handleViewProfile = (instructor) => {
+    setSelectedInstructor(instructor);
+    setShowProfileModal(true);
+  };
+
+  const handleCloseProfileModal = () => {
+    setShowProfileModal(false);
+    setSelectedInstructor(null);
+  };
 
   const handleAction = (id, action) => {
     fetch(`http://localhost:5000/api/materials/${id}/${action}`, {
@@ -67,8 +79,9 @@ function AdminReviewMaterials({ isLoggedIn, handleLogout }) {
               <div>
                 <h3>{mat.title}</h3>
                 <p>{mat.description}</p>
-                <p><strong>Instructor:</strong> {mat.instructor}</p>
+                <p><strong>Instructor:</strong> {mat.instructor ? mat.instructor.name : "N/A"}</p>
                 <p><strong>Grade:</strong> {mat.classLevel} | <strong>Subject:</strong> {mat.subject}</p>
+                <button onClick={() => handleViewProfile(mat.instructor)} className="view-profile-btn" disabled={!mat.instructor}>View Profile</button>
                 <button onClick={() => handleAction(mat._id, "approve")} className="approve-btn">Approve</button>
                 <button onClick={() => handleAction(mat._id, "decline")} className="decline-btn">Decline</button>
               </div>
@@ -79,6 +92,26 @@ function AdminReviewMaterials({ isLoggedIn, handleLogout }) {
         )}
       </div>
       <Footer />
+
+      {showProfileModal && selectedInstructor && (
+        <div className="profile-modal-overlay">
+          <div className="profile-modal-content scrollable-content">
+            <h2>Instructor Profile</h2>
+            {selectedInstructor.picture && (
+              <div className="profile-picture-container">
+                <img src={selectedInstructor.picture} alt="Profile" className="profile-picture" />
+              </div>
+            )}
+            <p><strong>Name:</strong> {selectedInstructor.name}</p>
+            <p><strong>Email:</strong> {selectedInstructor.email}</p>
+            <p><strong>Phone:</strong> {selectedInstructor.phone}</p>
+            <p><strong>Location:</strong> {selectedInstructor.location}</p>
+            <p><strong>Role:</strong> {selectedInstructor.roles}</p>
+            <p><strong>Bio:</strong> {selectedInstructor.bio}</p>
+            <button onClick={handleCloseProfileModal} className="close-modal-btn">Close</button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
