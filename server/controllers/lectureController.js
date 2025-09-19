@@ -26,7 +26,7 @@ export const newLecture = async (req, res) => {
 
 export const getLectures = async (req, res) => {
   try {
-    const lectures = await Lecture.find({ status: "approved" }).sort({ createdAt: -1 });
+    const lectures = await Lecture.find({ status: "pending" }).populate('instructor');
     res.json(lectures);
   } catch (err) {
     res.status(500).json({ error: err.message });
