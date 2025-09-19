@@ -11,14 +11,16 @@ import MaterialPage from "./Pages/MaterialPage/MaterialPage";
 import ProfilePage from "./Pages/ProfilePage/ProfilePage";
 import UploadLecture from "./Upload/UploadLecture";
 import UploadMaterial from "./Upload/UploadMaterial";
+
 import ForumList from "./Pages/ForumPage/ForumList.jsx";
 import ForumDetail from "./Pages/ForumPage/ForumDetail.jsx";
 import NewPostForm from "./Pages/ForumPage/NewPostForm.jsx";
 import AdminReviewLectures from "./Pages/AdminReview/AdminReviewLectures.jsx";
 import AdminReviewMaterials from "./Pages/AdminReview/AdminReviewMaterials.jsx";
 import AdminReviewStudents from "./Pages/AdminReview/AdminReviewStudent.jsx";
-
+import SettingsPage from "./Pages/SettingsPage.jsx";
 import Donation from "./Pages/DonationPage/Donation";
+
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -28,6 +30,7 @@ function App() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -105,12 +108,15 @@ function App() {
         path="/profile"
         element={
           <ProfilePage
+            key={Date.now()}
+
             isLoggedIn={isLoggedIn}
             user={user}
             handleLogout={handleLogout}
           />
         }
       />
+
       <Route
         path="/about"
         element={
@@ -133,6 +139,7 @@ function App() {
       />
       <Route path="/forum/new" element={<NewPostForm />} />
       <Route path="/forum/:id" element={<ForumDetail />} />
+      <Route path="/settings" element={<SettingsPage />} />
       <Route path="/donation" element={<Donation />} />
 
       <Route

@@ -141,6 +141,9 @@ const ProfilePage = () => {
         </div>
         <div className="profile-footer">
           <button className="back-button" onClick={() => navigate(-1)}>Back</button>
+           <button className="settings-button" onClick={() => navigate("/settings")}>
+    Go to Settings
+  </button>
         </div>
       </div>
     </div>
