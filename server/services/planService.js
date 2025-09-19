@@ -1,9 +1,8 @@
-// services/planService.js
 import ClassPlan from '../models/ClassPlan.js';
 
 export async function ensureSubjectsMatchPlan(student) {
   const plan = await ClassPlan.findOne({ classLevel: student.classLevel });
-  if (!plan) return student; // or throw new Error('Missing class plan')
+  if (!plan) throw new Error(`Class plan not found for class level ${student.classLevel}`);
 
   if (!Array.isArray(student.subjects)) student.subjects = [];
 
@@ -13,12 +12,14 @@ export async function ensureSubjectsMatchPlan(student) {
     if (!existing) {
       student.subjects.push({
         name: p.name,
-        lecturesSupplied: p.totalLectures, // or 0 if you prefer to grow supply gradually
+        totalLectures: p.totalLectures,
+        lecturesSupplied: p.totalLectures, 
         lecturesCompleted: 0,
         gradeSum: 0,
         gradeCount: 0
       });
     } else {
+      existing.totalLectures = p.totalLectures;
       existing.lecturesSupplied = Math.max(existing.lecturesSupplied, p.totalLectures);
       existing.lecturesCompleted = Math.min(existing.lecturesCompleted, existing.lecturesSupplied);
     }

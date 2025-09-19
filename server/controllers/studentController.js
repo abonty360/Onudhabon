@@ -2,6 +2,39 @@ import { getIo } from '../socket.js';
 import Student from '../models/Student.js';
 import { calculateProgress } from '../services/progressService.js';
 import { ensureSubjectsMatchPlan } from '../services/planService.js';
+import ClassPlan from '../models/ClassPlan.js';
+
+export const getStudentWithPlan = async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+    if (!student) return res.status(404).json({ message: "Student not found" });
+
+    const plan = await ClassPlan.findOne({ classLevel: student.classLevel });
+    if (!plan) return res.status(404).json({ message: "Class plan not found" });
+
+    // Merge plan subjects with student's progress
+    const mergedSubjects = plan.subjects.map(planSubj => {
+      const studentSubj = student.subjects.find(s => s.name === planSubj.name) || {};
+      return {
+        name: planSubj.name,
+        totalLectures: planSubj.totalLectures,
+        lecturesSupplied: studentSubj.lecturesSupplied || 0,
+        lecturesCompleted: studentSubj.lecturesCompleted || 0,
+        gradeSum: studentSubj.gradeSum || 0,
+        gradeCount: studentSubj.gradeCount || 0
+      };
+    });
+
+    res.json({
+      ...student.toObject(),
+      subjects: mergedSubjects
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 /**
  * GET /students/:id/progress
  * Returns per-subject metrics + overallProgress
@@ -55,7 +88,7 @@ export async function updateProgress(req, res) {
     // Enforce completed ≤ supplied
     subject.lecturesCompleted = Math.min(
       subject.lecturesSupplied,
-      subject.lecturesCompleted + Number(lecturesCompletedDelta)
+      Number(lecturesCompletedDelta)
     );
     if (gradeReceived != null) {
       subject.gradeSum += Number(gradeReceived);
@@ -69,8 +102,6 @@ export async function updateProgress(req, res) {
       student.subjects.every(s => s.lecturesCompleted >= s.lecturesSupplied);
 
     if (allDone && student.classLevel < 12) {
-      // Save current class summary
-  const { overallProgress } = calculateProgress(student.subjects);
   student.completedClasses.push({
     classLevel: student.classLevel,
     overallProgress

@@ -6,6 +6,7 @@ const completedClassSchema = new mongoose.Schema({
 }, { _id: false });
 const SubjectSchema = new mongoose.Schema({
   name: { type: String, required: true },
+  totalLectures: { type: Number, required: true, min: 0 },
   lecturesSupplied: { type: Number, default: 0, min: 0 },
   lecturesCompleted: { type: Number, default: 0, min: 0 },
   gradeSum: { type: Number, default: 0, min: 0 },
