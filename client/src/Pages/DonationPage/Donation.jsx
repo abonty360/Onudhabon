@@ -34,7 +34,7 @@ export default function Donation() {
       padding: "20px",
     },
     card: {
-      maxWidth: "600px",
+      maxWidth: "650px",
       width: "100%",
       backgroundColor: "white",
       borderRadius: "20px",
@@ -46,7 +46,16 @@ export default function Donation() {
       fontSize: "24px",
       fontWeight: "600",
       color: "#00695C",
-      marginBottom: "15px",
+      marginBottom: "20px",
+    },
+    sectionTitle: {
+      fontSize: "20px",
+      fontWeight: "600",
+      color: "#00695C",
+      marginBottom: "10px",
+      borderBottom: "2px solid #E0E0E0",
+      display: "inline-block",
+      paddingBottom: "5px",
     },
     cardText: {
       fontSize: "16px",
@@ -74,6 +83,9 @@ export default function Donation() {
       fontStyle: "italic",
       color: "#888",
     },
+    section: {
+      marginBottom: "30px",
+    },
   };
 
   return (
@@ -91,19 +103,30 @@ export default function Donation() {
             support matters, and we are deeply grateful for your help.
           </p>
 
-          <div style={styles.contactRow}>
-            <span style={styles.contactLabel}>bKash No:</span>
-            <span style={styles.contactValue}>01790043162</span>
+          {}
+          <div style={styles.section}>
+            <h3 style={styles.sectionTitle}>To Donate</h3>
+            <div style={styles.contactRow}>
+              <span style={styles.contactLabel}>bKash No:</span>
+              <span style={styles.contactValue}>01739860673</span>
+            </div>
+            <div style={styles.contactRow}>
+              <span style={styles.contactLabel}>Nagad No:</span>
+              <span style={styles.contactValue}>01716961917</span>
+            </div>
           </div>
 
-          <div style={styles.contactRow}>
-            <span style={styles.contactLabel}>Phone:</span>
-            <span style={styles.contactValue}>+8801739860673</span>
-          </div>
-
-          <div style={styles.contactRow}>
-            <span style={styles.contactLabel}>Email:</span>
-            <span style={styles.contactValue}>onudhabon@gmail.com</span>
+          {}
+          <div style={styles.section}>
+            <h3 style={styles.sectionTitle}>Contact To Collaborate</h3>
+            <div style={styles.contactRow}>
+              <span style={styles.contactLabel}>Phone:</span>
+              <span style={styles.contactValue}>+8801790043162</span>
+            </div>
+            <div style={styles.contactRow}>
+              <span style={styles.contactLabel}>Email:</span>
+              <span style={styles.contactValue}>onudhabon@gmail.com</span>
+            </div>
           </div>
 
           <p style={styles.footer}>
