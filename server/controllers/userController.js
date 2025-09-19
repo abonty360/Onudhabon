@@ -12,6 +12,18 @@ export const getAllUsers = async (req, res) => {
     }
 }
 
+export const getUserById = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id).select('name email picture roles phone location bio isRestricted');
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.json({ user });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 export const getProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('name email picture role roles phone location bio');

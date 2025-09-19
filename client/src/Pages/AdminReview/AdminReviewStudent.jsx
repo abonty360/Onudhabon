@@ -3,11 +3,15 @@ import { jwtDecode } from "jwt-decode";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import StudentReviewHero from "../../Components/HeroSection/StudentreviewHero";
+import { Link } from "react-router-dom";
 import "./AdminReview.css";
 
 function AdminReviewStudents({ isLoggedIn, handleLogout }) {
   const [students, setStudents] = useState([]);
   const [user, setUser] = useState(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [restrictionMessage, setRestrictionMessage] = useState("");
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -42,6 +46,32 @@ function AdminReviewStudents({ isLoggedIn, handleLogout }) {
       .catch(err => console.error(`Error ${action} student:`, err));
   };
 
+  const handleViewProfile = async (guardianId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/user/${guardianId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setSelectedStudent(data.user); // Renaming selectedStudent to selectedUser for clarity in modal
+        setRestrictionMessage("");
+        setShowProfileModal(true);
+      } else {
+        console.error("Error fetching guardian profile:", data.message);
+        setRestrictionMessage(data.message || "Failed to fetch guardian profile.");
+      }
+    } catch (err) {
+      console.error("Error fetching guardian profile:", err);
+      setRestrictionMessage("Failed to fetch guardian profile.");
+    }
+  };
+
+  const handleCloseProfileModal = () => {
+    setShowProfileModal(false);
+    setSelectedStudent(null);
+    setRestrictionMessage("");
+  };
+
   return (
     <>
       <NavbarComponent isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />
@@ -64,6 +94,7 @@ function AdminReviewStudents({ isLoggedIn, handleLogout }) {
                 <a href={stu.consentLetterUrl} target="_blank" rel="noreferrer">View Consent Letter</a>
               </div>
               <div className="review-actions">
+                <button onClick={() => handleViewProfile(stu.guardianId)} className="view-profile-btn">View Profile</button>
                 <button onClick={() => handleAction(stu._id, "approve")} className="approve-btn">Approve</button>
                 <button onClick={() => handleAction(stu._id, "decline")} className="decline-btn">Decline</button>
               </div>
@@ -74,6 +105,33 @@ function AdminReviewStudents({ isLoggedIn, handleLogout }) {
         )}
       </div>
       <Footer />
+
+      {showProfileModal && selectedStudent && (
+        <div className="profile-modal-overlay">
+          <div className="profile-modal-content scrollable-content">
+            <h2>Guardian Profile</h2>
+            {restrictionMessage && (
+              <p className="restriction-status-message">
+                {restrictionMessage}
+              </p>
+            )}
+            {selectedStudent.picture && (
+              <div className="profile-picture-container">
+                <img src={selectedStudent.picture} alt="Profile" className="profile-picture" />
+              </div>
+            )}
+            <p><strong>Name:</strong> {selectedStudent.name}</p>
+            <p><strong>Email:</strong> {selectedStudent.email}</p>
+            <p><strong>Phone:</strong> {selectedStudent.phone}</p>
+            <p><strong>Location:</strong> {selectedStudent.location}</p>
+            <p><strong>Role:</strong> {selectedStudent.roles}</p>
+            <p><strong>Bio:</strong> {selectedStudent.bio}</p>
+            <p><strong>Status:</strong> {selectedStudent.isRestricted ? "Restricted" : "Active"}</p>
+            {/* Add restrict/unrestrict button if applicable for guardians */}
+            <button onClick={handleCloseProfileModal} className="close-modal-btn">Close</button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
