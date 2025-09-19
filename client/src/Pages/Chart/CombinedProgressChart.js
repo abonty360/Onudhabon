@@ -26,7 +26,6 @@ ChartJS.register(
 
 const CombinedProgressChart = ({ overallProgress, subjects }) => {
 
-    // Doughnut chart for overall progress
     const op = isNaN(overallProgress) ? 0 : overallProgress;
     const doughnutData = {
         labels: ['Completed', 'Remaining'],
@@ -48,7 +47,6 @@ const CombinedProgressChart = ({ overallProgress, subjects }) => {
         cutout: '70%'
     };
 
-    // Bar chart for per-subject progress
     const barData = {
         labels: subjects.map(s => s.name),
         datasets: [
@@ -83,7 +81,7 @@ const CombinedProgressChart = ({ overallProgress, subjects }) => {
                 </div>
             </div>
             <div className="chart-section">
-                <h4>Per-Subject Progress</h4>
+                <h4>Subject Progress Per Lecture</h4>
                 <Bar data={barData} options={barOptions} />
             </div>
         </div>

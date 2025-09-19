@@ -251,7 +251,7 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
                                     <button className="update-btn" onClick={() => setShowForm(showForm === stu._id ? null : stu._id)}>
                                         {showForm === stu._id ? "Cancel Update" : "Update Progress"}
                                     </button>
-                                    {showForm === stu._id && (
+                                    {showForm === stu._id && stu.status !== "pending" && stu.status !== "declined" && (
                                         <div className="update-form">
                                             <div className="form-group">
                                                 <label htmlFor={`subject-${stu._id}`}>Subject</label>
@@ -269,66 +269,67 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
                                                     <option value="" disabled>
                                                         Select a subject
                                                     </option>
-                                                    {prog.subjects.map(s => (
-                                                        <option key={s.name} value={s.name}>
-                                                            {s.name}
-                                                        </option>
-                                                    ))}
+                                                    {Array.isArray(prog?.subjects) &&
+                                                        prog.subjects.map(s => (
+                                                            <option key={s.name} value={s.name}>
+                                                                {s.name}
+                                                            </option>
+                                                        ))}
                                                 </select>
                                             </div>
                                             {updateForm[stu._id]?.subjectName && (
                                                 <>
                                                     <div className="form-group">
                                                         <label>Lectures Supplied</label>
-                                                        <input
-                                                            type="number"
-                                                            min={
-                                                                prog.subjects.find(
-                                                                    s =>
-                                                                        s.name ===
-                                                                        updateForm[stu._id]?.subjectName
-                                                                )?.lecturesSupplied || 0
-                                                            }
+                                                        <select
                                                             value={updateForm[stu._id]?.lecturesSupplied || ""}
                                                             onChange={e =>
-                                                                handleUpdateChange(
-                                                                    stu._id,
-                                                                    "lecturesSupplied",
-                                                                    e.target.value
-                                                                )
+                                                                handleUpdateChange(stu._id, "lecturesSupplied", Number(e.target.value))
                                                             }
-                                                        />
+                                                        >
+                                                            <option value="" disabled>Select lectures supplied</option>
+                                                            {(() => {
+                                                                const subject = prog.subjects.find(
+                                                                    s => s.name === updateForm[stu._id]?.subjectName
+                                                                );
+                                                                const total = subject?.totalLectures || 0;
+                                                                return Array.from({ length: total + 1 }, (_, i) => (
+                                                                    <option key={i} value={i}>{i}</option>
+                                                                ));
+                                                            })()}
+                                                        </select>
                                                     </div>
 
                                                     {/* Lectures Completed Delta (max = remaining) */}
                                                     <div className="form-group">
                                                         <label>Lectures Completed</label>
-                                                        <input
-                                                            type="number"
-                                                            min="0"
-                                                            max={
-                                                                (prog.subjects.find(
-                                                                    s =>
-                                                                        s.name ===
-                                                                        updateForm[stu._id]?.subjectName
-                                                                )?.lecturesSupplied || 0) -
-                                                                (prog.subjects.find(
-                                                                    s =>
-                                                                        s.name ===
-                                                                        updateForm[stu._id]?.subjectName
-                                                                )?.lecturesCompleted || 0)
-                                                            }
-                                                            value={
-                                                                updateForm[stu._id]?.lecturesCompletedDelta || ""
-                                                            }
+                                                        <select
+                                                            value={updateForm[stu._id]?.lecturesCompletedDelta || ""}
                                                             onChange={e =>
-                                                                handleUpdateChange(
-                                                                    stu._id,
-                                                                    "lecturesCompletedDelta",
-                                                                    e.target.value
-                                                                )
+                                                                handleUpdateChange(stu._id, "lecturesCompletedDelta", Number(e.target.value))
                                                             }
-                                                        />
+                                                        >
+                                                            <option value="" disabled>Select lectures completed</option>
+                                                            {(() => {
+                                                                const subject = Array.isArray(prog?.subjects) &&
+                                                                    prog.subjects.find(s => s.name === updateForm[stu._id]?.subjectName);
+
+                                                                const alreadyCompleted = subject?.lecturesCompleted || 0;
+                                                                const total = subject?.totalLectures || 0;
+
+                                                                return Array.from(
+                                                                    { length: total - alreadyCompleted + 1 },
+                                                                    (_, i) => {
+                                                                        const value = alreadyCompleted + i;
+                                                                        return (
+                                                                            <option key={value} value={value}>
+                                                                                {value}
+                                                                            </option>
+                                                                        );
+                                                                    }
+                                                                );
+                                                            })()}
+                                                        </select>
                                                     </div>
 
                                                     {/* Grade Received */}
@@ -357,6 +358,11 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
                                                     </button>
                                                 </>
                                             )}
+                                        </div>
+                                    )}
+                                    {showForm === stu._id && (stu.status === "pending" || stu.status === "declined") && (
+                                        <div className="status-message">
+                                            Progress updates are unavailable until this student is verified.
                                         </div>
                                     )}
                                     <button

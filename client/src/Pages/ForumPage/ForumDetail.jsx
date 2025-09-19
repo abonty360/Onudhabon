@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Container, Card, ListGroup, Button } from "react-bootstrap";
 import ReplyBox from "../../Components/ForumComp/ReplyBox";
 import { jwtDecode } from "jwt-decode";
+import "./ForumPage.css";
 
 const ForumDetail = () => {
   const { id: postId } = useParams();
@@ -15,6 +16,8 @@ const ForumDetail = () => {
   const repliesSectionRef = useRef(null);
   const isInitialMount = useRef(true);
 
+  const { hash } = useLocation();
+  const isNavigatingByHash = useRef(false);
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -36,6 +39,33 @@ const ForumDetail = () => {
   useEffect(() => {
     fetchPost();
   }, [fetchPost]);
+
+  useEffect(() => {
+    if (post && hash) {
+      const targetReplyId = hash.replace('#', '');
+      const replyIndex = post.replies.findIndex(reply => reply._id === targetReplyId);
+
+      if (replyIndex !== -1) {
+
+        const targetPage = Math.floor(replyIndex / REPLIES_PER_PAGE) + 1;
+        isNavigatingByHash.current = true;
+        setCurrentReplyPage(targetPage);
+
+        setTimeout(() => {
+          const element = document.getElementById(targetReplyId);
+          if (element) {
+
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            element.classList.add('reply-highlight');
+
+            setTimeout(() => {
+              element.classList.remove('reply-highlight');
+            }, 2500);
+          }
+        }, 100); 
+      }
+    }
+  }, [post, hash]); 
 
   const handlePostAction = async (action) => {
     if (!user) {
@@ -79,8 +109,9 @@ const ForumDetail = () => {
   };
 
   useEffect(() => {
-    if (isInitialMount.current) {
+    if (isInitialMount.current || isNavigatingByHash.current) {
       isInitialMount.current = false;
+      isNavigatingByHash.current = false;
     } else {
       repliesSectionRef.current?.scrollIntoView({ behavior: "smooth" });
     }
@@ -137,6 +168,7 @@ const ForumDetail = () => {
           displayedReplies.map((reply) => (
             <ListGroup.Item
               key={reply._id}
+              id={reply._id}
               className="d-flex justify-content-between align-items-start"
             >
               <div>
