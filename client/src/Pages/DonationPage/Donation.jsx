@@ -4,14 +4,14 @@ export default function Donation() {
   const styles = {
     page: {
       minHeight: "100vh",
-      background: "linear-gradient(to bottom, #E0F2F1, #FFFFFF)",
+      background: "linear-gradient(to bottom, #d8e9f3ff, #FFFFFF)",
       display: "flex",
       flexDirection: "column",
       fontFamily: "Arial, sans-serif",
       color: "#333",
     },
     header: {
-      backgroundColor: "#00695C",
+      backgroundColor: "#5283edff",
       color: "white",
       padding: "60px 20px",
       textAlign: "center",
@@ -45,13 +45,13 @@ export default function Donation() {
     cardTitle: {
       fontSize: "24px",
       fontWeight: "600",
-      color: "#00695C",
+      color: "#062399ff",
       marginBottom: "20px",
     },
     sectionTitle: {
       fontSize: "20px",
       fontWeight: "600",
-      color: "#00695C",
+      color: "#062399ff",
       marginBottom: "10px",
       borderBottom: "2px solid #E0E0E0",
       display: "inline-block",
@@ -74,7 +74,7 @@ export default function Donation() {
       color: "#555",
     },
     contactValue: {
-      color: "#00695C",
+      color: "#062399ff",
       fontWeight: "600",
     },
     footer: {
