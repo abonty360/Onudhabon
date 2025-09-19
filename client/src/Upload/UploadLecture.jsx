@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import "./UploadLecture.css"
@@ -65,7 +65,7 @@ function UploadLecture() {
         }
       });
       alert("Lecture uploaded successfully!");
-      navigate("/lecture"); 
+      navigate("/lecture");
       console.log("Upload response:", res.data);
       setFormData({
         title: "",
@@ -88,83 +88,95 @@ function UploadLecture() {
     <div className="upload-page">
       <div className="upload-container">
         <h2>Upload Lecture (Video)</h2>
-          <form onSubmit={handleSubmit} className="upload-form">
-            <div className="input-card">
-              <label>Title</label>
-              <input name="title" placeholder="Enter title" onChange={handleChange} required />
-            </div>
-            <div className="input-card">
-              <label>Description</label>
-              <input name="description" placeholder="Enter description" onChange={handleChange} required />
-            </div>
-            <div className="input-card">
-              <label>Subject</label>
-              <select
-                name="subject"
-                value={formData.subject}
-                onChange={handleChange}
-              >
-                <option value="">Select Subject</option>
-                <option value="Mathematics">Mathematics</option>
-                <option value="Physics">Physics</option>
-                <option value="Chemistry">Chemistry</option>
-                <option value="Biology">Biology</option>
-                <option value="History">History</option>
-                <option value="Statistics">Statistics</option>
-                <option value="English">English</option>
-                <option value="Bangla">Bangla</option>
-              </select>
-            </div>
-            <div className="input-card">
-              <label>Topic</label>
-              <input name="topic" placeholder="Enter topic" onChange={handleChange} />
-            </div>
-            <div className="input-card">
-              <label>Class Level</label>
-              <select
-                name="classLevel"
-                value={formData.classLevel}
-                onChange={handleChange}
-              >
-                <option value="">Select Class</option>
-                {Array.from({ length: 12 }, (_, i) => (
-                  <option key={i} value={i + 1}>
-                    Grade {i + 1}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="input-card">
-              <label>Instructor</label>
-              <input
-                type="text"
-                value={user ? user.name : "Loading..."}
-                readOnly
-                className="readonly-input"
-              />
-            </div>
-            <div className="input-card">
-              <label>Version</label>
-              <select
-                name="version"
-                value={formData.version}
-                onChange={handleChange}
-              >
-                <option value="">Select Version</option>
-                <option value="Bangla">Bangla</option>
-                <option value="English">English</option>
-              </select>
-            </div>
+        <form onSubmit={handleSubmit} className="upload-form">
+          <div className="input-card">
+            <label>Title</label>
+            <input name="title" placeholder="Enter title" onChange={handleChange} required />
+          </div>
+          <div className="input-card">
+            <label>Description</label>
+            <input name="description" placeholder="Enter description" onChange={handleChange} required />
+          </div>
+          <div className="input-card">
+            <label>Subject</label>
+            <select
+              name="subject"
+              value={formData.subject}
+              onChange={handleChange}
+            >
+              <option value="">Select Subject</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Physics">Physics</option>
+              <option value="Chemistry">Chemistry</option>
+              <option value="Biology">Biology</option>
+              <option value="History">History</option>
+              <option value="Statistics">Statistics</option>
+              <option value="English">English</option>
+              <option value="Bangla">Bangla</option>
+            </select>
+          </div>
+          <div className="input-card">
+            <label>Topic</label>
+            <input name="topic" placeholder="Enter topic" onChange={handleChange} />
+          </div>
+          <div className="input-card">
+            <label>Class Level</label>
+            <select
+              name="classLevel"
+              value={formData.classLevel}
+              onChange={handleChange}
+            >
+              <option value="">Select Class</option>
+              {Array.from({ length: 12 }, (_, i) => (
+                <option key={i} value={i + 1}>
+                  Grade {i + 1}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="input-card">
+            <label>Instructor</label>
+            <input
+              type="text"
+              value={user ? user.name : "Loading..."}
+              readOnly
+              className="readonly-input"
+            />
+          </div>
+          <div className="input-card">
+            <label>Version</label>
+            <select
+              name="version"
+              value={formData.version}
+              onChange={handleChange}
+            >
+              <option value="">Select Version</option>
+              <option value="Bangla">Bangla</option>
+              <option value="English">English</option>
+            </select>
+          </div>
 
-            <div className="input-card">
-              <label>Video File</label>
-              <input type="file" accept="video/*" onChange={handleFileChange} className="file-input" required />
-            </div>
+          <div className="input-card">
+            <label>Video File</label>
 
-            <button type="submit" className="upload-btn" disabled={uploading}>
-              {uploading ? "Uploading..." : "Upload Lecture"}
-            </button>
-          </form>
+            <label htmlFor="video-upload" className="custom-file-btn">
+              {video ? video.name : "Select Video"}
+            </label>
+
+            <input
+              id="video-upload"
+              type="file"
+              accept="video/*"
+              onChange={handleFileChange}
+              style={{ display: "none" }}
+              required
+            />
+          </div>
+
+          <button type="submit" className="upload-btn" disabled={uploading}>
+            {uploading ? "Uploading..." : "Upload Lecture"}
+          </button>
+        </form>
       </div>
     </div>
   );

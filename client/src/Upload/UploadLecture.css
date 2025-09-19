@@ -107,6 +107,21 @@
   background: #e0f2ff;
   border-color: navy;
 }
+.custom-file-btn {
+  display: inline-block;
+  padding: 10px 16px;
+  background-color: #ceebff;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+  transition: background-color 0.2s ease;
+}
+
+.custom-file-btn:hover {
+  background-color: #1e88e5;
+}
 
 .upload-btn {
   background: navy;
