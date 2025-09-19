@@ -81,6 +81,7 @@ const NewPostForm = () => {
           <Form.Control
             value={tags}
             onChange={(e) => setTags(e.target.value)}
+            placeholder="#help, #request, #discussion" 
           />
         </Form.Group>
         <Button type="submit" variant="success">
