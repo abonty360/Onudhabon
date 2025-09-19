@@ -22,12 +22,7 @@ export const getProfile = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
+  };
 export const register = async (req, res) => {
 
     try {
@@ -68,14 +63,6 @@ export const register = async (req, res) => {
 
     await user.save();
     res.status(201).json(user);
-  } catch (error) {
-    if (error.code === 11000 && error.keyPattern && error.keyPattern.email) {
-      return res
-        .status(409)
-        .json({ message: "This email is already registered." });
-    }
-    res.status(500).json({ message: error.message });
-  }
 };
 
 export const login = async (req, res) => {
@@ -116,10 +103,7 @@ export const login = async (req, res) => {
       message: "Login successful",
       token,
       user: { name: user.name, roles: user.roles, email: user.email },
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+    }); 
 };
 
 export const updateProfile = async (req, res) => {

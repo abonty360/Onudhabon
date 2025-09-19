@@ -27,7 +27,6 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
@@ -64,7 +63,7 @@ function App() {
   };
 
   if (loading) {
-    return <div>Loading...</div>; // or a spinner component
+    return <div>Loading...</div>; 
   }
 
   return (
