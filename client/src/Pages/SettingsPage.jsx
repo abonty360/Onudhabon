@@ -10,7 +10,6 @@ const SettingsPage = () => {
     email: "",
     phone: "",
     location: "",
-    bio: "",
   });
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -30,7 +29,6 @@ const SettingsPage = () => {
           email: res.data.email || "",
           phone: res.data.phone || "",
           location: res.data.location || "",
-          bio: res.data.bio || "",
         });
       } catch {
         setMessage("Failed to load profile");
@@ -76,32 +74,6 @@ const SettingsPage = () => {
     }
   };
 
-  const handlePictureUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const token = localStorage.getItem("token");
-    const data = new FormData();
-    data.append("picture", file);
-
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/api/user/profile/picture",
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      setUser(res.data.user);
-      setMessage("Profile picture updated!");
-    } catch {
-      setMessage("Failed to update picture");
-    }
-  };
-
   if (!user) return <p className="loading-text">Loading...</p>;
 
   return (
@@ -109,25 +81,6 @@ const SettingsPage = () => {
       <h2 className="page-title">Account Settings</h2>
       {message && <p className="message">{message}</p>}
 
-      {}
-      <div className="section-card picture-section">
-        <img
-          src={user.picture || "https://via.placeholder.com/150"}
-          alt="Profile"
-          className="profile-pic"
-        />
-        <label className="upload-label">
-          Change Picture
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handlePictureUpload}
-            className="file-input"
-          />
-        </label>
-      </div>
-
-      {}
       <div className="section-card">
         <h3>Profile Info</h3>
         <form onSubmit={handleProfileUpdate} className="settings-form">
@@ -135,12 +88,7 @@ const SettingsPage = () => {
           <input name="name" value={formData.name} onChange={handleChange} />
 
           <label>Email</label>
-          <input
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
+          <input name="email" type="email" value={formData.email} disabled />
 
           <label>Phone</label>
           <input name="phone" value={formData.phone} onChange={handleChange} />
@@ -152,16 +100,12 @@ const SettingsPage = () => {
             onChange={handleChange}
           />
 
-          <label>Bio</label>
-          <textarea name="bio" value={formData.bio} onChange={handleChange} />
-
           <button type="submit" className="btn-primary">
             Save Profile
           </button>
         </form>
       </div>
 
-      {}
       <div className="section-card">
         <h3>Change Password</h3>
         <form onSubmit={handlePasswordUpdate} className="settings-form">
