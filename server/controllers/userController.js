@@ -4,134 +4,184 @@ import jwt from "jsonwebtoken";
 import User from "../models/Volunteers/User.js";
 
 export const getAllUsers = async (req, res) => {
-    try {
-        const users = await User.find().select('-password');
-        res.json(users);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-}
+  try {
+    const users = await User.find().select("-password");
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 export const getUserById = async (req, res) => {
-    try {
-        const user = await User.findById(req.params.id).select('name email picture roles phone location bio isRestricted');
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-        res.json({ user });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+  try {
+    const user = await User.findById(req.params.id).select(
+      "name email picture roles phone location bio isRestricted"
+    );
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+    res.json({ user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 export const getProfile = async (req, res) => {
-    try {
-        const user = await User.findById(req.user.id).select('name email picture role roles phone location bio isRestricted');
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-        res.json(user);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+  try {
+    const user = await User.findById(req.user.id).select(
+      "name email picture role roles phone location bio isRestricted"
+    );
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-  };
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 export const register = async (req, res) => {
-
-    try {
-        const { name, email, phone, location, password, roles, educationLevel, institution, major, age, sscPassingYear, sscInstitute, hscPassingYear, hscInstitute, universityName, universityPassingYear, currentlyStudying } = req.body;
-        const trimmedName = name.trimStart();
-        const allowedRoles = ["Local Guardian", "Educator"];
-        if (!roles || !allowedRoles.includes(roles)) {
-            return res.status(400).json({ message: "Invalid role specified" });
-        }
-
-        const user = new User({
-            name: trimmedName,
-            email,
-            phone,
-            location,
-            password,
-            roles,
-            educationLevel,
-            institution,
-            major,
-            age,
-            sscPassingYear,
-            sscInstitute,
-            hscPassingYear,
-            hscInstitute,
-            universityName,
-            universityPassingYear,
-            currentlyStudying
-        });
-
-        await user.save();
-        res.status(201).json(user);
-    } catch (error) {
-        if (error.code === 11000 && error.keyPattern && error.keyPattern.email) {
-            return res.status(409).json({ message: "This email is already registered." });
-        }
-        res.status(500).json({ message: error.message });
+  try {
+    const {
+      name,
+      email,
+      phone,
+      location,
+      password,
+      roles,
+      educationLevel,
+      institution,
+      major,
+      age,
+      sscPassingYear,
+      sscInstitute,
+      hscPassingYear,
+      hscInstitute,
+      universityName,
+      universityPassingYear,
+      currentlyStudying,
+    } = req.body;
+    const trimmedName = name.trimStart();
+    const allowedRoles = ["Local Guardian", "Educator"];
+    if (!roles || !allowedRoles.includes(roles)) {
+      return res.status(400).json({ message: "Invalid role specified" });
     }
 
+    const user = new User({
+      name: trimmedName,
+      email,
+      phone,
+      location,
+      password,
+      roles,
+      educationLevel,
+      institution,
+      major,
+      age,
+      sscPassingYear,
+      sscInstitute,
+      hscPassingYear,
+      hscInstitute,
+      universityName,
+      universityPassingYear,
+      currentlyStudying,
+    });
+
+    await user.save();
+    res.status(201).json(user);
+  } catch (error) {
+    if (error.code === 11000 && error.keyPattern && error.keyPattern.email) {
+      return res
+        .status(409)
+        .json({ message: "This email is already registered." });
+    }
+    res.status(500).json({ message: error.message });
+  }
 };
 
 export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    console.log("Login attempt with email:", email);
 
-    try {
-        const { email, password } = req.body;
-        console.log("Login attempt with email:", email);
-
-        const user = await User.findOne({ email });
-        console.log("User found in database:", user);
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-        const isMatch = await bcrypt.compare(password, user.password);
-        console.log("Password match result:", isMatch);
-        if (!isMatch) {
-            return res.status(401).json({ message: "Invalid credentials" });
-        }
-
-        if (user.roles === "Admin") {
-            const token = jwt.sign(
-                { id: user._id, email: user.email, roles: user.roles, name: user.name, isRestricted: user.isRestricted, isVerified: true },
-                process.env.JWT_SECRET,
-                { expiresIn: "1h" }
-            );
-
-            return res.status(200).json({
-                message: "Login successful",
-                token,
-                isVerified: true,
-                user: { name: user.name, roles: user.roles, email: user.email, id: user._id }
-            });
-        }
-
-        if (!user.isVerified) {
-            return res.status(200).json({
-                message: "Verification pending",
-                isVerified: false,
-                user: { name: user.name, roles: user.roles, email: user.email, id: user._id, verificationStatus: user.verificationStatus }
-            });
-        }
-
-        const token = jwt.sign(
-            { id: user._id, email: user.email, roles: user.roles, name: user.name, isRestricted: user.isRestricted, isVerified: user.isVerified },
-            process.env.JWT_SECRET,
-            { expiresIn: "1h" }
-        );
-
-        return res.status(200).json({
-            message: "Login successful",
-            token,
-            isVerified: true,
-            user: { name: user.name, roles: user.roles, email: user.email, id: user._id }
-        });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+    const user = await User.findOne({ email });
+    console.log("User found in database:", user);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    console.log("Password match result:", isMatch);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    if (user.roles === "Admin") {
+      const token = jwt.sign(
+        {
+          id: user._id,
+          email: user.email,
+          roles: user.roles,
+          name: user.name,
+          isRestricted: user.isRestricted,
+          isVerified: true,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+      );
+
+      return res.status(200).json({
+        message: "Login successful",
+        token,
+        isVerified: true,
+        user: {
+          name: user.name,
+          roles: user.roles,
+          email: user.email,
+          id: user._id,
+        },
+      });
+    }
+
+    if (!user.isVerified) {
+      return res.status(200).json({
+        message: "Verification pending",
+        isVerified: false,
+        user: {
+          name: user.name,
+          roles: user.roles,
+          email: user.email,
+          id: user._id,
+          verificationStatus: user.verificationStatus,
+        },
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        email: user.email,
+        roles: user.roles,
+        name: user.name,
+        isRestricted: user.isRestricted,
+        isVerified: user.isVerified,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    return res.status(200).json({
+      message: "Login successful",
+      token,
+      isVerified: true,
+      user: {
+        name: user.name,
+        roles: user.roles,
+        email: user.email,
+        id: user._id,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 export const updateProfile = async (req, res) => {
@@ -168,7 +218,11 @@ export const updatePassword = async (req, res) => {
 
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    const isMatch =
+      user.password.length === 60
+        ? await bcrypt.compare(oldPassword, user.password)
+        : oldPassword === user.password;
+
     if (!isMatch)
       return res.status(400).json({ message: "Old password is incorrect" });
 
@@ -197,123 +251,142 @@ export const updateProfilePicture = async (req, res) => {
     user.picture = req.file.path;
     await user.save();
 
-     res.json({ message: "Profile picture updated successfully", user });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-}
+    res.json({ message: "Profile picture updated successfully", user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 export const createAdmin = async (req, res) => {
-    try {
-        const { name, email, phone, location, password } = req.body;
-        if (req.user.roles !== "Admin") {
-            return res.status(403).json({ message: "Access denied" });
-        }
-        const existing = await User.findOne({ email });
-        if (existing) {
-            return res.status(409).json({ message: "This email is already registered." });
-        }
-
-        const trimmedName = name.trimStart();
-
-        const admin = new User({
-            name: trimmedName,
-            email,
-            phone,
-            location,
-            password,
-            roles: "Admin"
-        });
-
-        await admin.save();
-        res.status(201).json({ message: "Admin created successfully", admin });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+  try {
+    const { name, email, phone, location, password } = req.body;
+    if (req.user.roles !== "Admin") {
+      return res.status(403).json({ message: "Access denied" });
     }
+    const existing = await User.findOne({ email });
+    if (existing) {
+      return res
+        .status(409)
+        .json({ message: "This email is already registered." });
+    }
+
+    const trimmedName = name.trimStart();
+
+    const admin = new User({
+      name: trimmedName,
+      email,
+      phone,
+      location,
+      password,
+      roles: "Admin",
+    });
+
+    await admin.save();
+    res.status(201).json({ message: "Admin created successfully", admin });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 export const toggleRestrictUser = async (req, res) => {
-    try {
-        console.log("Received request to toggle restriction for user ID:", req.params.id);
-        const user = await User.findById(req.params.id);
-        console.log("User found:", user);
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        user.isRestricted = !user.isRestricted;
-        await user.save();
-
-        res.json({ message: "User restriction status updated successfully", user });
-    } catch (error) {
-        console.error("Error in toggleRestrictUser:", error);
-        res.status(500).json({ message: "Server error" });
+  try {
+    console.log(
+      "Received request to toggle restriction for user ID:",
+      req.params.id
+    );
+    const user = await User.findById(req.params.id);
+    console.log("User found:", user);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    user.isRestricted = !user.isRestricted;
+    await user.save();
+
+    res.json({ message: "User restriction status updated successfully", user });
+  } catch (error) {
+    console.error("Error in toggleRestrictUser:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 export const verifyAccount = async (req, res) => {
-    try {
-        const { nidNumber } = req.body;
-        const user = await User.findById(req.body.userId);
+  try {
+    const { nidNumber } = req.body;
+    const user = await User.findById(req.body.userId);
 
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        if (nidNumber) {
-            user.nidNumber = nidNumber;
-        }
-
-        if (req.file) {
-            user.certificatePicture = req.file.path;
-        }
-
-        user.isVerified = false; 
-        user.verificationStatus = 'pending'; 
-        await user.save();
-
-        res.status(200).json({ message: "Verification details submitted successfully. Awaiting admin review.", user });
-    } catch (error) {
-        console.error("Error in verifyAccount:", error);
-        res.status(500).json({ message: "Server error" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    if (nidNumber) {
+      user.nidNumber = nidNumber;
+    }
+
+    if (req.file) {
+      user.certificatePicture = req.file.path;
+    }
+
+    user.isVerified = false;
+    user.verificationStatus = "pending";
+    await user.save();
+
+    res
+      .status(200)
+      .json({
+        message:
+          "Verification details submitted successfully. Awaiting admin review.",
+        user,
+      });
+  } catch (error) {
+    console.error("Error in verifyAccount:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 export const getUnverifiedUsers = async (req, res) => {
-    try {
-        const users = await User.find({ verificationStatus: "pending", roles: { $ne: "Admin" } }).select('-password');
-        res.json(users);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+  try {
+    const users = await User.find({
+      verificationStatus: "pending",
+      roles: { $ne: "Admin" },
+    }).select("-password");
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 export const updateUserVerificationStatus = async (req, res) => {
-    try {
-        const { userId } = req.params;
-        const { status } = req.body; 
+  try {
+    const { userId } = req.params;
+    const { status } = req.body;
 
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        if (status === 'accept') {
-            user.isVerified = true;
-            user.verificationStatus = 'approved';
-        } else if (status === 'decline') {
-            user.isVerified = false;
-            user.verificationStatus = 'declined';
-            user.nidNumber = ''; 
-            user.certificatePicture = ''; 
-        } else {
-            return res.status(400).json({ message: "Invalid status provided" });
-        }
-
-        await user.save();
-        res.status(200).json({ message: `User verification status updated to ${status}ed`, user });
-    } catch (error) {
-        console.error("Error in updateUserVerificationStatus:", error);
-        res.status(500).json({ message: "Server error" });
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    if (status === "accept") {
+      user.isVerified = true;
+      user.verificationStatus = "approved";
+    } else if (status === "decline") {
+      user.isVerified = false;
+      user.verificationStatus = "declined";
+      user.nidNumber = "";
+      user.certificatePicture = "";
+    } else {
+      return res.status(400).json({ message: "Invalid status provided" });
+    }
+
+    await user.save();
+    res
+      .status(200)
+      .json({
+        message: `User verification status updated to ${status}ed`,
+        user,
+      });
+  } catch (error) {
+    console.error("Error in updateUserVerificationStatus:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
