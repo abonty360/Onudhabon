@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import ForumCard from "../../Components/ForumComp/ForumCard";
 import ForumHero from "../../Components/HeroSection/ForumHero.jsx";
 import { Button, Container } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import "./ForumPage.css";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 const ForumList = ({ isLoggedIn, handleLogout }) => {
   const [posts, setPosts] = useState([]);
@@ -17,6 +15,7 @@ const ForumList = ({ isLoggedIn, handleLogout }) => {
   const POSTS_PER_PAGE = 5;
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get("page")) || 1;
+  const navigate = useNavigate();
 
   const fetchPosts = (page) => {
     axios
@@ -38,19 +37,49 @@ const ForumList = ({ isLoggedIn, handleLogout }) => {
     window.scrollTo(0, 0);
   }, [currentPage]);
 
-  useEffect(() => {
-    if (isLoggedIn) {
+useEffect(() => {
+    const fetchProfile = async () => {
       const token = localStorage.getItem("token");
-      if (token) {
-        const decoded = jwtDecode(token);
-        setUser(decoded);
+      if (!token) {
+        setUser(null);
+        return;
       }
+      try {
+        const res = await axios.get("http://localhost:5000/api/user/profile", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (res.data && res.data.name) {
+          setUser(res.data);
+        } else {
+          console.warn("Profile response invalid, treating as guest");
+          setUser(null);
+        }
+      } catch (err) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          localStorage.removeItem("token");
+          handleLogout();
+        } else {
+          setUser(null);
+        }
+      }
+    };
+    if (isLoggedIn) {
+      fetchProfile();
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, handleLogout]);
 
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setSearchParams({ page: newPage.toString() });
+    }
+  };
+
+  const handleNewPostClick = () => {
+    if (user?.isRestricted) {
+      alert("You are restricted from posting.");
+    } else {
+      navigate("/forum/new");
     }
   };
 
@@ -66,9 +95,7 @@ const ForumList = ({ isLoggedIn, handleLogout }) => {
         <Container className="mt-4">
           <div className="d-flex justify-content-between align-items-center forum-header">
             <h2>Posts</h2>
-            <Link to="/forum/new">
-              <Button variant="success">+ New Post</Button>
-            </Link>
+            <Button variant="success" onClick={handleNewPostClick}>+ New Post</Button>
           </div>
           {posts.length > 0 ? (
             posts.map((post) => (

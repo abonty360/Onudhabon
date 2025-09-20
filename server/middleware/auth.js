@@ -20,6 +20,7 @@ export async function auth(req, res, next) {
     req.user = user;
     next();
   } catch (err) {
+    console.error("JWT Verification Error:", err);
     return res.status(403).json({ message: "Invalid or expired token" });
   }
 }
@@ -29,6 +30,17 @@ export const verifyAdmin = async (req, res, next) => {
     const user = await User.findById(req.user.id);
     if (!user || user.roles !== "Admin") {
       return res.status(403).json({ message: "Access denied. Admins only." });
+    }
+    next();
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const checkRestriction = async (req, res, next) => {
+  try {
+    if (req.user.isRestricted) {
+      return res.status(403).json({ message: "Access denied. You are restricted from performing this action." });
     }
     next();
   } catch (error) {

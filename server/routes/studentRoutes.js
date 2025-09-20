@@ -3,6 +3,7 @@ import { auth } from "../middleware/auth.js";
 import checkRole from "../middleware/checkRole.js";
 import upload from "../middleware/upload.js";
 import Student from "../models/Student.js";
+import User from "../models/Volunteers/User.js"; // Import User model
 import ClassPlan from "../models/ClassPlan.js";
 
 const router = express.Router();
@@ -10,6 +11,12 @@ import { getProgress, updateProgress, updateStudent } from '../controllers/stude
 
 router.post("/", auth, checkRole("Local Guardian"), upload.single("consentLetter"), async (req, res) => {
     try {
+        // Check if the guardian is restricted
+        const guardian = await User.findById(req.user._id);
+        if (guardian && guardian.isRestricted) {
+            return res.status(403).json({ error: "You are restricted and cannot enroll new students." });
+        }
+
         console.log("Incoming body:", req.body);
         console.log("Incoming file:", req.file);
 

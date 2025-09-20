@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 import "./UploadLecture.css"
 
 function UploadLecture() {
@@ -19,12 +18,37 @@ function UploadLecture() {
   const navigate = useNavigate();
 
   useEffect(() => {
+  const verifyToken = async () => {
     const token = localStorage.getItem("token");
-    if (token) {
-      const decoded = jwtDecode(token);
-      setUser({ name: decoded.name });
+    if (!token) {
+      navigate("/login");
+      return;
     }
-  }, []);
+
+    try {
+      const res = await axios.get("http://localhost:5000/api/user/profile", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.data) {
+        if (res.data.isRestricted) {
+          alert("You are restricted from uploading any contents.");
+          navigate("/home");
+        } else {
+          setUser(res.data);
+        }
+      } else {
+        localStorage.removeItem("token");
+        navigate("/login");
+      }
+    } catch (err) {
+      console.error("Token verification failed:", err.response?.data || err.message);
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
+  };
+
+  verifyToken();
+}, [navigate]);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -35,6 +59,9 @@ function UploadLecture() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (user && user.isRestricted) {
+      return alert("You are restricted from uploading any contents.");
+    }
     if (!video) return alert("Please select a video!");
 
     const data = new FormData();
@@ -44,6 +71,7 @@ function UploadLecture() {
       }
     });
     data.append("video", video);
+    data.append("instructor", user._id);
 
     try {
       setUploading(true);
@@ -54,7 +82,7 @@ function UploadLecture() {
         }
       });
       alert("Lecture uploaded successfully!");
-      navigate("/lecture"); 
+      navigate("/lecture");
       console.log("Upload response:", res.data);
       setFormData({
         title: "",
@@ -147,7 +175,19 @@ function UploadLecture() {
 
           <div className="input-card">
             <label>Video File</label>
-            <input type="file" accept="video/*" onChange={handleFileChange} className="file-input" required />
+
+            <label htmlFor="video-upload" className="custom-file-btn">
+              {video ? video.name : "Select Video"}
+            </label>
+
+            <input
+              id="video-upload"
+              type="file"
+              accept="video/*"
+              onChange={handleFileChange}
+              style={{ display: "none" }}
+              required
+            />
           </div>
 
           <button type="submit" className="upload-btn" disabled={uploading}>

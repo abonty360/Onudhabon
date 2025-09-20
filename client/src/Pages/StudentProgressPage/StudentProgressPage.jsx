@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { io } from 'socket.io-client';
-import { Bar } from 'react-chartjs-2';
 import CombinedProgressChart from '../Chart/CombinedProgressChart.js';
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
@@ -14,6 +13,7 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
     const [progressData, setProgressData] = useState({});
     const [showForm, setShowForm] = useState(false);
     const [updateForm, setUpdateForm] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         birthCertificateId: "",
         fullName: "",
@@ -28,21 +28,34 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
     useEffect(() => {
         const fetchProfile = async () => {
             const token = localStorage.getItem("token");
-            if (token) {
-                try {
-                    const res = await axios.get("http://localhost:5000/api/user/profile", {
-                        headers: { Authorization: `Bearer ${token}` }
-                    });
+            if (!token) {
+                handleLogout(); 
+                return;
+            }
+
+            try {
+                const res = await axios.get("http://localhost:5000/api/user/profile", {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                if (res.data) {
                     setUser(res.data);
-                } catch (err) {
-                    console.error("Failed to fetch profile:", err);
+                } else {
+                    console.warn("Profile not found, logging out");
+                    localStorage.removeItem("token");
+                    handleLogout();
                 }
+            } catch (err) {
+                console.error("Failed to fetch profile:", err.response?.data || err.message);
+                localStorage.removeItem("token");
+                handleLogout();
             }
         };
+
         if (isLoggedIn) {
             fetchProfile();
         }
-    }, [isLoggedIn]);
+    }, [isLoggedIn, handleLogout]);
 
     useEffect(() => {
         if (user?.roles === "Local Guardian") {
@@ -121,26 +134,6 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
         }
     };
 
-    const renderChart = (studentId) => {
-        const data = progressData[studentId];
-        if (!data) return null;
-        const labels = data.subjects.map(s => s.name);
-        const percentages = data.subjects.map(s => s.subjectProgress.toFixed(1));
-        return (
-            <Bar
-                data={{
-                    labels,
-                    datasets: [{
-                        label: 'Subject Progress (%)',
-                        data: percentages,
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)'
-                    }]
-                }}
-                options={{ responsive: true, plugins: { legend: { display: false } } }}
-            />
-        );
-    };
-
     const handleChange = (e) => {
         const { name, value, files } = e.target;
         if (files) {
@@ -151,6 +144,7 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
     };
     const handleSubmit = (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
         const data = new FormData();
         Object.keys(formData).forEach(key => {
             data.append(key, formData[key]);
@@ -167,7 +161,20 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
                 setStudents(prev => [res.data.student, ...prev]);
                 setShowForm(false);
             })
-            .catch(err => console.error("Error enrolling student:", err));
+            .catch(err => {
+                if (err.response && err.response.status === 403) {
+                    alert(err.response.data.error);
+                } else if (err.response && err.response.data && err.response.data.error) {
+                    alert(err.response.data.error);
+                } else {
+                    alert("Error enrolling student. Please try again.");
+                }
+                console.error("Error enrolling student:", err);
+
+            })
+            .finally(() => {
+                setIsSubmitting(false);
+            });
     };
     return (
         <>
@@ -177,7 +184,13 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
                 <div className="student-progress-container">
                     <button
                         className={`toggle-form-btn ${showForm ? "open" : ""}`}
-                        onClick={() => setShowForm(prev => !prev)}
+                        onClick={() => {
+                            if (user?.isRestricted) {
+                                alert("You are restricted from enrolling new students.");
+                            } else {
+                                setShowForm(prev => !prev);
+                            }
+                        }}
                     >
                         <span className="icon">{showForm ? "×" : "+"}</span>
                         {showForm ? "Hide Enrollment Form" : "Enroll New Student"}
@@ -214,7 +227,9 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
                             <input type="number" name="enrollmentYear" placeholder="Enrollment Year" min="2025" onChange={handleChange} required />
                             <label>Consent Letter (PDF/Image)</label>
                             <input type="file" name="consentLetter" accept=".pdf,.jpg,.jpeg,.png" onChange={handleChange} required />
-                            <button type="submit">Submit Enrollment</button>
+                            <button type="submit" disabled={isSubmitting}>
+                                {isSubmitting ? "Submitting..." : "Submit Enrollment"}
+                            </button>
                         </form>
                     )}
                     <h2>My Students</h2>
@@ -248,7 +263,16 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
                                             subjects={prog.subjects}
                                         />
                                     )}
-                                    <button className="update-btn" onClick={() => setShowForm(showForm === stu._id ? null : stu._id)}>
+                                    <button
+                                        className="update-btn"
+                                        onClick={() => {
+                                            if (user?.isRestricted) {
+                                                alert("You are restricted from updating student progress.");
+                                            } else {
+                                                setShowForm(showForm === stu._id ? null : stu._id);
+                                            }
+                                        }}
+                                    >
                                         {showForm === stu._id ? "Cancel Update" : "Update Progress"}
                                     </button>
                                     {showForm === stu._id && stu.status !== "pending" && stu.status !== "declined" && (

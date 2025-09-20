@@ -2,12 +2,26 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './RegistrationForm.css';
-import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaLock } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaLock, FaChevronDown, FaChevronUp, FaGraduationCap } from 'react-icons/fa';
 
 const rolesList = [
   { label: 'Local Guardian', desc: 'Register and track students in your community' },
   { label: 'Educator', desc: 'Create and deliver educational content' },
 ];
+
+const generateYears = (startYear) => {
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  for (let i = currentYear; i >= startYear; i--) {
+    years.push(i.toString());
+  }
+  return years;
+};
+
+const sscYears = generateYears(1980);
+const hscYears = generateYears(1980);
+const universityYears = generateYears(1980);
+const ages = Array.from({ length: 43 }, (_, i) => (i + 18).toString()); // Ages 18-60
 
 const RegisterForm = () => {
   const navigate = useNavigate();
@@ -20,10 +34,19 @@ const RegisterForm = () => {
     confirmPassword: '',
     terms: false,
     roles: [],
+    age: '',
+    sscPassingYear: '',
+    sscInstitute: '',
+    hscPassingYear: '',
+    hscInstitute: '',
+    universityName: '',
+    universityPassingYear: '',
+    currentlyStudying: false,
   });
 
   const [touched, setTouched] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [showEducationalQualification, setShowEducationalQualification] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -39,6 +62,10 @@ const RegisterForm = () => {
         [name]: type === 'checkbox' ? checked : value
       }));
     }
+  };
+
+  const toggleEducationalQualification = () => {
+    setShowEducationalQualification(prev => !prev);
   };
 
   const handleRoleChange = (label) => {
@@ -65,7 +92,7 @@ const RegisterForm = () => {
   };
 
   const isValid = () => {
-    const { name, email, phone, location, password, confirmPassword, terms, roles } = formData;
+    const { name, email, phone, location, password, confirmPassword, terms, roles, age, sscPassingYear, sscInstitute, hscPassingYear, hscInstitute, universityName, universityPassingYear, currentlyStudying } = formData;
     const allowedDomains = ['@gmail.com', '@outlook.com', '@yahoo.com', '@hotmail.com', '@aust.edu'];
     const emailDomain = email.substring(email.lastIndexOf('@'));
     const specialCharRegex = /[@#$%]/;
@@ -96,7 +123,15 @@ const RegisterForm = () => {
     try {
       const submissionData = {
         ...formData,
-        phone: `+880${formData.phone}`
+        phone: `+880${formData.phone}`,
+        age: formData.age,
+        sscPassingYear: formData.sscPassingYear,
+        sscInstitute: formData.sscInstitute,
+        hscPassingYear: formData.hscPassingYear,
+        hscInstitute: formData.hscInstitute,
+        universityName: formData.universityName,
+        universityPassingYear: formData.universityPassingYear,
+        currentlyStudying: formData.currentlyStudying,
       };
       const response = await axios.post('/api/user/register', submissionData);
       alert('Registration successful!');
@@ -180,15 +215,154 @@ const RegisterForm = () => {
       <div className={getInputClass('location')}>
         <FaMapMarkerAlt className="icon" />
         <div className="input-inner-box">
-          <input
-            type="text"
+          <select
             name="location"
-            placeholder="City, Country"
             value={formData.location}
             onChange={handleChange}
             onBlur={() => handleBlur('location')}
-          />
+            className="location-select"
+          >
+            <option value="">Select Division</option>
+            <option value="Dhaka">Dhaka</option>
+            <option value="Rajshahi">Rajshahi</option>
+            <option value="Sylhet">Sylhet</option>
+            <option value="Chittagong">Chittagong</option>
+            <option value="Barisal">Barisal</option>
+            <option value="Rangpur">Rangpur</option>
+            <option value="Khulna">Khulna</option>
+            <option value="Mymensingh">Mymensingh</option>
+          </select>
         </div>
+      </div>
+
+      <div className="collapsible-section">
+        <div className={`input-with-icon collapsible-header ${showEducationalQualification ? 'expanded' : ''}`} onClick={toggleEducationalQualification}>
+          <FaGraduationCap className="icon" />
+          <div className="input-inner-box">
+            <p>Educational Qualification</p>
+          </div>
+          {showEducationalQualification ? <FaChevronUp /> : <FaChevronDown />}
+        </div>
+        {showEducationalQualification && (
+          <div className="educational-qualification-content">
+            <div className={getInputClass('age')}>
+              <div className="input-inner-box">
+                <select
+                  name="age"
+                  value={formData.age}
+                  onChange={handleChange}
+                  onBlur={() => handleBlur('age')}
+                  className="age-select"
+                >
+                  <option value="">Select Age</option>
+                  {ages.map(age => (
+                    <option key={age} value={age}>{age}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* SSC */}
+            <div className={getInputClass('sscPassingYear')}>
+              <div className="input-inner-box">
+                <select
+                  name="sscPassingYear"
+                  value={formData.sscPassingYear}
+                  onChange={handleChange}
+                  onBlur={() => handleBlur('sscPassingYear')}
+                  className="year-select"
+                >
+                  <option value="">SSC Passing Year</option>
+                  {sscYears.map(year => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className={getInputClass('sscInstitute')}>
+              <div className="input-inner-box">
+                <input
+                  type="text"
+                  name="sscInstitute"
+                  placeholder="SSC Institute"
+                  value={formData.sscInstitute}
+                  onChange={handleChange}
+                  onBlur={() => handleBlur('sscInstitute')}
+                />
+              </div>
+            </div>
+
+            {/* HSC */}
+            <div className={getInputClass('hscPassingYear')}>
+              <div className="input-inner-box">
+                <select
+                  name="hscPassingYear"
+                  value={formData.hscPassingYear}
+                  onChange={handleChange}
+                  onBlur={() => handleBlur('hscPassingYear')}
+                  className="year-select"
+                >
+                  <option value="">HSC Passing Year</option>
+                  {hscYears.map(year => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className={getInputClass('hscInstitute')}>
+              <div className="input-inner-box">
+                <input
+                  type="text"
+                  name="hscInstitute"
+                  placeholder="HSC Institute"
+                  value={formData.hscInstitute}
+                  onChange={handleChange}
+                  onBlur={() => handleBlur('hscInstitute')}
+                />
+              </div>
+            </div>
+
+            {/* University */}
+            <div className={getInputClass('universityName')}>
+              <div className="input-inner-box">
+                <input
+                  type="text"
+                  name="universityName"
+                  placeholder="University Name"
+                  value={formData.universityName}
+                  onChange={handleChange}
+                  onBlur={() => handleBlur('universityName')}
+                />
+              </div>
+            </div>
+            <div className={getInputClass('universityPassingYear')}>
+              <div className="input-inner-box">
+                <select
+                  name="universityPassingYear"
+                  value={formData.universityPassingYear}
+                  onChange={handleChange}
+                  onBlur={() => handleBlur('universityPassingYear')}
+                  className="year-select"
+                  disabled={formData.currentlyStudying}
+                >
+                  <option value="">University Passing Year</option>
+                  {universityYears.map(year => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <label className="checkbox-agreement">
+              <input
+                type="checkbox"
+                name="currentlyStudying"
+                checked={formData.currentlyStudying}
+                onChange={handleChange}
+              />{' '}
+              Currently Studying
+            </label>
+          </div>
+        )}
       </div>
 
       <p>Volunteer Roles (Select One)</p>

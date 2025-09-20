@@ -73,7 +73,6 @@
   cursor: pointer;
 }
 
-/* Style for the checked state (inner square) */
 .role-card input[type="radio"]:checked {
   border-color: #007bff; /* Border color when checked */
 }
@@ -106,7 +105,6 @@
   color: #777; /* Darker gray */
 }
 
-/* Style for selected role card (already targeting radio) */
 .role-card input[type="radio"]:checked + div {
   color: #007bff; /* Change text color when selected */
 }
@@ -200,4 +198,56 @@
 
 .form-mission-text {
   color: #7e8085;
+}
+
+.location-select {
+  background-color: transparent; 
+  border: none;
+  outline: none;
+  flex: 1;
+  padding: 0;
+  font-size: 1em;
+  color: #333;
+  width: 100%; /* Ensure it takes full width of its container */
+  cursor: pointer;
+}
+
+.location-select option {
+  color: #333;
+  background-color: #fff;
+}
+
+.collapsible-section {
+  margin-bottom: 15px;
+  overflow: hidden;
+  background-color: #f3f4f6; /* Light grayish background */
+  border-radius: 12px; /* Rounded corners like other input boxes */
+}
+
+.collapsible-header {
+  /* Inherits input-with-icon styles */
+  cursor: pointer;
+  font-weight: bold;
+  color: #333;
+  border-bottom: none; /* Remove border-bottom as input-with-icon has a border */
+  /* background-color is already handled by .input-with-icon */
+  padding: 10px 14px; /* Apply padding similar to input-with-icon */
+}
+
+.collapsible-header:hover {
+  background-color: #e6e6e6; /* Keep hover effect */
+}
+
+.collapsible-header p {
+  margin: 0;
+  flex-grow: 1; /* Allow text to take available space */
+}
+
+.educational-qualification-content {
+  padding: 15px;
+  border-top: none; /* Remove top border as header has bottom border */
+}
+
+.collapsible-header .input-inner-box p {
+  font-weight: normal;
 }

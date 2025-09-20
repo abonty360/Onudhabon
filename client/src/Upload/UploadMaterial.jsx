@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 import "./UploadMaterial.css";
 
 function UploadMaterial() {
@@ -19,13 +18,39 @@ function UploadMaterial() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
+useEffect(() => {
+  const verifyUser = async () => {
     const token = localStorage.getItem("token");
-    if (token) {
-      const decoded = jwtDecode(token);
-      setUser({ name: decoded.name });
+    if (!token) {
+      navigate("/login");
+      return;
     }
-  }, []);
+
+    try {
+      const res = await axios.get("http://localhost:5000/api/user/profile", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (res.data) {
+        if (res.data.isRestricted) {
+          alert("You are restricted from uploading any contents.");
+          navigate("/home");
+        } else {
+          setUser(res.data); 
+        }
+      } else {
+        localStorage.removeItem("token");
+        navigate("/login");
+      }
+    } catch (err) {
+      console.error("Token verification failed:", err.response?.data || err.message);
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
+  };
+
+  verifyUser();
+}, [navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,6 +62,9 @@ function UploadMaterial() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (user && user.isRestricted) {
+      return alert("You are restricted from uploading any contents.");
+    }
     if (!file) return alert("Please select a PDF file!");
 
     const data = new FormData();
@@ -46,6 +74,9 @@ function UploadMaterial() {
       }
     });
     data.append("file", file);
+    data.append("instructor", user._id);
+
+    console.log("FormData before submission:", Object.fromEntries(data.entries()));
 
     try {
       setUploading(true);
@@ -131,12 +162,12 @@ function UploadMaterial() {
               name="version"
               value={formData.version}
               onChange={handleChange}
+              required
             >
               <option value="">Select Version</option>
               <option value="Bangla">Bangla</option>
               <option value="English">English</option>
-            </select>
-          </div>
+            </select>            </div>
 
           <div className="input-card">
             <label>PDF File</label>

@@ -18,7 +18,7 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
     const [isPanelOpen, setIsPanelOpen] = useState(false);
     const [notifications, setNotifications] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const notificationRef = useRef(null); 
+    const notificationRef = useRef(null);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -85,8 +85,8 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
 
         fetchUnreadCount();
 
-        const interval = setInterval(fetchUnreadCount, 6000); 
-        return () => clearInterval(interval); 
+        const interval = setInterval(fetchUnreadCount, 6000);
+        return () => clearInterval(interval);
 
     }, [isLoggedIn]);
 
@@ -183,6 +183,9 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
                                     <Nav.Link as={NavLink} to="/admin/review-students" className={getNavLinkClass}>
                                         Review Students
                                     </Nav.Link>
+                                    <Nav.Link as={NavLink} to="/admin/volunteers" className={getNavLinkClass}>
+                                        View Volunteers
+                                    </Nav.Link>
                                 </>
                             )}
                         </Nav>
@@ -251,6 +254,9 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
                                     </Nav.Link>
                                     <Nav.Link as={NavLink} to="/admin/review-students" className={getNavLinkClass}>
                                         Review Students
+                                    </Nav.Link>
+                                    <Nav.Link as={NavLink} to="/admin/volunteers" className={getNavLinkClass}>
+                                        View Volunteers
                                     </Nav.Link>
                                 </>
                             )}

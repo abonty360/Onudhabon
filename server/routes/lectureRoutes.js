@@ -1,5 +1,5 @@
 import express from "express";
-import { auth } from "../middleware/auth.js";
+import { auth, checkRestriction } from "../middleware/auth.js";
 import checkRole from "../middleware/checkRole.js";
 import upload from "../middleware/upload.js";
 import Lecture from "../models/Lecture.js";
@@ -7,7 +7,7 @@ import cloudinary from "../config/cloudinary.js";
 
 const router = express.Router();
 
-router.post("/", auth, checkRole("Educator"), upload.single("video"), async (req, res) => {
+router.post("/", auth, checkRole("Educator"), checkRestriction, upload.single("video"), async (req, res) => {
   try {
     const { title, description, instructor, version, classLevel, subject, topic } = req.body;
 
@@ -23,7 +23,7 @@ router.post("/", auth, checkRole("Educator"), upload.single("video"), async (req
     const newLecture = new Lecture({
       title,
       description,
-      instructor: req.user.name,
+      instructor: req.user._id,
       version,
       classLevel,
       subject,
@@ -64,7 +64,7 @@ router.get("/topics/:subject", async (req, res) => {
 });
 
 router.get("/review", auth, checkRole("Admin"), async (req, res) => {
-  const pendingLectures = await Lecture.find({ status: "pending" }).sort({ createdAt: -1 });
+  const pendingLectures = await Lecture.find({ status: "pending" }).populate('instructor').sort({ createdAt: -1 });
   res.json(pendingLectures);
 });
 
@@ -78,9 +78,9 @@ router.patch("/:id/decline", auth, checkRole("Admin"), async (req, res) => {
   res.json({ message: "Lecture declined", lecture });
 });
 
-router.get("/mine", auth, checkRole("Educator"), async (req, res) => {
+router.get("/mine", auth, checkRole("Educator"), checkRestriction, async (req, res) => {
   try {
-    const myLectures = await Lecture.find({ instructor: req.user.name }).sort({ createdAt: -1 });
+    const myLectures = await Lecture.find({ instructor: req.user._id }).sort({ createdAt: -1 });
     res.json(myLectures);
   } catch (err) {
     res.status(500).json({ error: err.message });
