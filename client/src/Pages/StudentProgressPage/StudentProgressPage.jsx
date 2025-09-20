@@ -28,21 +28,34 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
     useEffect(() => {
         const fetchProfile = async () => {
             const token = localStorage.getItem("token");
-            if (token) {
-                try {
-                    const res = await axios.get("http://localhost:5000/api/user/profile", {
-                        headers: { Authorization: `Bearer ${token}` }
-                    });
+            if (!token) {
+                handleLogout(); 
+                return;
+            }
+
+            try {
+                const res = await axios.get("http://localhost:5000/api/user/profile", {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                if (res.data) {
                     setUser(res.data);
-                } catch (err) {
-                    console.error("Failed to fetch profile:", err);
+                } else {
+                    console.warn("Profile not found, logging out");
+                    localStorage.removeItem("token");
+                    handleLogout();
                 }
+            } catch (err) {
+                console.error("Failed to fetch profile:", err.response?.data || err.message);
+                localStorage.removeItem("token");
+                handleLogout();
             }
         };
+
         if (isLoggedIn) {
             fetchProfile();
         }
-    }, [isLoggedIn]);
+    }, [isLoggedIn, handleLogout]);
 
     useEffect(() => {
         if (user?.roles === "Local Guardian") {
@@ -159,9 +172,9 @@ const StudentProgress = ({ isLoggedIn, handleLogout }) => {
                 console.error("Error enrolling student:", err);
 
             })
-          .finally(() => {
+            .finally(() => {
                 setIsSubmitting(false);
-          });
+            });
     };
     return (
         <>

@@ -1,22 +1,45 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function ViewVolunteersPage({ isLoggedIn, user, handleLogout }) {
   const [volunteers, setVolunteers] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [searchRole, setSearchRole] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchVolunteers();
-  }, [searchName, searchRole]);
+    const fetchVolunteers = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        handleLogout();
+        navigate("/login");
+        return;
+      }
 
-  const fetchVolunteers = async () => {
-    const { data } = await axios.get("/api/admin/volunteers", {
-      params: { name: searchName, role: searchRole }
-    });
-    setVolunteers(data);
-  };
+      try {
+        const { data } = await axios.get("http://localhost:5000/api/admin/volunteers", {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { name: searchName, role: searchRole }
+        });
+        setVolunteers(data);
+      } catch (err) {
+        console.error("Error fetching volunteers:", err.response?.data || err.message);
+        // Invalid/expired token → logout
+        localStorage.removeItem("token");
+        handleLogout();
+        navigate("/login");
+      }
+    };
+
+    if (isLoggedIn) {
+      fetchVolunteers();
+    }
+  }, [isLoggedIn, searchName, searchRole, handleLogout, navigate]);
+
+  if (user && user.roles !== "Admin") {
+    return <p>Access denied. Admins only.</p>;
+  }
 
   return (
     <div className="container mt-4">

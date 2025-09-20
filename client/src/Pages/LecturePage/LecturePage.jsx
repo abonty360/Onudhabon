@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import "./LecturePage.css";
 import LectureHero from "../../Components/HeroSection/LectureHero.jsx";
+import axios from "axios";
 
 function LecturePage({ isLoggedIn, handleLogout }) {
   const [lectures, setLectures] = useState([]);
@@ -41,14 +41,36 @@ function LecturePage({ isLoggedIn, handleLogout }) {
   }, [isLoggedIn, user]);
 
   useEffect(() => {
-    if (isLoggedIn) {
+    const fetchProfile = async () => {
       const token = localStorage.getItem("token");
-      if (token) {
-        const decoded = jwtDecode(token);
-        setUser(decoded);
+      if (!token) {
+        setUser(null);
+        return;
       }
+      try {
+        const res = await axios.get("http://localhost:5000/api/user/profile", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (res.data && res.data.name) {
+          setUser(res.data);
+        } else {
+          console.warn("Profile response invalid, treating as guest");
+          setUser(null);
+        }
+      } catch (err) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          localStorage.removeItem("token");
+          handleLogout();
+        } else {
+          setUser(null);
+        }
+      }
+    };
+    if (isLoggedIn) {
+      fetchProfile();
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, handleLogout]);
 
   useEffect(() => {
     let filtered = lectures;

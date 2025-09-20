@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 import "./UploadMaterial.css";
 
 function UploadMaterial() {
@@ -19,20 +18,39 @@ function UploadMaterial() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
+useEffect(() => {
+  const verifyUser = async () => {
     const token = localStorage.getItem("token");
-    if (token) {
-      const decoded = jwtDecode(token);
-      if (decoded.isRestricted) {
-        alert("You are restricted from uploading any contents.");
-        navigate("/home");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const res = await axios.get("http://localhost:5000/api/user/profile", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (res.data) {
+        if (res.data.isRestricted) {
+          alert("You are restricted from uploading any contents.");
+          navigate("/home");
+        } else {
+          setUser(res.data); 
+        }
       } else {
-        setUser(decoded);
+        localStorage.removeItem("token");
+        navigate("/login");
       }
-    } else {
+    } catch (err) {
+      console.error("Token verification failed:", err.response?.data || err.message);
+      localStorage.removeItem("token");
       navigate("/login");
     }
-  }, [navigate]);
+  };
+
+  verifyUser();
+}, [navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

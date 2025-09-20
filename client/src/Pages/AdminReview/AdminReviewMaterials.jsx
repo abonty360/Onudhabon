@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import MaterialReviewHero from "../../Components/HeroSection/MaterialReviewHero";
 import "./AdminReview.css";
+import axios from "axios";
 
 function AdminReviewMaterials({ isLoggedIn, handleLogout }) {
   const [materials, setMaterials] = useState([]);
@@ -13,14 +13,30 @@ function AdminReviewMaterials({ isLoggedIn, handleLogout }) {
   const [restrictionMessage, setRestrictionMessage] = useState("");
 
   useEffect(() => {
-    if (isLoggedIn) {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const decoded = jwtDecode(token);
-        setUser(decoded);
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          handleLogout();
+          return;
+        }
+
+        const res = await axios.get("http://localhost:5000/api/user/profile", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        setUser(res.data); 
+      } catch (err) {
+        console.error("Profile fetch failed:", err.response?.data || err.message);
+        localStorage.removeItem("token");
+        handleLogout();
       }
+    };
+
+    if (isLoggedIn) {
+      fetchProfile();
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, handleLogout]);
 
   useEffect(() => {
     if (user?.roles === "Admin") {
@@ -32,6 +48,13 @@ function AdminReviewMaterials({ isLoggedIn, handleLogout }) {
         .catch(err => console.error("Error fetching pending materials:", err));
     }
   }, [user]);
+  if (!user) {
+    return <p>Loading...</p>;
+  }
+
+  if (user.roles !== "Admin") {
+    return <p>Access denied. Admins only.</p>;
+  }
 
   const handleViewProfile = (instructor) => {
     setSelectedInstructor(instructor);

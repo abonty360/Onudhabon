@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import "./MaterialPage.css";
 import MaterialHero from "../../Components/HeroSection/MaterialHero.jsx";
+import axios from "axios";
 
 function MaterialPage({ isLoggedIn, handleLogout }) {
   const [materials, setMaterials] = useState([]);
@@ -40,15 +40,37 @@ function MaterialPage({ isLoggedIn, handleLogout }) {
     }
   }, [isLoggedIn, user]);
 
-  useEffect(() => {
-    if (isLoggedIn) {
+   useEffect(() => {
+    const fetchProfile = async () => {
       const token = localStorage.getItem("token");
-      if (token) {
-        const decoded = jwtDecode(token);
-        setUser(decoded);
+      if (!token) {
+        setUser(null);
+        return;
       }
+      try {
+        const res = await axios.get("http://localhost:5000/api/user/profile", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (res.data && res.data.name) {
+          setUser(res.data);
+        } else {
+          console.warn("Profile response invalid, treating as guest");
+          setUser(null);
+        }
+      } catch (err) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          localStorage.removeItem("token");
+          handleLogout();
+        } else {
+          setUser(null);
+        }
+      }
+    };
+    if (isLoggedIn) {
+      fetchProfile();
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, handleLogout]);
 
   useEffect(() => {
     let filtered = materials;

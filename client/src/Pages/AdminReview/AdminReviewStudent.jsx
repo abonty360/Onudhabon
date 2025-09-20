@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import StudentReviewHero from "../../Components/HeroSection/StudentreviewHero";
-import { Link } from "react-router-dom";
 import "./AdminReview.css";
+import axios from "axios";
 
 function AdminReviewStudents({ isLoggedIn, handleLogout }) {
   const [students, setStudents] = useState([]);
@@ -14,14 +13,30 @@ function AdminReviewStudents({ isLoggedIn, handleLogout }) {
   const [restrictionMessage, setRestrictionMessage] = useState("");
 
   useEffect(() => {
-    if (isLoggedIn) {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const decoded = jwtDecode(token);
-        setUser(decoded);
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          handleLogout();
+          return;
+        }
+
+        const res = await axios.get("http://localhost:5000/api/user/profile", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        setUser(res.data); 
+      } catch (err) {
+        console.error("Profile fetch failed:", err.response?.data || err.message);
+        localStorage.removeItem("token");
+        handleLogout();
       }
+    };
+
+    if (isLoggedIn) {
+      fetchProfile();
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, handleLogout]);
 
   useEffect(() => {
     if (user?.roles === "Admin") {
@@ -33,6 +48,14 @@ function AdminReviewStudents({ isLoggedIn, handleLogout }) {
         .catch(err => console.error("Error fetching pending students:", err));
     }
   }, [user]);
+
+  if (!user) {
+    return <p>Loading...</p>;
+  }
+
+  if (user.roles !== "Admin") {
+    return <p>Access denied. Admins only.</p>;
+  }
 
   const handleAction = (id, action) => {
     fetch(`http://localhost:5000/api/students/${id}/${action}`, {

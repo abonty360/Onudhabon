@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import ForumCard from "../../Components/ForumComp/ForumCard";
 import ForumHero from "../../Components/HeroSection/ForumHero.jsx";
 import { Button, Container } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import "./ForumPage.css";
@@ -39,15 +37,37 @@ const ForumList = ({ isLoggedIn, handleLogout }) => {
     window.scrollTo(0, 0);
   }, [currentPage]);
 
-  useEffect(() => {
-    if (isLoggedIn) {
+useEffect(() => {
+    const fetchProfile = async () => {
       const token = localStorage.getItem("token");
-      if (token) {
-        const decoded = jwtDecode(token);
-        setUser(decoded);
+      if (!token) {
+        setUser(null);
+        return;
       }
+      try {
+        const res = await axios.get("http://localhost:5000/api/user/profile", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (res.data && res.data.name) {
+          setUser(res.data);
+        } else {
+          console.warn("Profile response invalid, treating as guest");
+          setUser(null);
+        }
+      } catch (err) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          localStorage.removeItem("token");
+          handleLogout();
+        } else {
+          setUser(null);
+        }
+      }
+    };
+    if (isLoggedIn) {
+      fetchProfile();
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, handleLogout]);
 
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {

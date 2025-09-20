@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import CombinedProgressChart from "../Chart/CombinedProgressChart";
+//import CombinedProgressChart from "../Chart/CombinedProgressChart";
 import "./VolunteerProfilePage.css"
 
 export default function VolunteerProfilePage({ isLoggedIn, user, handleLogout }) {
@@ -9,13 +9,33 @@ export default function VolunteerProfilePage({ isLoggedIn, user, handleLogout })
     const [volunteer, setVolunteer] = useState(null);
 
     useEffect(() => {
-        axios
-            .get(`/api/admin/volunteers/${id}`)
-            .then((res) => setVolunteer(res.data))
-            .catch((err) => {
-                console.error("Error fetching volunteer profile:", err);
-            });
-    }, [id]);
+  const fetchVolunteer = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      handleLogout();
+      return;
+    }
+
+    try {
+      const res = await axios.get(`http://localhost:5000/api/admin/volunteers/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.data) {
+        setVolunteer(res.data);
+      } else {
+        console.warn("Volunteer not found, logging out");
+        localStorage.removeItem("token");
+        handleLogout();
+      }
+    } catch (err) {
+      console.error("Error fetching volunteer profile:", err.response?.data || err.message);
+      localStorage.removeItem("token");
+      handleLogout();
+    }
+  };
+
+  fetchVolunteer();
+}, [id, handleLogout]);
 
     if (!volunteer) return <p>Loading...</p>;
 
