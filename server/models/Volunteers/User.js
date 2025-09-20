@@ -56,7 +56,7 @@ const userSchema = new mongoose.Schema({
     verificationStatus: {
         type: String,
         enum: ['pending', 'approved', 'declined'],
-        default: 'pending'
+        default: 'declined'
     },
     nidNumber: {
         type: String,

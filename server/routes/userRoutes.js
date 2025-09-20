@@ -13,15 +13,7 @@ router.get("/profile", auth, getProfile);
 router.put("/profile", auth, updateProfile);
 
 router.post("/profile/picture", auth, upload.single("picture"), updateProfilePicture);
-router.get("/profile", auth, getProfile);
-router.put("/profile", auth, updateProfile);
 router.put("/password", auth, updatePassword);
-router.post(
-  "/profile/picture",
-  auth,
-  upload.single("picture"),
-  updateProfilePicture
-);
 router.post("/create-admin", auth, verifyAdmin, createAdmin);
 router.post("/verify-account", upload.single("certificate"), verifyAccount);
 

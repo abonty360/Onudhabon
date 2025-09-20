@@ -32,7 +32,7 @@ function VerificationPopup({ show, handleClose, userId, onVerified }) {
         formData,
         {
           headers: {
-            'Content-Type': 'multipart/form-type',
+            'Content-Type': 'multipart/form-data',
           },
         }
       );
