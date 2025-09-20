@@ -20,7 +20,6 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
   const [notifications, setNotifications] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Separate refs for top bar and main navbar notifications
   const topBarNotificationRef = useRef(null);
   const mainNavNotificationRef = useRef(null);
 
@@ -30,7 +29,6 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Fetch profile
   useEffect(() => {
     const fetchProfile = async () => {
       const token = localStorage.getItem("token");
@@ -51,7 +49,6 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
     if (isLoggedIn && !passedUser) fetchProfile();
   }, [isLoggedIn, passedUser]);
 
-  // Click outside to close notification panel
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -67,7 +64,6 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Fetch unread count
   useEffect(() => {
     const fetchUnreadCount = async () => {
       const token = localStorage.getItem("token");
@@ -89,7 +85,6 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
     return () => clearInterval(interval);
   }, [isLoggedIn]);
 
-  // Fetch notifications when panel opens
   useEffect(() => {
     const fetchNotifications = async () => {
       if (isPanelOpen) {
@@ -130,16 +125,13 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
     }
   };
 
-  // Notification click handler (navigate first, then mark as read)
   const handleNotificationClick = (notification) => {
-    // Navigate immediately
     const targetUrl =
       notification.type === "reply" && notification.reply
         ? `/forum/${notification.post._id}#${notification.reply}`
         : `/forum/${notification.post._id}`;
     navigate(targetUrl);
 
-    // Mark as read asynchronously
     if (!notification.isRead) {
       const token = localStorage.getItem("token");
       axios
@@ -186,7 +178,6 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
 
   return (
     <header className={`site-header fixed-top ${scrolled ? "scrolled" : ""}`}>
-      {/* --- TOP BAR --- */}
       <Navbar expand="md" className="top-bar navbar-dark">
         <Container fluid>
           <Navbar.Brand
@@ -214,6 +205,27 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
               <Nav.Link as={NavLink} to="/forum" className={getNavLinkClass}>
                 Forum
               </Nav.Link>
+              {user?.roles === "Local Guardian" && (
+                <Nav.Link as={NavLink} to="/studentprogress" className={getNavLinkClass}>
+                  Student Progress
+                </Nav.Link>
+              )}
+              {user?.roles === "Admin" && (
+                <>
+                  <Nav.Link as={NavLink} to="/admin/review-lectures" className={getNavLinkClass}>
+                    Review Lectures
+                  </Nav.Link>
+                  <Nav.Link as={NavLink} to="/admin/review-materials" className={getNavLinkClass}>
+                    Review Materials
+                  </Nav.Link>
+                  <Nav.Link as={NavLink} to="/admin/review-students" className={getNavLinkClass}>
+                    Review Students
+                  </Nav.Link>
+                  <Nav.Link as={NavLink} to="/admin/volunteers" className={getNavLinkClass}>
+                    View Volunteers
+                  </Nav.Link>
+                </>
+              )}
             </Nav>
             <Form className="d-flex align-items-center gap-2">
               {isLoggedIn ? (
@@ -249,7 +261,6 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
         </Container>
       </Navbar>
 
-      {/* --- MAIN NAVBAR --- */}
       <Navbar expand="lg" className="shadow-sm custom-navbar">
         <Container fluid>
           <Navbar.Brand
@@ -277,6 +288,27 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
               <Nav.Link as={NavLink} to="/forum" className={getNavLinkClass}>
                 Forum
               </Nav.Link>
+              {user?.roles === "Local Guardian" && (
+                <Nav.Link as={NavLink} to="/studentprogress" className={getNavLinkClass}>
+                  Student Progress
+                </Nav.Link>
+              )}
+              {user?.roles === "Admin" && (
+                <>
+                  <Nav.Link as={NavLink} to="/admin/review-lectures" className={getNavLinkClass}>
+                    Review Lectures
+                  </Nav.Link>
+                  <Nav.Link as={NavLink} to="/admin/review-materials" className={getNavLinkClass}>
+                    Review Materials
+                  </Nav.Link>
+                  <Nav.Link as={NavLink} to="/admin/review-students" className={getNavLinkClass}>
+                    Review Students
+                  </Nav.Link>
+                  <Nav.Link as={NavLink} to="/admin/volunteers" className={getNavLinkClass}>
+                    View Volunteers
+                  </Nav.Link>
+                </>
+              )}
             </Nav>
             <Form className="d-flex align-items-center gap-2">
               {isLoggedIn ? (
