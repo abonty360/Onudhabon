@@ -25,7 +25,7 @@ function AdminReviewMaterials({ isLoggedIn, handleLogout }) {
           headers: { Authorization: `Bearer ${token}` }
         });
 
-        setUser(res.data); 
+        setUser(res.data);
       } catch (err) {
         console.error("Profile fetch failed:", err.response?.data || err.message);
         localStorage.removeItem("token");
@@ -55,10 +55,24 @@ function AdminReviewMaterials({ isLoggedIn, handleLogout }) {
   if (user.roles !== "Admin") {
     return <p>Access denied. Admins only.</p>;
   }
+  const getValidToken = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("No token found");
 
+    try {
+      await axios.get("http://localhost:5000/api/user/profile", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      return token;
+    } catch (err) {
+      localStorage.removeItem("token");
+      handleLogout();
+      throw new Error("Invalid token");
+    }
+  };
   const handleViewProfile = (instructor) => {
     setSelectedInstructor(instructor);
-    setRestrictionMessage(""); // Clear previous message
+    setRestrictionMessage("");
     setShowProfileModal(true);
   };
 
@@ -68,41 +82,42 @@ function AdminReviewMaterials({ isLoggedIn, handleLogout }) {
     setRestrictionMessage("");
   };
 
-  const handleToggleRestrict = (id, currentStatus) => {
-    fetch(`http://localhost:5000/api/user/${id}/restrict`, {
-      method: "PATCH",
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-    })
-      .then(res => res.json())
-      .then(updatedUser => {
-        setMaterials(prevMaterials =>
-          prevMaterials.map(mat =>
-            mat.instructor && mat.instructor._id === id ? { ...mat, instructor: updatedUser.user } : mat
-          )
-        );
-        if (selectedInstructor && selectedInstructor._id === id) {
-          setSelectedInstructor(updatedUser.user);
-          setRestrictionMessage(
-            `${updatedUser.user.name} is now ${updatedUser.user.isRestricted ? "restricted" : "unrestricted"}.`
-          );
-        }
-      })
-      .catch(err => {
-        console.error("Error toggling restriction:", err);
-        setRestrictionMessage("Failed to update restriction status.");
+  const handleToggleRestrict = async (id, currentStatus) => {
+    try {
+      const token = await getValidToken();
+      const res = await fetch(`http://localhost:5000/api/user/${id}/restrict`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` }
       });
+      const updatedUser = await res.json();
+      setMaterials(prevMaterials =>
+        prevMaterials.map(mat =>
+          mat.instructor && mat.instructor._id === id ? { ...mat, instructor: updatedUser.user } : mat
+        )
+      );
+      if (selectedInstructor && selectedInstructor._id === id) {
+        setSelectedInstructor(updatedUser.user);
+        setRestrictionMessage(
+          `${updatedUser.user.name} is now ${updatedUser.user.isRestricted ? "restricted" : "unrestricted"}.`
+        );
+      }
+    } catch (err) {
+      console.error("Error toggling restriction:", err);
+      setRestrictionMessage("Failed to update restriction status.");
+    }
   };
 
-  const handleAction = (id, action) => {
-    fetch(`http://localhost:5000/api/materials/${id}/${action}`, {
-      method: "PATCH",
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-    })
-      .then(res => res.json())
-      .then(() => {
-        setMaterials(prev => prev.filter(m => m._id !== id));
-      })
-      .catch(err => console.error(`Error ${action} material:`, err));
+  const handleAction = async (id, action) => {
+    try {
+      const token = await getValidToken();
+      await fetch(`http://localhost:5000/api/materials/${id}/${action}`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMaterials(prev => prev.filter(m => m._id !== id));
+    } catch (err) {
+      console.error(`Error ${action} material:`, err);
+    }
   };
 
   return (

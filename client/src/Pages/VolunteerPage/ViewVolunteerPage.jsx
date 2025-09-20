@@ -8,7 +8,7 @@ export default function ViewVolunteersPage({ isLoggedIn, user, handleLogout }) {
   const [volunteers, setVolunteers] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [searchRole, setSearchRole] = useState("");
-  const [key, setKey] = useState('all'); // 'all' or 'pending'
+  const [key, setKey] = useState('all'); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,7 +28,6 @@ export default function ViewVolunteersPage({ isLoggedIn, user, handleLogout }) {
         setVolunteers(data);
       } catch (err) {
         console.error("Error fetching volunteers:", err.response?.data || err.message);
-        // Invalid/expired token → logout
         localStorage.removeItem("token");
         handleLogout();
         navigate("/login");

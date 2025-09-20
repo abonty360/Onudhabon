@@ -1,9 +1,9 @@
 import express from "express";
-import { auth } from "../middleware/auth.js";
+import { auth, verifyAdmin } from "../middleware/auth.js";
 import checkRole from "../middleware/checkRole.js";
 import upload from "../middleware/upload.js";
 import Student from "../models/Student.js";
-import User from "../models/Volunteers/User.js"; // Import User model
+import User from "../models/Volunteers/User.js"; 
 import ClassPlan from "../models/ClassPlan.js";
 
 const router = express.Router();
@@ -11,7 +11,6 @@ import { getProgress, updateProgress, updateStudent } from '../controllers/stude
 
 router.post("/", auth, checkRole("Local Guardian"), upload.single("consentLetter"), async (req, res) => {
     try {
-        // Check if the guardian is restricted
         const guardian = await User.findById(req.user._id);
         if (guardian && guardian.isRestricted) {
             return res.status(403).json({ error: "You are restricted and cannot enroll new students." });
@@ -33,16 +32,13 @@ router.post("/", auth, checkRole("Local Guardian"), upload.single("consentLetter
         let subjectsInput = req.body.subjects;
         if (typeof subjectsInput === "string") {
             try {
-                // Try parsing JSON string
                 const parsed = JSON.parse(subjectsInput);
                 if (Array.isArray(parsed)) {
                     subjectsInput = parsed;
                 } else {
-                    // Single subject string, wrap in array
                     subjectsInput = [subjectsInput];
                 }
             } catch {
-                // Not JSON, treat as comma-separated or single value
                 subjectsInput = subjectsInput.includes(",")
                     ? subjectsInput.split(",").map(s => s.trim())
                     : [subjectsInput.trim()];
@@ -117,7 +113,7 @@ router.get("/mine", auth, checkRole("Local Guardian"), async (req, res) => {
     }
 });
 
-router.get("/review", auth, checkRole("Admin"), async (req, res) => {
+router.get("/review", auth, verifyAdmin, checkRole("Admin"), async (req, res) => {
     try {
         const pending = await Student.find({ status: "pending" }).sort({ createdAt: -1 });
         res.json(pending);
@@ -126,7 +122,7 @@ router.get("/review", auth, checkRole("Admin"), async (req, res) => {
     }
 });
 
-router.patch("/:id/approve", auth, checkRole("Admin"), async (req, res) => {
+router.patch("/:id/approve", verifyAdmin, auth, checkRole("Admin"), async (req, res) => {
     try {
         const student = await Student.findByIdAndUpdate(req.params.id, { status: "verified" }, { new: true });
         res.json({ message: "Student verified", student });
@@ -135,7 +131,7 @@ router.patch("/:id/approve", auth, checkRole("Admin"), async (req, res) => {
     }
 });
 
-router.patch("/:id/decline", auth, checkRole("Admin"), async (req, res) => {
+router.patch("/:id/decline", verifyAdmin, auth, checkRole("Admin"), async (req, res) => {
     try {
         const student = await Student.findByIdAndUpdate(req.params.id, { status: "declined" }, { new: true });
         res.json({ message: "Student declined", student });

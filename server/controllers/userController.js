@@ -125,7 +125,7 @@ export const login = async (req, res) => {
           isVerified: true,
         },
         process.env.JWT_SECRET,
-        { expiresIn: "1h" }
+        { expiresIn: process.env.JWT_EXPIRES_IN }
       );
 
       return res.status(200).json({
@@ -165,7 +165,7 @@ export const login = async (req, res) => {
         isVerified: user.isVerified,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: process.env.JWT_EXPIRES_IN }
     );
 
     return res.status(200).json({

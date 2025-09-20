@@ -25,7 +25,7 @@ function AdminReviewLectures({ isLoggedIn, handleLogout }) {
           headers: { Authorization: `Bearer ${token}` }
         });
 
-        setUser(res.data); 
+        setUser(res.data);
       } catch (err) {
         console.error("Profile fetch failed:", err.response?.data || err.message);
         localStorage.removeItem("token");
@@ -58,7 +58,7 @@ function AdminReviewLectures({ isLoggedIn, handleLogout }) {
 
   const handleViewProfile = (instructor) => {
     setSelectedInstructor(instructor);
-    setRestrictionMessage(""); // Clear previous message
+    setRestrictionMessage("");
     setShowProfileModal(true);
   };
 
@@ -67,42 +67,60 @@ function AdminReviewLectures({ isLoggedIn, handleLogout }) {
     setSelectedInstructor(null);
     setRestrictionMessage("");
   };
+  const getValidToken = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("No token found");
 
-  const handleToggleRestrict = (id, currentStatus) => {
-    fetch(`http://localhost:5000/api/user/${id}/restrict`, {
-      method: "PATCH",
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-    })
-      .then(res => res.json())
-      .then(updatedUser => {
-        setLectures(prevLectures =>
-          prevLectures.map(lec =>
-            lec.instructor && lec.instructor._id === id ? { ...lec, instructor: updatedUser.user } : lec
-          )
-        );
-        if (selectedInstructor && selectedInstructor._id === id) {
-          setSelectedInstructor(updatedUser.user);
-          setRestrictionMessage(
-            `${updatedUser.user.name} is now ${updatedUser.user.isRestricted ? "restricted" : "unrestricted"}.`
-          );
-        }
-      })
-      .catch(err => {
-        console.error("Error toggling restriction:", err);
-        setRestrictionMessage("Failed to update restriction status.");
+    try {
+      await axios.get("http://localhost:5000/api/user/profile", {
+        headers: { Authorization: `Bearer ${token}` }
       });
+      return token;
+    } catch (err) {
+      localStorage.removeItem("token");
+      handleLogout();
+      throw new Error("Invalid token");
+    }
+  };
+  const handleToggleRestrict = async (id, currentStatus) => {
+    try {
+      const token = await getValidToken();
+      const res = await fetch(`http://localhost:5000/api/user/${id}/restrict`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const updatedUser = await res.json();
+
+      setLectures(prevLectures =>
+        prevLectures.map(lec =>
+          lec.instructor && lec.instructor._id === id ? { ...lec, instructor: updatedUser.user } : lec
+        )
+      );
+
+      if (selectedInstructor && selectedInstructor._id === id) {
+        setSelectedInstructor(updatedUser.user);
+        setRestrictionMessage(
+          `${updatedUser.user.name} is now ${updatedUser.user.isRestricted ? "restricted" : "unrestricted"}.`
+        );
+      }
+    } catch (err) {
+      console.error("Error toggling restriction:", err);
+      setRestrictionMessage("Failed to update restriction status.");
+    }
   };
 
-  const handleAction = (id, action) => {
-    fetch(`http://localhost:5000/api/lectures/${id}/${action}`, {
-      method: "PATCH",
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-    })
-      .then(res => res.json())
-      .then(() => {
-        setLectures(prev => prev.filter(l => l._id !== id));
-      })
-      .catch(err => console.error(`Error ${action} lecture:`, err));
+  const handleAction = async (id, action) => {
+    try {
+      const token = await getValidToken();
+      const res = await fetch(`http://localhost:5000/api/lectures/${id}/${action}`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      await res.json();
+      setLectures(prev => prev.filter(l => l._id !== id));
+    } catch (err) {
+      console.error(`Error ${action} lecture:`, err);
+    }
   };
 
   return (

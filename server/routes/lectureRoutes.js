@@ -1,5 +1,5 @@
 import express from "express";
-import { auth, checkRestriction } from "../middleware/auth.js";
+import { auth, checkRestriction, verifyAdmin } from "../middleware/auth.js";
 import checkRole from "../middleware/checkRole.js";
 import upload from "../middleware/upload.js";
 import Lecture from "../models/Lecture.js";
@@ -63,17 +63,17 @@ router.get("/topics/:subject", async (req, res) => {
   }
 });
 
-router.get("/review", auth, checkRole("Admin"), async (req, res) => {
+router.get("/review", auth, verifyAdmin, checkRole("Admin"), async (req, res) => {
   const pendingLectures = await Lecture.find({ status: "pending" }).populate('instructor').sort({ createdAt: -1 });
   res.json(pendingLectures);
 });
 
-router.patch("/:id/approve", auth, checkRole("Admin"), async (req, res) => {
+router.patch("/:id/approve", auth, verifyAdmin, checkRole("Admin"), async (req, res) => {
   const lecture = await Lecture.findByIdAndUpdate(req.params.id, { status: "approved" }, { new: true });
   res.json({ message: "Lecture approved", lecture });
 });
 
-router.patch("/:id/decline", auth, checkRole("Admin"), async (req, res) => {
+router.patch("/:id/decline", auth, verifyAdmin, checkRole("Admin"), async (req, res) => {
   const lecture = await Lecture.findByIdAndUpdate(req.params.id, { status: "declined" }, { new: true });
   res.json({ message: "Lecture declined", lecture });
 });

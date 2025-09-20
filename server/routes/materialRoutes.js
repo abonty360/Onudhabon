@@ -1,5 +1,5 @@
 import express from "express";
-import { auth, checkRestriction } from "../middleware/auth.js";
+import { auth, checkRestriction, verifyAdmin } from "../middleware/auth.js";
 import checkRole from "../middleware/checkRole.js";
 import upload from "../middleware/upload.js";
 import Material from "../models/Material.js";
@@ -60,17 +60,17 @@ router.post("/", auth, checkRole("Educator"), checkRestriction, upload.single("f
   }
 });
 
-router.get("/review", auth, checkRole("Admin"), async (req, res) => {
+router.get("/review", auth, verifyAdmin, checkRole("Admin"), async (req, res) => {
   const pendingMaterials = await Material.find({ status: "pending" }).populate('instructor').sort({ date: -1 });
   res.json(pendingMaterials);
 });
 
-router.patch("/:id/approve", auth, checkRole("Admin"), async (req, res) => {
+router.patch("/:id/approve", auth, verifyAdmin, checkRole("Admin"), async (req, res) => {
   const material = await Material.findByIdAndUpdate(req.params.id, { status: "approved" }, { new: true });
   res.json({ message: "Material approved", material });
 });
 
-router.patch("/:id/decline", auth, checkRole("Admin"), async (req, res) => {
+router.patch("/:id/decline", auth, verifyAdmin, checkRole("Admin"), async (req, res) => {
   const material = await Material.findByIdAndUpdate(req.params.id, { status: "declined" }, { new: true });
   res.json({ message: "Material declined", material });
 });

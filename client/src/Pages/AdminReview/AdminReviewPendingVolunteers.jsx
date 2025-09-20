@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Button, Alert, Spinner } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 
-function AdminReviewPendingVolunteers() {
+function AdminReviewPendingVolunteers({ isLoggedIn, handleLogout }) {
   const [pendingUsers, setPendingUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchPendingUsers();
@@ -16,8 +17,15 @@ function AdminReviewPendingVolunteers() {
   const fetchPendingUsers = async () => {
     setLoading(true);
     setError('');
+
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      handleLogout();
+      navigate('/login');
+      return;
+    }
     try {
-      const token = localStorage.getItem('token');
       const response = await axios.get('/api/user/unverified-users', {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -27,6 +35,9 @@ function AdminReviewPendingVolunteers() {
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to fetch pending users.');
       console.error('Error fetching pending users:', err);
+      localStorage.removeItem('token');
+      handleLogout();
+      navigate('/login');
     } finally {
       setLoading(false);
     }
@@ -47,7 +58,7 @@ function AdminReviewPendingVolunteers() {
         }
       );
       setMessage(response.data.message);
-      fetchPendingUsers(); // Refresh the list
+      fetchPendingUsers();
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to update verification status.');
       console.error('Error updating verification status:', err);
