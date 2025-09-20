@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Tab, Tabs } from 'react-bootstrap';
+import AdminReviewPendingVolunteers from '../AdminReview/AdminReviewPendingVolunteers';
 
 export default function ViewVolunteersPage({ isLoggedIn, user, handleLogout }) {
   const [volunteers, setVolunteers] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [searchRole, setSearchRole] = useState("");
+  const [key, setKey] = useState('all'); // 'all' or 'pending'
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,10 +35,10 @@ export default function ViewVolunteersPage({ isLoggedIn, user, handleLogout }) {
       }
     };
 
-    if (isLoggedIn) {
+    if (isLoggedIn && key === 'all') {
       fetchVolunteers();
     }
-  }, [isLoggedIn, searchName, searchRole, handleLogout, navigate]);
+  }, [isLoggedIn, searchName, searchRole, handleLogout, navigate, key]);
 
   if (user && user.roles !== "Admin") {
     return <p>Access denied. Admins only.</p>;
@@ -43,33 +46,45 @@ export default function ViewVolunteersPage({ isLoggedIn, user, handleLogout }) {
 
   return (
     <div className="container mt-4">
-      <h2>All Volunteers</h2>
-      <div className="d-flex mb-3">
-        <input
-          type="text"
-          placeholder="Search by name"
-          className="form-control me-2"
-          value={searchName}
-          onChange={(e) => setSearchName(e.target.value)}
-        />
-        <select
-          className="form-select"
-          value={searchRole}
-          onChange={(e) => setSearchRole(e.target.value)}
-        >
-          <option value="">All Roles</option>
-          <option value="Local Guardian">Local Guardian</option>
-          <option value="Educator">Educator</option>
-        </select>
-      </div>
+      <Tabs
+        id="volunteer-tabs"
+        activeKey={key}
+        onSelect={(k) => setKey(k)}
+        className="mb-3"
+      >
+        <Tab eventKey="all" title="All Volunteers">
+          <h2>All Volunteers</h2>
+          <div className="d-flex mb-3">
+            <input
+              type="text"
+              placeholder="Search by name"
+              className="form-control me-2"
+              value={searchName}
+              onChange={(e) => setSearchName(e.target.value)}
+            />
+            <select
+              className="form-select"
+              value={searchRole}
+              onChange={(e) => setSearchRole(e.target.value)}
+            >
+              <option value="">All Roles</option>
+              <option value="Local Guardian">Local Guardian</option>
+              <option value="Educator">Educator</option>
+            </select>
+          </div>
 
-      <ul className="list-group">
-        {volunteers.map((v) => (
-          <li key={v._id} className="list-group-item">
-            <Link to={`/admin/volunteers/${v._id}`}>{v.name}</Link> — {v.role}
-          </li>
-        ))}
-      </ul>
+          <ul className="list-group">
+            {volunteers.map((v) => (
+              <li key={v._id} className="list-group-item">
+                <Link to={`/admin/volunteers/${v._id}`}>{v.name}</Link> — {v.roles}
+              </li>
+            ))}
+          </ul>
+        </Tab>
+        <Tab eventKey="pending" title="Pending Verifications">
+          <AdminReviewPendingVolunteers />
+        </Tab>
+      </Tabs>
     </div>
   );
 }

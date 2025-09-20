@@ -38,19 +38,31 @@ export const getProfile = async (req, res) => {
 export const register = async (req, res) => {
 
     try {
-        const { name, email, phone, location, password, roles } = req.body;
+        const { name, email, phone, location, password, roles, educationLevel, institution, major, age, sscPassingYear, sscInstitute, hscPassingYear, hscInstitute, universityName, universityPassingYear, currentlyStudying } = req.body;
         const trimmedName = name.trimStart();
         const allowedRoles = ["Local Guardian", "Educator"];
         if (!roles || !allowedRoles.includes(roles)) {
             return res.status(400).json({ message: "Invalid role specified" });
         }
+
         const user = new User({
             name: trimmedName,
             email,
             phone,
             location,
             password,
-            roles
+            roles,
+            educationLevel,
+            institution,
+            major,
+            age,
+            sscPassingYear,
+            sscInstitute,
+            hscPassingYear,
+            hscInstitute,
+            universityName,
+            universityPassingYear,
+            currentlyStudying
         });
 
         await user.save();
@@ -61,20 +73,7 @@ export const register = async (req, res) => {
         }
         res.status(500).json({ message: error.message });
     }
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = new User({
-      name,
-      email,
-      phone,
-      location,
-      password: hashedPassword,
-      roles,
-    });
-
-    await user.save();
-    res.status(201).json(user);
 };
 
 export const login = async (req, res) => {
@@ -82,6 +81,7 @@ export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         console.log("Login attempt with email:", email);
+        console.log("Password received:", password); // Log the password received
 
         const user = await User.findOne({ email });
         console.log("User found in database:", user);
@@ -89,13 +89,39 @@ export const login = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
+        console.log("Stored hashed password:", user.password); // Log the stored hashed password
         const isMatch = await bcrypt.compare(password, user.password);
         console.log("Password match result:", isMatch);
         if (!isMatch) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
+
+        // Bypass verification for Admin users
+        if (user.roles === "Admin") {
+            const token = jwt.sign(
+                { id: user._id, email: user.email, roles: user.roles, name: user.name, isRestricted: user.isRestricted, isVerified: true },
+                process.env.JWT_SECRET,
+                { expiresIn: "1h" }
+            );
+
+            return res.status(200).json({
+                message: "Login successful",
+                token,
+                isVerified: true,
+                user: { name: user.name, roles: user.roles, email: user.email, id: user._id }
+            });
+        }
+
+        if (!user.isVerified) {
+            return res.status(200).json({
+                message: "Verification pending",
+                isVerified: false,
+                user: { name: user.name, roles: user.roles, email: user.email, id: user._id, verificationStatus: user.verificationStatus }
+            });
+        }
+
         const token = jwt.sign(
-            { id: user._id, email: user.email, roles: user.roles, name: user.name, isRestricted: user.isRestricted },
+            { id: user._id, email: user.email, roles: user.roles, name: user.name, isRestricted: user.isRestricted, isVerified: user.isVerified },
             process.env.JWT_SECRET,
             { expiresIn: "1h" }
         );
@@ -103,22 +129,13 @@ export const login = async (req, res) => {
         return res.status(200).json({
             message: "Login successful",
             token,
-            user: { name: user.name, roles: user.roles, email: user.email }
+            isVerified: true,
+            user: { name: user.name, roles: user.roles, email: user.email, id: user._id }
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-    const token = jwt.sign(
-      { id: user._id, email: user.email, roles: user.roles, name: user.name },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
 
-    return res.status(200).json({
-      message: "Login successful",
-      token,
-      user: { name: user.name, roles: user.roles, email: user.email },
-    }); 
 };
 
 export const updateProfile = async (req, res) => {
@@ -234,6 +251,73 @@ export const toggleRestrictUser = async (req, res) => {
         res.json({ message: "User restriction status updated successfully", user });
     } catch (error) {
         console.error("Error in toggleRestrictUser:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+export const verifyAccount = async (req, res) => {
+    try {
+        const { nidNumber } = req.body;
+        const user = await User.findById(req.body.userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (nidNumber) {
+            user.nidNumber = nidNumber;
+        }
+
+        if (req.file) {
+            user.certificatePicture = req.file.path;
+        }
+
+        user.isVerified = false; // Set to false initially, admin will verify
+        user.verificationStatus = 'pending'; // Set status to pending
+        await user.save();
+
+        res.status(200).json({ message: "Verification details submitted successfully. Awaiting admin review.", user });
+    } catch (error) {
+        console.error("Error in verifyAccount:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+export const getUnverifiedUsers = async (req, res) => {
+    try {
+        const users = await User.find({ verificationStatus: "pending", roles: { $ne: "Admin" } }).select('-password');
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const updateUserVerificationStatus = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { status } = req.body; // 'accept' or 'decline'
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (status === 'accept') {
+            user.isVerified = true;
+            user.verificationStatus = 'approved';
+        } else if (status === 'decline') {
+            user.isVerified = false;
+            user.verificationStatus = 'declined';
+            user.nidNumber = ''; // Clear NID
+            user.certificatePicture = ''; // Clear certificate
+        } else {
+            return res.status(400).json({ message: "Invalid status provided" });
+        }
+
+        await user.save();
+        res.status(200).json({ message: `User verification status updated to ${status}ed`, user });
+    } catch (error) {
+        console.error("Error in updateUserVerificationStatus:", error);
         res.status(500).json({ message: "Server error" });
     }
 };

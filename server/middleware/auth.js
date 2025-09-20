@@ -3,12 +3,14 @@ import User from "../models/Volunteers/User.js";
 
 export async function auth(req, res, next) {
   const authHeader = req.headers.authorization;
+  console.log("Auth Header received:", authHeader);
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({ message: "No token provided" });
   }
 
   const token = authHeader.split(" ")[1];
+  console.log("Extracted Token:", token);
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -20,6 +22,7 @@ export async function auth(req, res, next) {
     req.user = user;
     next();
   } catch (err) {
+    console.error("JWT Verification Error:", err);
     return res.status(403).json({ message: "Invalid or expired token" });
   }
 }
