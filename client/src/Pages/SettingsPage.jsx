@@ -61,16 +61,24 @@ const SettingsPage = () => {
     e.preventDefault();
     const token = localStorage.getItem("token");
     try {
-      await axios.put(
+      const response = await axios.put(
         "http://localhost:5000/api/user/password",
         { oldPassword, newPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setMessage("Password updated!");
+      
+      setMessage(response.data.message || "Password updated successfully!");
       setOldPassword("");
       setNewPassword("");
-    } catch {
-      setMessage("Failed to update password");
+    } catch (error) {
+      
+      if (error.response && error.response.data && error.response.data.message) {
+        setMessage(error.response.data.message);
+      } else {
+        
+        setMessage("Failed to update password. Please try again.");
+      }
+      console.error('Password update error:', error); 
     }
   };
 
