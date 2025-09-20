@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card } from "react-bootstrap";
-import { jwtDecode } from "jwt-decode";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import "./AboutPage.css";
@@ -12,19 +11,42 @@ import { GiTeacher } from "react-icons/gi";
 import { FaBook } from "react-icons/fa6";
 import { FaHandHoldingHeart } from "react-icons/fa";
 import { FaFacebook, FaGithub } from "react-icons/fa";
+import axios from 'axios';
 
 const About = ({ isLoggedIn, handleLogout }) => {
     const [user, setUser] = useState(null);
   
-      useEffect(() => {
-        if (isLoggedIn) {
-          const token = localStorage.getItem("token");
-          if (token) {
-            const decoded = jwtDecode(token);
-            setUser(decoded);
-          }
+useEffect(() => {
+    const fetchProfile = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setUser(null);
+        return;
+      }
+      try {
+        const res = await axios.get("http://localhost:5000/api/user/profile", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (res.data && res.data.name) {
+          setUser(res.data);
+        } else {
+          console.warn("Profile response invalid, treating as guest");
+          setUser(null);
         }
-      }, [isLoggedIn]);
+      } catch (err) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          localStorage.removeItem("token");
+          handleLogout();
+        } else {
+          setUser(null);
+        }
+      }
+    };
+    if (isLoggedIn) {
+      fetchProfile();
+    }
+  }, [isLoggedIn, handleLogout]);
 
   return (
     <>

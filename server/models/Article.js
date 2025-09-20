@@ -7,7 +7,7 @@ const articleSchema = new mongoose.Schema(
     date: { type: Date, default: Date.now },
     excerpt: { type: String, required: true, trim: true },
     content: { type: String, required: true },
-    image: { type: String, required: true } // Cloudinary URL
+    image: { type: String, required: true } 
   },
   { timestamps: true }
 );

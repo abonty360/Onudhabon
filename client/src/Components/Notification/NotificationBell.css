@@ -1,0 +1,21 @@
+.notification-bell-container {
+  position: relative;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  font-size: 0.7rem;
+  padding: 0.3em 0.5em;
+}
+.notification-bell-icon {
+  color: white;
+  transition: color 0.3s ease;
+}
+
+header.scrolled .notification-bell-icon {
+  color: #007bff;
+}

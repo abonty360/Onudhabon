@@ -2,12 +2,35 @@ import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { Alert } from 'react-bootstrap';
 import LoginForm from '../../Components/LoginForm/LoginForm';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './LoginPage.css';
 
 function LoginPage({ handleLogin }) {
 
   const location = useLocation();
-  const message = location.state?.message; // Safely get the message, will be 'undefined' if not passed
+  const message = location.state?.message; 
+  const navigate = useNavigate();
+
+   useEffect(() => {
+    const verifyToken = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      try {
+        await axios.get('/api/user/profile', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        navigate('/'); 
+      } catch (err) {
+        console.error('Invalid token:', err.response?.data || err.message);
+        localStorage.removeItem('token');
+      }
+    };
+
+    verifyToken();
+  }, [navigate]);
 
   return (
     <div className="login-page-container">

@@ -1,0 +1,195 @@
+.admin-review-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.review-actions {
+  position: relative;
+  z-index: 2;
+}
+
+.review-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+.review-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.student-info p {
+  margin: 4px 0;
+}
+
+.review-actions button {
+  margin-right: 10px;
+  padding: 8px 14px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.approve-btn {
+  background-color: #28a745; /* Base green */
+  color: white;
+  padding: 8px 14px;
+  margin-right: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.approve-btn:hover {
+  background-color: #1e7e34;
+  transform: translateY(-1px);
+}
+
+.decline-btn {
+  background-color: #dc3545; /* Base red */
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.decline-btn:hover {
+  background-color: #a71d2a; /* Darker red */
+  transform: translateY(-1px);
+}
+
+.review-actions button:active {
+  transform: translateY(0);
+}
+
+.view-profile-btn {
+  background-color: #007bff; /* same blue */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none; 
+  display: inline-block;
+}
+
+.view-profile-btn:hover {
+  background-color: #0056b3;
+  text-decoration: none; 
+}
+.profile-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.profile-modal-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.profile-modal-content h2 {
+  margin-top: 0;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.profile-modal-content p {
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.profile-modal-content p strong {
+  color: #333;
+}
+
+.close-modal-btn {
+  background-color: #6c757d; /* Gray */
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  float: right;
+  transition: background-color 0.2s ease;
+}
+
+.close-modal-btn:hover {
+  background-color: #5a6268;
+}
+
+.scrollable-content {
+  max-height: 80vh; /* Adjust as needed */
+  overflow-y: auto;
+}
+
+/* Profile picture container for admin review modal */
+.profile-picture-container {
+  position: relative;
+  display: inline-block;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #ccc;
+  margin-bottom: 1rem;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+/* Profile picture for admin review modal */
+.profile-picture {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.restrict-btn,
+.unrestrict-btn {
+  background-color: #007bff; /* Blue */
+  color: white;
+  padding: 10px 18px; /* Slightly larger padding */
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 1.1rem; /* Slightly larger font size */
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  margin-top: 1rem; /* Add some margin to separate from other elements */
+}
+
+.restrict-btn:hover,
+.unrestrict-btn:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}

@@ -7,4 +7,5 @@ userRoutes.get('/', getUser);
 
 userRoutes.post('/', newUser);
 
+
 export default userRoutes;

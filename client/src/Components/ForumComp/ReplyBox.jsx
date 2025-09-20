@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 const ReplyBox = ({ postId, onReplyAdded }) => {
   const [text, setText] = useState("");
-  const [authorId, setAuthorId] = useState(null);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,7 +14,7 @@ const ReplyBox = ({ postId, onReplyAdded }) => {
     if (token) {
       try {
         const decodedToken = jwtDecode(token);
-        setAuthorId(decodedToken.id);
+        setUser(decodedToken);
       } catch (error) {
         console.error("Error decoding token:", error);
       }
@@ -25,16 +25,21 @@ const ReplyBox = ({ postId, onReplyAdded }) => {
     e.preventDefault();
     if (!text.trim()) return;
 
-    if (!authorId) {
+    if (!user) {
       navigate("/login", {
         state: { message: "You must be logged in to reply." },
       });
       return;
     }
 
+    if (user.isRestricted) {
+      alert("You are restricted from replying.");
+      return;
+    }
+
     await axios.post(`http://localhost:5000/api/forum/${postId}/replies`, {
       text,
-      author: authorId,
+      author: user.id,
     });
     setText("");
     onReplyAdded();
@@ -49,9 +54,10 @@ const ReplyBox = ({ postId, onReplyAdded }) => {
           placeholder="Write a reply..."
           value={text}
           onChange={(e) => setText(e.target.value)}
+          disabled={user?.isRestricted}
         />
       </Form.Group>
-      <Button type="submit" variant="primary">
+      <Button type="submit" variant="primary" disabled={user?.isRestricted}>
         Reply
       </Button>
     </Form>

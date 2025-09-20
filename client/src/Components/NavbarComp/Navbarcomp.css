@@ -160,3 +160,28 @@
 .top-bar .profile-link:hover .fw-semibold {
   color: #ffd700 !important;
 }
+.review-dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+}
+.review-dropdown-menu {
+  position: absolute;
+  top: 100%; /* below the trigger */
+  left: 0;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 2000;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+}
+
+.review-dropdown-menu .dropdown-item {
+  display: block;
+  padding: 0.5rem 0;
+  color: #333;
+  text-decoration: none;
+}
+
+.review-dropdown-menu .dropdown-item:hover {
+  background-color: #f0f0f0;
+}

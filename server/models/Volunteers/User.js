@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
     },
     roles: {
         type: String,
-        enum: ['Local Guardian', 'Educator'],
+        enum: ['Local Guardian', 'Educator', 'Admin'],
         required: true
     },
     bio: {
@@ -44,6 +44,71 @@ const userSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    isRestricted: {
+        type: Boolean,
+        default: false
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
+    verificationStatus: {
+        type: String,
+        enum: ['pending', 'approved', 'declined'],
+        default: 'declined'
+    },
+    nidNumber: {
+        type: String,
+        default: ''
+    },
+    certificatePicture: {
+        type: String,
+        default: ''
+    },
+    educationLevel: {
+        type: String,
+        default: ''
+    },
+    institution: {
+        type: String,
+        default: ''
+    },
+    major: {
+        type: String,
+        default: ''
+    },
+    age: {
+        type: Number,
+        default: null
+    },
+    sscPassingYear: {
+        type: String,
+        default: ''
+    },
+    sscInstitute: {
+        type: String,
+        default: ''
+    },
+    hscPassingYear: {
+        type: String,
+        default: ''
+    },
+    hscInstitute: {
+        type: String,
+        default: ''
+    },
+    universityName: {
+        type: String,
+        default: ''
+    },
+    universityPassingYear: {
+        type: String,
+        default: ''
+    },
+    currentlyStudying: {
+        type: Boolean,
+        default: false
     }
 });
 

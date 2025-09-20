@@ -1,25 +1,28 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Container, Card, ListGroup, Button } from "react-bootstrap";
 import ReplyBox from "../../Components/ForumComp/ReplyBox";
 import { jwtDecode } from "jwt-decode";
+import "./ForumPage.css";
 
 const ForumDetail = () => {
   const { id: postId } = useParams();
   const [post, setPost] = useState(null);
-  const [userId, setUserId] = useState(null);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [currentReplyPage, setCurrentReplyPage] = useState(1);
   const REPLIES_PER_PAGE = 5;
   const repliesSectionRef = useRef(null);
   const isInitialMount = useRef(true);
 
+  const { hash } = useLocation();
+  const isNavigatingByHash = useRef(false);
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        setUserId(jwtDecode(token).id);
+        setUser(jwtDecode(token));
       } catch (error) {
         console.log("Invalid token.");
       }
@@ -37,15 +40,46 @@ const ForumDetail = () => {
     fetchPost();
   }, [fetchPost]);
 
+  useEffect(() => {
+    if (post && hash) {
+      const targetReplyId = hash.replace('#', '');
+      const replyIndex = post.replies.findIndex(reply => reply._id === targetReplyId);
+
+      if (replyIndex !== -1) {
+
+        const targetPage = Math.floor(replyIndex / REPLIES_PER_PAGE) + 1;
+        isNavigatingByHash.current = true;
+        setCurrentReplyPage(targetPage);
+
+        setTimeout(() => {
+          const element = document.getElementById(targetReplyId);
+          if (element) {
+
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            element.classList.add('reply-highlight');
+
+            setTimeout(() => {
+              element.classList.remove('reply-highlight');
+            }, 2500);
+          }
+        }, 100); 
+      }
+    }
+  }, [post, hash]); 
+
   const handlePostAction = async (action) => {
-    if (!userId) {
+    if (!user) {
       return navigate("/login", {
         state: { message: "You must be logged in to vote." },
       });
     }
+    if (user.isRestricted) {
+      alert(`You are restricted from ${action}ing posts.`);
+      return;
+    }
     try {
       await axios.patch(`http://localhost:5000/api/forum/${postId}/${action}`, {
-        userId,
+        userId: user.id,
       });
       fetchPost();
     } catch (error) {
@@ -54,15 +88,19 @@ const ForumDetail = () => {
   };
 
   const handleReplyAction = async (replyId, action) => {
-    if (!userId) {
+    if (!user) {
       return navigate("/login", {
         state: { message: "You must be logged in to vote." },
       });
     }
+    if (user.isRestricted) {
+      alert(`You are restricted from ${action}ing replies.`);
+      return;
+    }
     try {
       await axios.patch(
         `http://localhost:5000/api/forum/${postId}/replies/${replyId}/${action}`,
-        { userId }
+        { userId: user.id }
       );
       fetchPost();
     } catch (error) {
@@ -71,8 +109,9 @@ const ForumDetail = () => {
   };
 
   useEffect(() => {
-    if (isInitialMount.current) {
+    if (isInitialMount.current || isNavigatingByHash.current) {
       isInitialMount.current = false;
+      isNavigatingByHash.current = false;
     } else {
       repliesSectionRef.current?.scrollIntoView({ behavior: "smooth" });
     }
@@ -100,21 +139,25 @@ const ForumDetail = () => {
           <Card.Text className="my-3">{post.content}</Card.Text>
 
           <div>
-            <Button
-              variant="outline-success"
-              size="sm"
-              onClick={() => handlePostAction("like")}
-              className="me-2"
-            >
-              Like ({post.likes.length})
-            </Button>
-            <Button
-              variant="outline-danger"
-              size="sm"
-              onClick={() => handlePostAction("dislike")}
-            >
-              Dislike ({post.dislikes.length})
-            </Button>
+            {!user?.isRestricted && (
+              <>
+                <Button
+                  variant="outline-success"
+                  size="sm"
+                  onClick={() => handlePostAction("like")}
+                  className="me-2"
+                >
+                  Like ({post.likes.length})
+                </Button>
+                <Button
+                  variant="outline-danger"
+                  size="sm"
+                  onClick={() => handlePostAction("dislike")}
+                >
+                  Dislike ({post.dislikes.length})
+                </Button>
+              </>
+            )}
           </div>
         </Card.Body>
       </Card>
@@ -125,6 +168,7 @@ const ForumDetail = () => {
           displayedReplies.map((reply) => (
             <ListGroup.Item
               key={reply._id}
+              id={reply._id}
               className="d-flex justify-content-between align-items-start"
             >
               <div>
@@ -146,6 +190,7 @@ const ForumDetail = () => {
                   size="sm"
                   onClick={() => handleReplyAction(reply._id, "like")}
                   className="me-2"
+                  disabled={user?.isRestricted}
                 >
                   Like ({reply.likes.length})
                 </Button>
@@ -153,6 +198,7 @@ const ForumDetail = () => {
                   variant="outline-danger"
                   size="sm"
                   onClick={() => handleReplyAction(reply._id, "dislike")}
+                  disabled={user?.isRestricted}
                 >
                   Dislike ({reply.dislikes.length})
                 </Button>

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import "./MaterialPage.css";
 import MaterialHero from "../../Components/HeroSection/MaterialHero.jsx";
+import axios from "axios";
 
 function MaterialPage({ isLoggedIn, handleLogout }) {
   const [materials, setMaterials] = useState([]);
@@ -19,24 +19,58 @@ function MaterialPage({ isLoggedIn, handleLogout }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/materials")
-      .then((res) => res.json())
-      .then((data) => {
-        setMaterials(data);
-        setFilteredMaterials(data);
+    if (isLoggedIn && user?.roles === "Educator") {
+      fetch("http://localhost:5000/api/materials/mine", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       })
-      .catch((err) => console.error("GET materials error:", err));
-  }, []);
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const decoded = jwtDecode(token);
-        setUser(decoded);
-      }
+        .then(res => res.json())
+        .then(data => {
+          setMaterials(data); 
+          setFilteredMaterials(data);
+        })
+        .catch(err => console.error("GET my materials error:", err));
+    } else {
+      fetch("http://localhost:5000/api/materials")
+        .then(res => res.json())
+        .then(data => {
+          setMaterials(data);
+          setFilteredMaterials(data);
+        })
+        .catch(err => console.error("GET materials error:", err));
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, user]);
+
+   useEffect(() => {
+    const fetchProfile = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setUser(null);
+        return;
+      }
+      try {
+        const res = await axios.get("http://localhost:5000/api/user/profile", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (res.data && res.data.name) {
+          setUser(res.data);
+        } else {
+          console.warn("Profile response invalid, treating as guest");
+          setUser(null);
+        }
+      } catch (err) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          localStorage.removeItem("token");
+          handleLogout();
+        } else {
+          setUser(null);
+        }
+      }
+    };
+    if (isLoggedIn) {
+      fetchProfile();
+    }
+  }, [isLoggedIn, handleLogout]);
 
   useEffect(() => {
     let filtered = materials;
@@ -200,6 +234,18 @@ function MaterialPage({ isLoggedIn, handleLogout }) {
                       <span>Grade {mat.classLevel}</span>
                       <span>{mat.subject}</span>
                       <span>{mat.topic}</span>
+                      {isLoggedIn && user?.roles === "Educator" && (
+                        <span
+                          className={`status-badge ${mat.status === "pending"
+                              ? "pending"
+                              : mat.status === "approved"
+                                ? "approved"
+                                : "declined"
+                            }`}
+                        >
+                          {mat.status.charAt(0).toUpperCase() + mat.status.slice(1)}
+                        </span>
+                      )}
                     </div>
                     <div className="meta">
                       <span>{mat.author}</span>
