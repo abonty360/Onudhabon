@@ -144,7 +144,7 @@ const Homepage = ({ isLoggedIn, handleLogout }) => {
           </div>
           <Row>
             {articles.map((article) => (
-              <Col key={article.id} md={4} className="mb-4">
+              <Col key={article._id} md={4} className="mb-4">
                 <Card className="h-100">
                   <Card.Img
                     variant="top"

@@ -95,9 +95,9 @@ function AdminReviewPendingVolunteers() {
                       {user.currentlyStudying !== undefined && <><strong>Currently Studying:</strong> {user.currentlyStudying ? 'Yes' : 'No'}<br /></>}
                       {user.nidNumber && <><strong>NID:</strong> {user.nidNumber}<br /></>}
                       {user.certificatePicture && (
-                        <div className="mt-2">
+                        <span className="mt-2 d-block">
                           <strong>Certificate:</strong> <a href={user.certificatePicture} target="_blank" rel="noopener noreferrer">View Certificate</a>
-                        </div>
+                        </span>
                       )}
                     </Card.Text>
                     <Button

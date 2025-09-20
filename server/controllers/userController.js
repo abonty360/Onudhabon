@@ -81,22 +81,18 @@ export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         console.log("Login attempt with email:", email);
-        console.log("Password received:", password); // Log the password received
 
         const user = await User.findOne({ email });
         console.log("User found in database:", user);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-
-        console.log("Stored hashed password:", user.password); // Log the stored hashed password
         const isMatch = await bcrypt.compare(password, user.password);
         console.log("Password match result:", isMatch);
         if (!isMatch) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
-        // Bypass verification for Admin users
         if (user.roles === "Admin") {
             const token = jwt.sign(
                 { id: user._id, email: user.email, roles: user.roles, name: user.name, isRestricted: user.isRestricted, isVerified: true },
@@ -272,8 +268,8 @@ export const verifyAccount = async (req, res) => {
             user.certificatePicture = req.file.path;
         }
 
-        user.isVerified = false; // Set to false initially, admin will verify
-        user.verificationStatus = 'pending'; // Set status to pending
+        user.isVerified = false; 
+        user.verificationStatus = 'pending'; 
         await user.save();
 
         res.status(200).json({ message: "Verification details submitted successfully. Awaiting admin review.", user });
@@ -295,7 +291,7 @@ export const getUnverifiedUsers = async (req, res) => {
 export const updateUserVerificationStatus = async (req, res) => {
     try {
         const { userId } = req.params;
-        const { status } = req.body; // 'accept' or 'decline'
+        const { status } = req.body; 
 
         const user = await User.findById(userId);
         if (!user) {
@@ -308,8 +304,8 @@ export const updateUserVerificationStatus = async (req, res) => {
         } else if (status === 'decline') {
             user.isVerified = false;
             user.verificationStatus = 'declined';
-            user.nidNumber = ''; // Clear NID
-            user.certificatePicture = ''; // Clear certificate
+            user.nidNumber = ''; 
+            user.certificatePicture = ''; 
         } else {
             return res.status(400).json({ message: "Invalid status provided" });
         }
