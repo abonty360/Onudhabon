@@ -11,8 +11,6 @@ const SettingsPage = () => {
     phone: "",
     location: "",
   });
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
@@ -57,23 +55,6 @@ const SettingsPage = () => {
     }
   };
 
-  const handlePasswordUpdate = async (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem("token");
-    try {
-      await axios.put(
-        "http://localhost:5000/api/user/password",
-        { oldPassword, newPassword },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setMessage("Password updated!");
-      setOldPassword("");
-      setNewPassword("");
-    } catch {
-      setMessage("Failed to update password");
-    }
-  };
-
   if (!user) return <p className="loading-text">Loading...</p>;
 
   return (
@@ -102,27 +83,6 @@ const SettingsPage = () => {
 
           <button type="submit" className="btn-primary">
             Save Profile
-          </button>
-        </form>
-      </div>
-
-      <div className="section-card">
-        <h3>Change Password</h3>
-        <form onSubmit={handlePasswordUpdate} className="settings-form">
-          <label>Old Password</label>
-          <input
-            type="password"
-            value={oldPassword}
-            onChange={(e) => setOldPassword(e.target.value)}
-          />
-          <label>New Password</label>
-          <input
-            type="password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-          <button type="submit" className="btn-primary">
-            Change Password
           </button>
         </form>
       </div>

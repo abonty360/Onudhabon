@@ -81,7 +81,7 @@ const CombinedProgressChart = ({ overallProgress, subjects }) => {
                 </div>
             </div>
             <div className="chart-section">
-                <h4>Subject Progress Per Lecture</h4>
+                <h4>Per Subject Progress</h4>
                 <Bar data={barData} options={barOptions} />
             </div>
         </div>
