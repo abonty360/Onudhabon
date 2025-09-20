@@ -1,13 +1,36 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ListGroup, Spinner } from 'react-bootstrap';
-import axios from 'axios'; 
-import './NotificationPanel.css'; 
+import { ListGroup, Spinner, Button } from 'react-bootstrap';
+import axios from 'axios';
+import './NotificationPanel.css';
 
-const NotificationPanel = ({ notifications, isLoading, onNotificationRead }) => {
+const NotificationPanel = ({ notifications, isLoading, onNotificationRead, onClearAll }) => {
     const navigate = useNavigate();
 
-    const handleNotificationClick = async (notification) => { 
+    const handleClearAllClick = async () => {
+        
+        if (window.confirm("Are you sure you want to clear all notifications? This cannot be undone.")) {
+            try {
+                const token = localStorage.getItem("token");
+               
+                await axios.delete('http://localhost:5000/api/notifications/all', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                
+                onClearAll();
+            } catch (err) {
+                console.error("Failed to clear notifications:", err);
+                alert("Could not clear notifications. Please try again.");
+            }
+        }
+    };
+
+    const handleNotificationClick = async (notification) => {
+        if (!notification.post) {
+            console.log("Cannot navigate to a deleted post.");
+            return;
+        }
         if (!notification.isRead) {
             try {
                 const token = localStorage.getItem("token");
@@ -28,6 +51,13 @@ const NotificationPanel = ({ notifications, isLoading, onNotificationRead }) => 
     };
 
     const renderNotificationText = (notification) => {
+        if (!notification.sender || !notification.post) {
+            return (
+                <span className="text-muted">
+                    This notification is related to a post or user that has been deleted.
+                </span>
+            );
+        }
         const senderName = <strong>{notification.sender.name}</strong>;
         const postTitle = <em>"{notification.post.title}"</em>;
 
@@ -56,14 +86,24 @@ const NotificationPanel = ({ notifications, isLoading, onNotificationRead }) => 
     return (
         <div className="notification-panel">
             <div className="notification-panel-header">
-                Notifications
+                <span>Notifications</span>
+                {notifications.length > 0 && !isLoading && (
+                    <Button
+                        variant="link"
+                        size="sm"
+                        className="clear-all-btn"
+                        onClick={handleClearAllClick}
+                    >
+                        Clear All
+                    </Button>
+                )}
             </div>
             <ListGroup variant="flush">
                 {notifications.length > 0 ? (
                     notifications.map((item) => (
                         <ListGroup.Item
                             key={item._id}
-                            action 
+                            action
                             onClick={() => handleNotificationClick(item)}
                             className={!item.isRead ? 'unread-notification' : ''}
                         >

@@ -74,4 +74,19 @@ router.patch('/:id/read', auth, async (req, res) => {
     }
 });
 
+
+router.delete('/all', auth, async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        
+        await Notification.deleteMany({ user: userId });
+
+        res.status(200).json({ message: 'All notifications cleared successfully.' });
+    } catch (error) {
+        console.error('Error clearing all notifications:', error);
+        res.status(500).json({ message: 'Server error while clearing notifications.' });
+    }
+});
+
 export default router;

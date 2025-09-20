@@ -26,7 +26,10 @@ connectDb();
 
 const app = express();
 const server = http.createServer(app);
-app.use(cors());
+app.use(cors({
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  origin: 'http://localhost:3000'
+}));
 app.use(express.json());
 initSocket(server);
 

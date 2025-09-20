@@ -90,18 +90,23 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
 
     }, [isLoggedIn]);
 
-    const handleBellClick = async () => {
-        setIsPanelOpen(prev => !prev); // Toggle the panel
+    const handleClearNotifications = () => {
+        setNotifications([]); 
+        setUnreadCount(0);
+    };
 
-        // If we are opening the panel and there are unread notifications
+    const handleBellClick = async () => {
+        setIsPanelOpen(prev => !prev);
+
+        
         if (!isPanelOpen && unreadCount > 0) {
             try {
                 const token = localStorage.getItem("token");
-                // Mark them as read on the backend
+                
                 await axios.patch('http://localhost:5000/api/notifications/mark-as-read', {}, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
-                // Set the count to 0 on the frontend immediately for a snappy UI
+                
                 setUnreadCount(0);
             } catch (err) {
                 console.error("Failed to mark notifications as read:", err);
@@ -199,6 +204,7 @@ const NavbarComponent = ({ isLoggedIn, handleLogout, user: passedUser }) => {
                                                 notifications={notifications}
                                                 isLoading={isLoading}
                                                 onNotificationRead={handleNotificationRead}
+                                                onClearAll={handleClearNotifications}
                                             />
                                         )}
                                     </div>

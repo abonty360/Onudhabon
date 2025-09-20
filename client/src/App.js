@@ -30,7 +30,6 @@ function App() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -64,7 +63,7 @@ function App() {
   };
 
   if (loading) {
-    return <div>Loading...</div>; // or a spinner component
+    return <div>Loading...</div>;
   }
 
   return (

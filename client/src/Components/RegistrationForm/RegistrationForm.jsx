@@ -68,7 +68,7 @@ const RegisterForm = () => {
     const { name, email, phone, location, password, confirmPassword, terms, roles } = formData;
     const allowedDomains = ['@gmail.com', '@outlook.com', '@yahoo.com', '@hotmail.com', '@aust.edu'];
     const emailDomain = email.substring(email.lastIndexOf('@'));
-    const specialCharRegex = /[@#$%]/;
+    const specialCharRegex = /[!@#$%^&*()_+=\[\]{};':"\\|,.<>/?-]/;
     return (
       name &&
       email && allowedDomains.includes(emailDomain) &&
@@ -87,7 +87,6 @@ const RegisterForm = () => {
     setSubmitted(true);
 
     if (!isValid()) {
-      // Optionally scroll to first invalid input
       const firstErrorField = document.querySelector('.error');
       if (firstErrorField) firstErrorField.scrollIntoView({ behavior: 'smooth' });
       return;
@@ -115,7 +114,7 @@ const RegisterForm = () => {
     const { email, password } = formData;
     const allowedDomains = ['@gmail.com', '@outlook.com', '@yahoo.com', '@hotmail.com', '@aust.edu'];
     const emailDomain = email.substring(email.lastIndexOf('@'));
-    const specialCharRegex = /[@#$%]/;
+    const specialCharRegex = /[!@#$%^&*()_+=\[\]{};':"\\|,.<>/?-]/;
     const error =
       (submitted || touched[field]) &&
       (!formData[field] ||
@@ -222,7 +221,7 @@ const RegisterForm = () => {
           />
         </div>
       </div>
-      {(submitted || touched.password) && (formData.password.length < 6 || !/[@#$%]/.test(formData.password)) && (
+      {(submitted || touched.password) && (formData.password.length < 6 || !/[!@#$%^&*()_+=\[\]{};':"\\|,.<>/?-]/.test(formData.password)) && (
         <p className="error-message">Password must be at least 6 characters long and contain special characters</p>
       )}
 
