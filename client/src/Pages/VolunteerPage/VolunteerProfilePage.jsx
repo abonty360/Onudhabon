@@ -8,34 +8,47 @@ export default function VolunteerProfilePage({ isLoggedIn, user, handleLogout })
     const { id } = useParams();
     const [volunteer, setVolunteer] = useState(null);
 
+    const getValidToken = async () => {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("No token found");
+
+        try {
+            await axios.get("http://localhost:5000/api/user/profile", {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            return token;
+        } catch (err) {
+            localStorage.removeItem("token");
+            if (typeof handleLogout === 'function') handleLogout();
+            throw new Error("Invalid token");
+        }
+    };
+
+
     useEffect(() => {
-  const fetchVolunteer = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      handleLogout();
-      return;
-    }
+        const fetchVolunteer = async () => {
+            try {
+                const token = await getValidToken();
+                const res = await axios.get(`http://localhost:5000/api/admin/volunteers/${id}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
 
-    try {
-      const res = await axios.get(`http://localhost:5000/api/admin/volunteers/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.data) {
-        setVolunteer(res.data);
-      } else {
-        console.warn("Volunteer not found, logging out");
-        localStorage.removeItem("token");
-        handleLogout();
-      }
-    } catch (err) {
-      console.error("Error fetching volunteer profile:", err.response?.data || err.message);
-      localStorage.removeItem("token");
-      handleLogout();
-    }
-  };
+                if (res.data) {
+                    setVolunteer(res.data);
+                } else {
+                    console.warn("Volunteer not found, logging out");
+                    localStorage.removeItem("token");
+                    handleLogout();
+                }
+            } catch (err) {
+                console.error("Error fetching volunteer profile:", err.response?.data || err.message);
+                localStorage.removeItem("token");
+                handleLogout();
+            }
+        };
 
-  fetchVolunteer();
-}, [id, handleLogout]);
+        fetchVolunteer();
+    }, [id, handleLogout]);
 
     if (!volunteer) return <p>Loading...</p>;
 
@@ -125,7 +138,7 @@ export default function VolunteerProfilePage({ isLoggedIn, user, handleLogout })
                                     <h4>{lec.title}</h4>
                                     <p>{lec.description}</p>
                                     <p><strong>Subject:</strong> {lec.subject} — <strong>Topic:</strong> {lec.topic}</p>
-                                    <video controls src={lec.videoUrl} poster={lec.thumbnail}  style={{ width: "100%", borderRadius: "6px" }} />
+                                    <video controls src={lec.videoUrl} poster={lec.thumbnail} style={{ width: "100%", borderRadius: "6px" }} />
                                     <p>Status: {lec.status}</p>
                                     <p>Uploaded: {new Date(lec.createdAt).toLocaleString()}</p>
                                 </div>

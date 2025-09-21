@@ -122,7 +122,7 @@ router.get("/review", auth, verifyAdmin, checkRole("Admin"), async (req, res) =>
     }
 });
 
-router.patch("/:id/approve", verifyAdmin, auth, checkRole("Admin"), async (req, res) => {
+router.patch("/:id/approve", auth, verifyAdmin, checkRole("Admin"), async (req, res) => {
     try {
         const student = await Student.findByIdAndUpdate(req.params.id, { status: "verified" }, { new: true });
         res.json({ message: "Student verified", student });
@@ -131,7 +131,7 @@ router.patch("/:id/approve", verifyAdmin, auth, checkRole("Admin"), async (req, 
     }
 });
 
-router.patch("/:id/decline", verifyAdmin, auth, checkRole("Admin"), async (req, res) => {
+router.patch("/:id/decline", auth, verifyAdmin, checkRole("Admin"), async (req, res) => {
     try {
         const student = await Student.findByIdAndUpdate(req.params.id, { status: "declined" }, { new: true });
         res.json({ message: "Student declined", student });

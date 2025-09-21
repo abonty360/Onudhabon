@@ -56,38 +56,55 @@ function AdminReviewStudents({ isLoggedIn, handleLogout }) {
   if (user.roles !== "Admin") {
     return <p>Access denied. Admins only.</p>;
   }
+  const getValidToken = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("No token found");
 
-  const handleAction = (id, action) => {
-    fetch(`http://localhost:5000/api/students/${id}/${action}`, {
-      method: "PATCH",
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-    })
-      .then(res => res.json())
-      .then(() => {
-        setStudents(prev => prev.filter(s => s._id !== id));
-      })
-      .catch(err => console.error(`Error ${action} student:`, err));
-  };
-
-  const handleViewProfile = async (guardianId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/user/${guardianId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+      await axios.get("http://localhost:5000/api/user/profile", {
+        headers: { Authorization: `Bearer ${token}` }
       });
-      const data = await response.json();
-      if (response.ok) {
-        setSelectedStudent(data.user); // Renaming selectedStudent to selectedUser for clarity in modal
-        setRestrictionMessage("");
-        setShowProfileModal(true);
-      } else {
-        console.error("Error fetching guardian profile:", data.message);
-        setRestrictionMessage(data.message || "Failed to fetch guardian profile.");
-      }
+      return token;
     } catch (err) {
-      console.error("Error fetching guardian profile:", err);
-      setRestrictionMessage("Failed to fetch guardian profile.");
+      localStorage.removeItem("token");
+      handleLogout();
+      throw new Error("Invalid token");
     }
   };
+  const handleAction = async (id, action) => {
+  try {
+    const token = await getValidToken();
+    const response = await fetch(`http://localhost:5000/api/students/${id}/${action}`, {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    await response.json();
+    setStudents(prev => prev.filter(s => s._id !== id));
+  } catch (err) {
+    console.error(`Error ${action} student:`, err);
+  }
+};
+
+const handleViewProfile = async (guardianId) => {
+  try {
+    const token = await getValidToken();
+    const response = await fetch(`http://localhost:5000/api/user/${guardianId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await response.json();
+    if (response.ok) {
+      setSelectedStudent(data.user); 
+      setRestrictionMessage("");
+      setShowProfileModal(true);
+    } else {
+      console.error("Error fetching guardian profile:", data.message);
+      setRestrictionMessage(data.message || "Failed to fetch guardian profile.");
+    }
+  } catch (err) {
+    console.error("Error fetching guardian profile:", err);
+    setRestrictionMessage("Failed to fetch guardian profile.");
+  }
+};
 
   const handleCloseProfileModal = () => {
     setShowProfileModal(false);
@@ -97,9 +114,10 @@ function AdminReviewStudents({ isLoggedIn, handleLogout }) {
 
   const handleToggleRestrict = async (id, currentStatus) => {
     try {
+      const token = await getValidToken();
       const response = await fetch(`http://localhost:5000/api/user/${id}/restrict`, {
         method: "PATCH",
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+        headers: { Authorization: `Bearer ${token}` }
       });
       const updatedUser = await response.json();
       if (response.ok) {

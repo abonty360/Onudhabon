@@ -8,7 +8,7 @@ export default function ViewVolunteersPage({ isLoggedIn, user, handleLogout }) {
   const [volunteers, setVolunteers] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [searchRole, setSearchRole] = useState("");
-  const [key, setKey] = useState('all'); 
+  const [key, setKey] = useState('all');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -81,7 +81,11 @@ export default function ViewVolunteersPage({ isLoggedIn, user, handleLogout }) {
           </ul>
         </Tab>
         <Tab eventKey="pending" title="Pending Verifications">
-          <AdminReviewPendingVolunteers />
+          <AdminReviewPendingVolunteers 
+          isLoggedIn={isLoggedIn}
+          handleLogout={handleLogout}
+          />
+          
         </Tab>
       </Tabs>
     </div>
