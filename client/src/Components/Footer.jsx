@@ -39,14 +39,13 @@ const Footer = () => (
               </Link>
             </li>
             <li>
-              <Link className="text-dark" to="/settings">
-                Settings
-              </Link>
-            </li>
-
-            <li>
               <Link className="text-dark" to="/forum">
                 Forum
+              </Link>
+            </li>
+            <li>
+              <Link className="text-dark" to="/carbon">
+                Carbon Emission
               </Link>
             </li>
           </ul>

@@ -1,0 +1,62 @@
+.carbon-card-wrapper {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    /* horizontal center */
+    align-items: center;
+    /* vertical center */
+    background: #f5f5f5;
+}
+
+.carbon-hero-section {
+    margin-top: -15px;
+    padding-top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url('../../assets/carbon-hero.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 280px;
+    padding: 10px 0 10px 0;
+    position: relative;
+}
+
+
+
+.carbon-hero-title {
+    font-size: 2.5rem;
+    color: #ffffff;
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.carbon-card {
+    background: #ffffff;
+    padding: 50px 50px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+}
+
+.carbon-card h3 {
+    margin: 0 0 20px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #2e7d32;
+}
+
+.carbon-card p {
+    margin: 10px 0;
+    font-size: 1.2rem;
+}
+
+.carbon-note {
+    font-size: 1rem;
+    color: #666;
+    margin-top: 12px;
+}

@@ -5,6 +5,8 @@ import upload from "../middleware/upload.js";
 import Student from "../models/Student.js";
 import User from "../models/Volunteers/User.js"; 
 import ClassPlan from "../models/ClassPlan.js";
+import {co2} from "@tgwf/co2";
+const co2Emission = new co2({ model: "swd" });
 
 const router = express.Router();
 import { getProgress, updateProgress, updateStudent } from '../controllers/studentController.js';
@@ -89,6 +91,31 @@ router.post("/", auth, checkRole("Local Guardian"), upload.single("consentLetter
         });
 
         await student.save();
+        // --- ✅ Emission tracking for enrollment ---
+      if (req.session) {
+        if (!req.session.totalBytes) {
+          req.session.totalBytes = 0;
+          req.session.totalEmissions = 0;
+        }
+
+        // Count request body + uploaded file size
+        let bodyBytes = 0;
+        try {
+          bodyBytes = Buffer.byteLength(JSON.stringify(req.body), "utf8");
+        } catch (e) {
+          bodyBytes = 0;
+        }
+        const fileBytes = req.file?.size || 0;
+        const total = bodyBytes + fileBytes;
+
+        req.session.totalBytes += total;
+        const emissions = co2Emission.perByte(total, false);
+        req.session.totalEmissions += emissions;
+
+        console.log(
+          `Session ${req.sessionID} enrollment added ${total} bytes, +${emissions} g CO₂`
+        );
+      }
         res.status(201).json({ message: "Student enrollment submitted for review", student });
     } catch (err) {
         console.error("Error enrolling student:", err);

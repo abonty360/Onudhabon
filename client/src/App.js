@@ -22,6 +22,7 @@ import SettingsPage from "./Pages/SettingsPage.jsx";
 import Donation from "./Pages/DonationPage/Donation";
 import ViewVolunteersPage from "./Pages/VolunteerPage/ViewVolunteerPage.jsx";
 import VolunteerProfilePage from "./Pages/VolunteerPage/VolunteerProfilePage.jsx";
+import CarbonEmission from "./Pages/CarbonEmission/CarbonEmission.js";
 
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -57,7 +58,15 @@ function App() {
     setIsLoggedIn(true);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+      try {
+    await fetch("http://localhost:5000/api/emission/reset", {
+      method: "POST",
+      credentials: "include", // important so it hits the right session
+    });
+  } catch (err) {
+    console.error("Error resetting emissions:", err);
+  }
     localStorage.removeItem("token");
     setUser(null);
     setIsLoggedIn(false);
@@ -97,15 +106,7 @@ function App() {
       <Route path="/donation" element={<Donation />} />
 
       <Route
-        path="/studentprogress"
-        element={
-          <StudentProgress
-            isLoggedIn={isLoggedIn}
-            user={user}
-            handleLogout={handleLogout}
-          />
-        }
-      />
+        path="/studentprogress" element={ <StudentProgress isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />} />
       <Route
         path="/admin/review-lectures"
         element={
@@ -170,6 +171,7 @@ function App() {
           <Navigate to="/login" />
         )
       } />
+      <Route path="/carbon" element={<CarbonEmission isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />} />
     </Routes>
   );
 }

@@ -3,6 +3,8 @@ import { auth, checkRestriction, verifyAdmin } from "../middleware/auth.js";
 import checkRole from "../middleware/checkRole.js";
 import upload from "../middleware/upload.js";
 import Material from "../models/Material.js";
+import { co2 } from "@tgwf/co2";
+const co2Emission = new co2({ model: "swd" });
 
 const router = express.Router();
 
@@ -33,10 +35,18 @@ router.get("/topics/:subject", async (req, res) => {
 router.post("/", auth, checkRole("Educator"), checkRestriction, upload.single("file"), async (req, res) => {
   try {
     const {title, description, instructor, version, classLevel, subject, topic } = req.body;
-
     if (!req.file || !req.file.path) {
       return res.status(400).json({ error: "File upload failed" });
     }
+        if (!req.session.totalBytes) {
+      req.session.totalBytes = 0;
+      req.session.totalEmissions = 0;
+    }
+          const fileBytes = req.file.size || 0;
+      req.session.totalBytes += fileBytes;
+
+      const emissions = co2Emission.perByte(fileBytes, false);
+      req.session.totalEmissions += emissions;
 
     const newMaterial = new Material({
       title,
