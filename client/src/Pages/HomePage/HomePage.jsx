@@ -5,6 +5,7 @@ import "./HomePage.css";
 import NavbarComponent from "../../Components/NavbarComp/Navbarcomp";
 import Footer from "../../Components/Footer";
 import axios from "axios";
+import CarbonFootprintDisplay from "../../Components/CarbonFootprintDisplay";
 
 const Homepage = ({ isLoggedIn, handleLogout }) => {
   const [articles, setArticles] = useState([]);
@@ -199,6 +200,7 @@ const Homepage = ({ isLoggedIn, handleLogout }) => {
           )}
         </Container>
       </div>
+      <CarbonFootprintDisplay/>
       <Footer />
     </>
   );

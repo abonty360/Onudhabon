@@ -22,7 +22,7 @@ import forumRoutes from "./routes/forumRoutes.js";
 import articleRoutes from './routes/articles.js';
 import studentRoutes from './routes/studentRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
-
+import carbonRoute from './routes/carbonRoute.js';
 connectDb();
 
 const app = express();
@@ -30,7 +30,7 @@ const server = http.createServer(app);
 app.use(cors());
 app.use(express.json());
 initSocket(server);
-
+app.use("/", carbonRoute);
 app.use("/api/user", userRoutes);
 app.use("/api/lectures", lectureRoutes);
 app.use("/api/materials", materialRoutes);
